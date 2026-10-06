@@ -11,3 +11,4 @@ checkpoints/
 *.bin
 results/tmp/
 logs/
+*.prof
