@@ -43,6 +43,7 @@ def train_torch(
     min_lr_ratio=0.1,
     eval_batches=8,
     eval_batch=2,
+    rope_dtype="float32",
 ):
     """Train on byte or token shards described by the dataset's manifest.
 
@@ -83,6 +84,7 @@ def train_torch(
         "min_lr_ratio": min_lr_ratio,
         "eval_batches": eval_batches,
         "eval_batch": eval_batch,
+        "rope_dtype": rope_dtype,
     }
     checkpoint = out / "resume.pt"
     if checkpoint.exists() and not resume:
@@ -108,7 +110,9 @@ def train_torch(
     )
     if config.vocab_size != vocab_size:
         raise ValueError("checkpoint vocabulary does not match the dataset")
-    model = TorchModel(NumpyModel(config), device, attention)
+    if rope_dtype not in ("float32", "bfloat16"):
+        raise ValueError("rope_dtype must be float32 or bfloat16")
+    model = TorchModel(NumpyModel(config), device, attention, getattr(torch, rope_dtype))
     if device == "cuda":
         torch.backends.cuda.matmul.allow_tf32 = True
         torch.cuda.reset_peak_memory_stats()
@@ -127,7 +131,7 @@ def train_torch(
         {"params": [w for w in model.weights.values() if w.ndim > 1], "weight_decay": 0.01},
         {"params": [w for w in model.weights.values() if w.ndim == 1], "weight_decay": 0},
     ]
-    optimizer = torch.optim.AdamW(groups, lr=lr, betas=(0.9, 0.95))
+    optimizer = torch.optim.AdamW(groups, lr=lr, betas=(0.9, 0.95), fused=device == "cuda")
     step = 0
     if state:
         optimizer.load_state_dict(state["optimizer"])

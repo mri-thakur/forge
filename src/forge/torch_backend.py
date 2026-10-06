@@ -13,10 +13,12 @@ from forge.model import NumpyModel
 class TorchModel:
     backend = "torch"
 
-    def __init__(self, reference: NumpyModel, device="cpu", attention="manual"):
+    def __init__(self, reference: NumpyModel, device="cpu", attention="manual", rope_dtype=None):
         if attention not in {"manual", "sdpa"}:
             raise ValueError("unknown attention implementation")
         self.attention = attention
+        # torch.bfloat16 reproduces the original bf16-angle RoPE, for the ablation.
+        self.rope_dtype = rope_dtype or torch.float32
         self.config, self.device = reference.config, device
         self.weight_origin = reference.weight_origin
         self.weights = {
@@ -32,7 +34,7 @@ class TorchModel:
         # float32 even under bf16 autocast: bf16 angles are off by up to 0.5 rad
         # near position 256. Shared by q and k in every layer of one forward.
         d = self.config.head_dim
-        freq = 10000 ** (-torch.arange(0, d, 2, device=self.device, dtype=torch.float32) / d)
+        freq = 10000 ** (-torch.arange(0, d, 2, device=self.device, dtype=self.rope_dtype) / d)
         angle = positions[..., None, None] * freq
         return angle.cos(), angle.sin()
 
@@ -53,6 +55,9 @@ class TorchModel:
             raise ValueError("positions exceed context")
         pos = torch.tensor(raw_positions.copy(), device=self.device)
         cos, sin = self.rope_tables(pos)
+        # A full sequence without a cache is plain causal attention, which SDPA can
+        # run without materializing a mask (and so pick its fastest kernel).
+        causal_sdpa = self.attention == "sdpa" and pool is None and positions is None
         mask = None
         x = w["embed"][tokens]
         for layer in range(c.layers):
@@ -72,19 +77,24 @@ class TorchModel:
                 mask = (indices <= pos[:, None, :, None]) & (
                     indices < torch.tensor(lengths, device=self.device)[:, None, None, None]
                 )
-            elif mask is None:
+            elif mask is None and not causal_sdpa:
                 mask = (
                     torch.arange(t, device=self.device)[None, None, None, :]
                     <= pos[:, None, :, None]
                 )
             repeats = c.heads // c.kv_heads
-            k = k.repeat_interleave(repeats, dim=2).permute(0, 2, 3, 1)
-            v = v.repeat_interleave(repeats, dim=2).permute(0, 2, 1, 3)
             if self.attention == "sdpa":
+                # Copy shared KV heads rather than pass enable_gqa: without
+                # FlashAttention (absent from Windows builds) enable_gqa falls back to
+                # the math kernel, measured 8x slower than this on the RTX 4050.
+                k = k.repeat_interleave(repeats, dim=2).permute(0, 2, 1, 3)
+                v = v.repeat_interleave(repeats, dim=2).permute(0, 2, 1, 3)
                 attended = torch.nn.functional.scaled_dot_product_attention(
-                    q, k.transpose(-1, -2), v, attn_mask=mask, dropout_p=0.0
+                    q, k, v, attn_mask=mask, is_causal=causal_sdpa, dropout_p=0.0
                 )
             else:
+                k = k.repeat_interleave(repeats, dim=2).permute(0, 2, 3, 1)
+                v = v.repeat_interleave(repeats, dim=2).permute(0, 2, 1, 3)
                 scores = (q @ k) * c.head_dim**-0.5
                 attention = scores.masked_fill(~mask, -1e30).softmax(dim=-1)
                 attended = attention @ v

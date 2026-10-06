@@ -85,6 +85,12 @@ def main():
     torch_only.add_argument("--min-lr-ratio", type=float, default=0.1)
     torch_only.add_argument("--eval-batches", type=int, default=8)
     torch_only.add_argument("--eval-batch", type=int, default=2)
+    torch_only.add_argument(
+        "--rope-dtype",
+        choices=["float32", "bfloat16"],
+        default="float32",
+        help="bfloat16 reproduces the original bf16 RoPE angles (ablation only)",
+    )
     bench = sub.add_parser("bench", help="open-loop scheduling experiment")
     model_options(bench)
     bench.add_argument("--out", required=True)
@@ -178,6 +184,7 @@ def main():
                 min_lr_ratio=args.min_lr_ratio,
                 eval_batches=args.eval_batches,
                 eval_batch=args.eval_batch,
+                rope_dtype=args.rope_dtype,
             )
         else:
             if args.device != "cpu":

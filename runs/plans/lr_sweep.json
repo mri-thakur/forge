@@ -1,0 +1,29 @@
+{
+  "description": "Peak learning rate for the S model (5.8M parameters): 380 steps x 65,536 tokens = 24.9M tokens each, cosine to 10%, seed 17.",
+  "data": "data/tinystories",
+  "common": {
+    "backend": "torch",
+    "device": "cuda",
+    "attention": "sdpa",
+    "precision": "bf16",
+    "context": 512,
+    "batch": 16,
+    "accumulate": 8,
+    "eval_batches": 20,
+    "eval_batch": 16,
+    "min_lr_ratio": 0.1,
+    "seed": 17,
+    "dim": 256,
+    "layers": 6,
+    "heads": 4,
+    "kv_heads": 2,
+    "steps": 380,
+    "warmup": 20
+  },
+  "runs": [
+    {"name": "lr_S_1e-3", "train": {"lr": 0.001}},
+    {"name": "lr_S_2e-3", "train": {"lr": 0.002}},
+    {"name": "lr_S_4e-3", "train": {"lr": 0.004}},
+    {"name": "lr_S_8e-3", "train": {"lr": 0.008}}
+  ]
+}
