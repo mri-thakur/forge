@@ -42,6 +42,15 @@ Training split: 542.9M tokens at vocab 4,096. `results/tokenizer/`.
 - LR sweep on S (`results/lr_sweep/`, 24.9M tokens): 1e-3 2.3038, **2e-3 2.2495**,
   4e-3 2.8636, 8e-3 3.2675 nats/token on the full validation split. 4e-3 did not
   diverge; it plateaued early and never caught up.
+- S (5.8M, 115.3M tokens): **1.5420 nats/token, 0.5523 bits/byte**; coherent
+  samples. Ablations (60.3M tokens, seeds 17/29): baseline 1.7143/1.7304, bf16
+  RoPE 1.7323/1.7362 (worse with both seeds), MHA 1.7114/1.7265 (within noise of
+  GQA). `results/phase2/`.
+- **The laptop hibernated from a critical thermal event at 16:35** during S and
+  stayed off until 20:17 (System log, Kernel-Power event 88); the job resumed by
+  itself after wake. At 22:15 the GPU ran at 87 °C with thermal slowdown (1,875 of
+  3,105 MHz). HP Victus 15; the lid was being kept closed. Watch for repeats: count
+  event 88 in the System log.
 
 ## Serving calibration (mixed, 128 requests, seed 17)
 

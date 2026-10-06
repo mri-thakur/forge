@@ -1,0 +1,200 @@
+{
+  "run": "abl_mha_s17",
+  "heldout": {
+    "split": "validation",
+    "tokens_scored": 5480734,
+    "text_bytes": 22077118,
+    "method": "non-overlapping 512-token windows; each token predicted once from 1 to 512 preceding tokens",
+    "precision": "fp32",
+    "loss_nats_per_token": 1.7113539697810751,
+    "bits_per_token": 2.468961885408798,
+    "bits_per_byte": 0.6129297922882916,
+    "seconds": 41.654178700002376
+  },
+  "monitor_val_loss_at_end": 1.712847113609314,
+  "monitor_sample_tokens": 163840,
+  "baselines_nats_per_token": {
+    "uniform": 8.317766166719343,
+    "unigram": 5.936334706431273,
+    "bigram": 3.5948163787548317
+  },
+  "training": {
+    "parameters": 6163712,
+    "config": {
+      "vocab_size": 4096,
+      "dim": 256,
+      "layers": 6,
+      "heads": 4,
+      "kv_heads": 4,
+      "hidden": 768,
+      "context": 512,
+      "seed": 17
+    },
+    "run_config": {
+      "batch": 16,
+      "context": 512,
+      "seed": 17,
+      "steps": 920,
+      "attention": "sdpa",
+      "precision": "bf16",
+      "accumulate": 8,
+      "lr": 0.002,
+      "warmup": 30,
+      "min_lr_ratio": 0.1,
+      "eval_batches": 20,
+      "eval_batch": 16,
+      "rope_dtype": "float32"
+    },
+    "updates": 920,
+    "training_tokens": 60293120,
+    "precision": "bf16",
+    "seconds": 530.5994313000119,
+    "cuda_peak_allocated_bytes": 1228262400,
+    "training_environment": {
+      "os": "Windows-11-10.0.26200-SP0",
+      "python": "3.12.3",
+      "numpy": "2.5.3",
+      "logical_cpus": 12,
+      "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+      "backend": "torch",
+      "device": "cuda",
+      "parameters": 6163712,
+      "model_config": {
+        "vocab_size": 4096,
+        "dim": 256,
+        "layers": 6,
+        "heads": 4,
+        "kv_heads": 4,
+        "hidden": 768,
+        "context": 512,
+        "seed": 17
+      },
+      "commit": "0c8adc54754bd9cdae138bb215490a01ab39f2cd",
+      "dirty": false,
+      "source_sha256": "49f055aaa09f8b6c0d38c434ec3b480264a7744e0eb22b512983be14855ba7f3",
+      "thread_env": {
+        "OMP_NUM_THREADS": null,
+        "OPENBLAS_NUM_THREADS": null,
+        "MKL_NUM_THREADS": null
+      },
+      "weights_sha256": "7fac259064f31b2caf716b46c61e37eddf0dd71b1b73c517753e41a549001df4",
+      "torch": "2.8.0+cu128",
+      "attention": "sdpa",
+      "torch_threads": 8,
+      "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "gpu_memory_bytes": 6438780928,
+      "cuda_runtime": "12.8"
+    }
+  },
+  "dataset": {
+    "dataset": "roneneldan/TinyStories",
+    "revision": "f54c09fd23315a6f9c86f9dc80f725de7d8f9c64",
+    "homepage": "https://huggingface.co/datasets/roneneldan/TinyStories",
+    "licenses": [
+      "CDLA-Sharing-1.0"
+    ],
+    "synthetic": false,
+    "split": "official TinyStoriesV2-GPT4 train/valid files",
+    "source_files": [
+      {
+        "name": "TinyStoriesV2-GPT4-train.txt",
+        "sha256": "6418d412de72888f52b5142c761ac21a582f7d1166f0bfbdb5f03ccfdec90443",
+        "bytes": 2227753162
+      },
+      {
+        "name": "TinyStoriesV2-GPT4-valid.txt",
+        "sha256": "6874bae9a4c1a4e7edcf0e53b86c17817e9cf881fc75ff2368da457b80c0585d",
+        "bytes": 22502601
+      }
+    ],
+    "tokenizer": "forge-bpe-v1, vocab 4096, GPT-4 split pattern",
+    "tokenizer_file": "tokenizer_4096.json",
+    "tokenizer_sha256": "8587ac111c62a40dfab02e745f407a798a08517fb7b9f5c330c808cc04ef787d",
+    "vocab_size": 4096,
+    "dtype": "uint16",
+    "end_of_text_id": 4095,
+    "distinct_chunks": 66545,
+    "train_stories": 2717495,
+    "val_stories": 27630,
+    "train_tokens": 542857448,
+    "val_tokens": 5480735,
+    "train_text_bytes": 2185895233,
+    "val_text_bytes": 22077118,
+    "train_sha256": "19648307845e9b2dbe429718f38f8bc1f231fe1abc97df7c32a12fdc146c40b9",
+    "val_sha256": "b04dff0476d7c48810103d2c8838ebaf5aa3720b3321b919837e6597b03d1b56",
+    "seconds": {
+      "count_chunks": 69.0659518999746,
+      "train_tokenizer": 2.280420100025367,
+      "encode": 94.48067130002892
+    },
+    "workers": 10,
+    "manifest_content_sha256": "afa9fb5610608d25fd5c1393ec41964d74bcf1439289ad863d176e815526c77b"
+  },
+  "samples": {
+    "settings": {
+      "tokens": 200,
+      "temperature": 0.8,
+      "top_p": 0.95,
+      "seed": 17,
+      "engine_policy": "chunked",
+      "stops_at_end_of_text": true
+    },
+    "samples": [
+      {
+        "prompt": "Once upon a time",
+        "greedy": ", there was a little boy named Tim. Tim loved to play with his toy car. One day, he saw a big, red ball in the yard. He wanted to play with it, but he was too small to reach it.\nTim asked his mom for help. His mom said, \"Let's try to get the ball, Tim.\" They went to the yard and found a big, red ball. Tim was so happy! He played with the ball all day long.\nBut then, something unexpected happened. The ball started to move! It was not a ball at all. It was a big, red ball! Tim and his mom were surprised. They did not know that the ball could talk. They played with the ball all day long.",
+        "sampled": ", there was a little bunny named Bob. Bob loved to hop and play in the big green grass all day. He would hop through the grass, hop and hop around, having lots of fun. \nOne day, Bob found a big, green leaf. He was so happy. He took the leaf home to show his friends. They all loved to play together. They played together all day long.\nWhen it was time to go home, Bob and his friends said goodbye to each other. They were so tired that they had to go home. They said goodbye and promised to hop again soon. And from that day on, Bob was always very eager to have new friends."
+      },
+      {
+        "prompt": "Lily and Ben went to the park.",
+        "greedy": " They saw a big tree with a hole in it. They wanted to see what was inside.\n\"Let's go see,\" Lily said. \"Maybe we can find something else to eat.\"\n\"OK,\" Ben said. \"But we have to be careful. The tree is very high and strong.\"\nThey ran to the tree and climbed. They saw a big hole in the ground. They ran to the hole and saw a hole. They were scared.\n\"Help, help!\" they cried. \"We are stuck in the hole!\"\nThey heard a voice. It was a man. He was a man. He was a man. He had a big bag. He had a big bag. He had a bag. He was a gift from the man. He was a thief. He was a thief. He was a thief. He was a thief. He was a thief. He was a thief. He was a thief. He was a thief. He was a thief. He was a thief. He",
+        "sampled": " They saw a big slide. They wanted to slide on the slide. They both ran to the slide and wanted to try it.\n\"Come on, Lily, but be careful. It's very dangerous. We can play on it first,\" Ben said. \"I can do it.\"\n\"But I want to go down the slide, Ben. It might be dangerous,\" Lily said. \"But we are too dangerous. You can have it.\"\nThey reached the end of the slide. They pushed each other. They tried to run. But the slide was too slippery. It was hard and steep. They pulled and pushed. The slide broke. They fell down the slide. They felt sorry.\n\"I'm sorry, Lily,\" Ben said. \"I was foolish. I should not have played on the slide. It was too dangerous. I should have listened to you.\"\nLily and Ben felt sorry. They did not mean to break the slide. They did not want to hurt the slide"
+      },
+      {
+        "prompt": "The little dog was sad because",
+        "greedy": " he could not find his way home. The little dog was very sad and scared. The little dog did not know what to do.\nThe little dog went to the big tree and saw a big tree. The little dog was very happy. He wanted to play with the tree. The little dog tried to climb the tree, but he could not. The little dog was sad too. The little dog was sad too. The little dog learned that it is important to be careful when playing near the big tree.",
+        "sampled": " he had no friends. The other animals in the forest told the dog that he could be happy and have friends. The little dog learned that he could be with his friends too. From that day on, the little dog and the little dog were all happy and played together."
+      },
+      {
+        "prompt": "One day, a girl named Mia found a",
+        "greedy": " big, red ball. She wanted to play with it. Mia was very happy and started to play with the ball. She threw the ball high in the air and caught it. The ball went up, up, up into the sky.\nMia was so happy to see the ball fly. She played with the ball all day long. She threw it, kicked it, and even kicked it. The ball went up, up, up into the sky. Mia was so happy to see the ball again. She knew that she would always remember the fun day she had with her new friend.",
+        "sampled": " yellow crayon. She wanted to draw a big sun with many colors. Mia was happy and said, \"Let's make a big sun!\"\nMia and her mom went inside the house. They used some blue crayon to draw a big sun. Mia was very proud of her drawing. She showed it to her friend, Tom. Tom said, \"Wow, Mia! You are a good brother!\"\nMia and Tom drew a sun and a house. They drew a big tree, a tree, and a small house. They were very happy. They knew they would always see many things in their house."
+      }
+    ]
+  },
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.3",
+    "numpy": "2.5.3",
+    "logical_cpus": 12,
+    "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "backend": "torch",
+    "device": "cuda",
+    "parameters": 6163712,
+    "model_config": {
+      "vocab_size": 4096,
+      "dim": 256,
+      "layers": 6,
+      "heads": 4,
+      "kv_heads": 4,
+      "hidden": 768,
+      "context": 512,
+      "seed": 17
+    },
+    "commit": "0c8adc54754bd9cdae138bb215490a01ab39f2cd",
+    "dirty": false,
+    "source_sha256": "49f055aaa09f8b6c0d38c434ec3b480264a7744e0eb22b512983be14855ba7f3",
+    "thread_env": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null
+    },
+    "weights_sha256": "7fac259064f31b2caf716b46c61e37eddf0dd71b1b73c517753e41a549001df4",
+    "torch": "2.8.0+cu128",
+    "attention": "sdpa",
+    "torch_threads": 8,
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "gpu_memory_bytes": 6438780928,
+    "cuda_runtime": "12.8"
+  }
+}

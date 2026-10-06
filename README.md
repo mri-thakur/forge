@@ -14,7 +14,7 @@ few tens of millions of parameters can learn to write coherent stories.
 | Stage | Status | Result so far |
 |---|---|---|
 | 1. Tokenizer | **Done** | Byte-level BPE; 4,096-token vocabulary compresses TinyStories as well as GPT-2's 50,257 |
-| 2. Pretraining | **In progress** | Learning-rate sweep done; scaling runs (6M/16M/34M parameters) and ablations training now |
+| 2. Pretraining | **In progress** | 5.8M model writes coherent stories (0.552 bits/byte); ablations done; 16M and 34M training now |
 | 3. Supervised fine-tuning | Planned | Follow story instructions (required words, a given sentence, dialogue) |
 | 4. RL with verifiable rewards | Planned | GRPO with rule-checked rewards and a KL penalty |
 | 5. Demo and write-up | Planned | |
@@ -65,13 +65,33 @@ At 4e-3 training did not diverge; it stalled on an early plateau (validation 4.0
 step 100 against 3.38 at 2e-3) and never recovered within the budget.
 [Raw results](results/lr_sweep/).
 
-Now training ([plan](runs/plans/phase2.json)): three model sizes at roughly 16-20
-tokens per parameter for a scaling curve, and two ablations with two seeds each:
+**S model (5.8M parameters, 115.3M tokens): 1.5420 nats/token, 0.5523 bits per
+byte** on the full validation split (token bigram baseline 3.595, unigram 5.936).
+It already writes coherent stories; prompted with "Lily and Ben went to the park.":
 
-- **RoPE angle precision.** Under bf16 autocast, the original code computed rotary
-  angles in bf16. At positions up to 511 that perturbs some cosines by up to 1.56;
-  the ablation measures what it costs the model.
-- **Grouped-query vs full multi-head attention.**
+> They saw a big pond with many ducks. There were many ducks and frogs. Lily and
+> Ben liked the ducks. They wanted to feed them some bread.
+
+([fixed samples and loss curve](docs/phase2/S/RESULTS.md))
+
+Ablations on the S model (60.3M tokens each, validation loss in nats/token, seeds
+17 and 29):
+
+| Variant | Seed 17 | Seed 29 | Mean |
+|---|---:|---:|---:|
+| Baseline: float32 RoPE angles, 2 KV heads (GQA) | 1.7143 | 1.7304 | 1.7224 |
+| bf16 RoPE angles (the original code) | 1.7323 | 1.7362 | 1.7342 |
+| Full multi-head attention (4 KV heads) | 1.7114 | 1.7265 | 1.7189 |
+
+- **RoPE angle precision.** Under bf16 autocast the original code computed rotary
+  angles in bf16, perturbing some cosines by up to 1.56 at positions up to 511.
+  It was worse with both seeds (+0.018 and +0.006), a small but consistent cost.
+- **Grouped-query attention** with half the KV heads was within seed noise of full
+  multi-head attention (0.0035 apart against a 0.016 seed-to-seed spread), while
+  halving the KV cache.
+
+Still training ([plan](runs/plans/phase2.json)): the M (15.7M) and L (33.6M)
+models, for the scaling curve.
 
 ## How it is built
 
