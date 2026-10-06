@@ -12,3 +12,5 @@ checkpoints/
 results/tmp/
 logs/
 *.prof
+# Sweep traces regenerate from their seeds; benchmark.json records each SHA-256.
+results/cuda_sweep_*/trace_*.json
