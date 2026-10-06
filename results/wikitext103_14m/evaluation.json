@@ -2,16 +2,18 @@
   "run": "wikitext103_14m",
   "heldout": {
     "split": "validation",
-    "bytes_scored": 1142171,
-    "method": "non-overlapping 256-byte windows; each byte predicted once from 1 to 256 preceding bytes",
+    "tokens_scored": 1142171,
+    "text_bytes": 1142171,
+    "method": "non-overlapping 256-token windows; each token predicted once from 1 to 256 preceding tokens",
     "precision": "fp32",
-    "loss_nats_per_byte": 1.2724461424860127,
-    "bits_per_byte": 1.835751739562862,
-    "seconds": 29.529974800010677
+    "loss_nats_per_token": 1.2724461389443729,
+    "bits_per_token": 1.8357517344533556,
+    "bits_per_byte": 1.8357517344533556,
+    "seconds": 11.671652199991513
   },
   "monitor_val_loss_at_end": 1.3381133377552032,
-  "monitor_sample_bytes": 4096,
-  "baselines_nats_per_byte": {
+  "monitor_sample_tokens": 4096,
+  "baselines_nats_per_token": {
     "uniform": 5.545177444479562,
     "unigram": 3.183727255815022,
     "bigram": 2.4398926162000136
@@ -37,7 +39,7 @@
       "precision": "bf16"
     },
     "updates": 30000,
-    "training_bytes": 61440000,
+    "training_tokens": 61440000,
     "precision": "bf16",
     "seconds": 1834.268987300049,
     "cuda_peak_allocated_bytes": 657186816,
@@ -120,7 +122,8 @@
       "temperature": 0.8,
       "top_p": 0.95,
       "seed": 17,
-      "engine_policy": "chunked"
+      "engine_policy": "chunked",
+      "stops_at_end_of_text": false
     },
     "samples": [
       {
@@ -164,9 +167,9 @@
       "context": 512,
       "seed": 17
     },
-    "commit": null,
+    "commit": "3ccb1ed0518f6f2c4aaf0d03ece593c1fd367783",
     "dirty": true,
-    "source_sha256": "e3792fa95714b1d89c368c535ab95c5d4e4c30bba1eae73aa10c6e0ffb972fb8",
+    "source_sha256": "cc0fecbd7507660cf976f2cc93d22c32b251158775b8da4ed5eacc3d1ee66b65",
     "thread_env": {
       "OMP_NUM_THREADS": null,
       "OPENBLAS_NUM_THREADS": null,

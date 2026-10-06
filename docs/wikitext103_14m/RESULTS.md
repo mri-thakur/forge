@@ -4,7 +4,7 @@ A 14,260,608-parameter byte-level decoder (8 layers, width 384, 4 heads / 2 KV h
 
 ## Held-out loss
 
-Scored on all 1,142,171 predicted bytes of the validation split (split: official train/validation; nonempty rows joined with newline; non-overlapping 256-byte windows; each byte predicted once from 1 to 256 preceding bytes; fp32).
+Scored on all 1,142,171 predicted bytes of the validation split (split: official train/validation; nonempty rows joined with newline; non-overlapping 256-token windows; each token predicted once from 1 to 256 preceding tokens; fp32).
 
 | Model | nats/byte | bits/byte |
 |---|---:|---:|
@@ -13,7 +13,7 @@ Scored on all 1,142,171 predicted bytes of the validation split (split: official
 | Byte unigram, add-one, fit on the same training bytes | 3.1837 | 4.5931 |
 | Uniform over 256 bytes | 5.5452 | 8.0000 |
 
-The training loop's monitoring loss at the last update was 1.3381 nats/byte, measured on a fixed 4,096-byte sample; the full-split number above is the one to cite. Byte-level losses are not comparable to published BPE or word-level WikiText-103 perplexities.
+The training loop's monitoring loss at the last update was 1.3381 nats/byte, measured on a fixed sample of 4,096 bytes; the full-split number above is the one to cite. Byte-level losses are not comparable to published BPE or word-level perplexities.
 
 ## Training curve
 
@@ -23,7 +23,7 @@ Data: [`training_curve.jsonl`](../../results/wikitext103_14m/training_curve.json
 
 ## Fixed samples
 
-200 bytes per prompt through Forge's serving engine (`chunked` policy): greedy, then temperature 0.8 with top-p 0.95 (seed 17). Not cherry-picked: these prompts and settings are fixed in `forge/evaluation.py`.
+Up to 200 bytes per prompt through Forge's serving engine (`chunked` policy): greedy, then temperature 0.8 with top-p 0.95 (seed 17). Not cherry-picked: these prompts and settings are fixed in `forge/evaluation.py`.
 
 **Prompt:** `= History of the railway = ⏎ The railway`
 

@@ -51,6 +51,16 @@ def main():
     wiki.add_argument("--train", nargs="+", required=True)
     wiki.add_argument("--validation", required=True)
     wiki.add_argument("--out", required=True)
+    tiny = sub.add_parser(
+        "prepare-tinystories", help="train the BPE tokenizer on TinyStories and encode it"
+    )
+    tiny.add_argument("--train", required=True)
+    tiny.add_argument("--valid", required=True)
+    tiny.add_argument("--out", required=True)
+    tiny.add_argument("--vocab", type=int, default=4096)
+    tiny.add_argument("--compare", type=int, nargs="+", default=[2048, 4096, 8192])
+    tiny.add_argument("--workers", type=int)
+    tiny.add_argument("--results", help="folder for the tokenizer comparison JSON")
     train_parser = sub.add_parser("train", help="train using Forge's NumPy reverse-mode engine")
     train_parser.add_argument("--data", required=True)
     train_parser.add_argument("--out", required=True)
@@ -65,6 +75,16 @@ def main():
     train_parser.add_argument("--device", default="cpu")
     train_parser.add_argument("--attention", choices=["manual", "sdpa"], default="manual")
     train_parser.add_argument("--precision", choices=["fp32", "bf16"], default="fp32")
+    torch_only = train_parser.add_argument_group("torch backend only")
+    torch_only.add_argument("--heads", type=int, default=4)
+    torch_only.add_argument("--kv-heads", type=int, default=2)
+    torch_only.add_argument("--hidden", type=int, help="FFN width (default 3 x dim)")
+    torch_only.add_argument("--accumulate", type=int, default=1, help="micro-batches per step")
+    torch_only.add_argument("--lr", type=float, default=0.002)
+    torch_only.add_argument("--warmup", type=int, help="warmup steps (default min(20, steps/10))")
+    torch_only.add_argument("--min-lr-ratio", type=float, default=0.1)
+    torch_only.add_argument("--eval-batches", type=int, default=8)
+    torch_only.add_argument("--eval-batch", type=int, default=2)
     bench = sub.add_parser("bench", help="open-loop scheduling experiment")
     model_options(bench)
     bench.add_argument("--out", required=True)
@@ -118,6 +138,20 @@ def main():
         from forge.datasets import prepare_wikitext
 
         print(json.dumps(prepare_wikitext(args.train, args.validation, args.out), indent=2))
+    elif args.command == "prepare-tinystories":
+        from forge.tinystories import prepare_tinystories
+
+        manifest, comparison = prepare_tinystories(
+            args.train, args.valid, args.out, args.vocab, tuple(args.compare), args.workers
+        )
+        if args.results:
+            results = Path(args.results)
+            results.mkdir(parents=True, exist_ok=True)
+            payload = {"comparison": comparison, "manifest": manifest}
+            (results / "compare.json").write_text(
+                json.dumps(payload, indent=2) + "\n", encoding="utf-8"
+            )
+        print(json.dumps(comparison, indent=2))
     elif args.command == "train":
         if args.backend == "torch":
             from forge.gpu_training import train_torch
@@ -135,6 +169,15 @@ def main():
                 args.device,
                 args.attention,
                 args.precision,
+                heads=args.heads,
+                kv_heads=args.kv_heads,
+                hidden=args.hidden,
+                accumulate=args.accumulate,
+                lr=args.lr,
+                warmup=args.warmup,
+                min_lr_ratio=args.min_lr_ratio,
+                eval_batches=args.eval_batches,
+                eval_batch=args.eval_batch,
             )
         else:
             if args.device != "cpu":
@@ -197,7 +240,7 @@ def main():
         result = evaluate_run(
             load_model(args), args.run, args.data, args.out, args.report, args.batch
         )
-        print(json.dumps({key: result[key] for key in ("heldout", "baselines_nats_per_byte")}))
+        print(json.dumps({key: result[key] for key in ("heldout", "baselines_nats_per_token")}))
     elif args.command == "report":
         from forge.report import report
 

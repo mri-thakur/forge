@@ -54,11 +54,11 @@ def test_training_curve_keeps_last_row_for_steps_replayed_after_resume(tmp_path)
     rows += [{"step": s, "loss": 1.0, "lr": 1, "tokens_per_second": 1} for s in (3, 4)]
     rows[-1]["val_loss"] = 0.5
     log.write_text("".join(json.dumps(row) + "\n" for row in rows))
-    curve = training_curve(log, bytes_per_update=10, every=2)
+    curve = training_curve(log, tokens_per_update=10, every=2)
     assert [point["train_loss"] for point in curve] == [9.0, 1.0]
     assert curve[-1] == {
         "step": 4,
-        "bytes": 40,
+        "tokens": 40,
         "train_loss": 1.0,
         "lr": 1,
         "tokens_per_second": 1,
@@ -73,8 +73,8 @@ def test_evaluate_run_end_to_end_on_cpu(tmp_path):
     result = evaluate_run(
         NumpyModel.load(run / "model.npz"), run, data, tmp_path / "out", tmp_path / "docs"
     )
-    assert result["heldout"]["bytes_scored"] == result["dataset"]["val_tokens"] - 1
-    assert math.isfinite(result["heldout"]["loss_nats_per_byte"])
+    assert result["heldout"]["tokens_scored"] == result["dataset"]["val_tokens"] - 1
+    assert math.isfinite(result["heldout"]["loss_nats_per_token"])
     assert len(result["samples"]["samples"]) == 4
     assert (tmp_path / "out" / "evaluation.json").exists()
     assert "Held-out loss" in (tmp_path / "docs" / "RESULTS.md").read_text(encoding="utf-8")
@@ -90,5 +90,5 @@ def test_evaluate_run_skips_samples_when_context_cannot_hold_prompts(tmp_path):
     result = evaluate_run(
         NumpyModel.load(run / "model.npz"), run, data, tmp_path / "out", tmp_path / "docs"
     )
-    assert "32-byte training context" in result["samples"]["skipped"]
+    assert "32-token training context" in result["samples"]["skipped"]
     assert "Skipped:" in (tmp_path / "docs" / "RESULTS.md").read_text(encoding="utf-8")
