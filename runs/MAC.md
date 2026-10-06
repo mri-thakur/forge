@@ -60,7 +60,20 @@ shasum -a 256 checkpoints/wikitext103_14m/model.npz
 
 `scripts/detach.py` has only been tested on Windows. Check its POSIX path once:
 start a 30-second `sleep` job, confirm `--status` shows it running, close the agent's
-terminal, and confirm it still finishes with exit code 0.
+terminal, and confirm it still finishes with exit code 0. Then check speed: run the
+same short benchmark in the foreground and detached and compare ms per iteration
+(`elapsed_including_drain_s / iterations` in `benchmark.json`). On Windows, detached
+jobs ran 8x slower until the launcher opted them out of power throttling; if macOS
+slows them down too, fix that before timing anything.
+
+```bash
+.venv/bin/python -m forge bench --checkpoint checkpoints/wikitext103_14m/model.npz --requests 16 --rates 2 --seeds 17 --policies continuous --out results/tmp/fg
+.venv/bin/python scripts/detach.py --name speedcheck -- .venv/bin/python -m forge bench --checkpoint checkpoints/wikitext103_14m/model.npz --requests 16 --rates 2 --seeds 17 --policies continuous --out results/tmp/bg
+```
+
+The laptop is optimizing the serving engine on `main`. Before starting each
+milestone, run `git fetch && git merge origin/main` so both machines measure the
+same code (every result records its source hash), and rerun the tests.
 
 ## Milestone 1: useful CPU thread count
 

@@ -21,6 +21,9 @@ and the exact next step.
   ```
 
   Output goes to `logs/<job>.log`; `logs/<job>.json` records the command and exit code.
+  `--stop <job>` terminates a job and everything it started.
+- Never run two timing measurements at once (benchmarks, training throughput); they
+  share the CPU and GPU and corrupt each other's numbers.
 - Training stays resumable: a new `--out` per schedule, checkpoints every 100 updates,
   and the identical command plus `--resume` to continue a run that stopped.
 

@@ -2,6 +2,7 @@
 
     python scripts/detach.py --name wikitext -- python -m forge train --backend torch ...
     python scripts/detach.py --status
+    python scripts/detach.py --stop wikitext
 
 Output is appended to logs/<name>.log; logs/<name>.json records the command, process,
 and exit code. On Windows the job is created through WMI, so it runs outside the job
@@ -14,8 +15,10 @@ import argparse
 import json
 import os
 import re
+import signal
 import subprocess
 import sys
+import threading
 import time
 from datetime import datetime
 from pathlib import Path
@@ -123,8 +126,82 @@ def launch(name, command):
     sys.exit(f"{name} did not start within 30 s")
 
 
+def exempt_from_power_throttling(pid):
+    """Windows treats a windowless background process as low priority work (EcoQoS:
+    efficiency cores, lower clocks, coarse timers); a detached benchmark measured 8x
+    slower than the same run in a terminal. Opt the process out."""
+    import ctypes
+    from ctypes import wintypes
+
+    class State(ctypes.Structure):
+        _fields_ = [(field, wintypes.ULONG) for field in ("Version", "ControlMask", "StateMask")]
+
+    kernel32 = ctypes.windll.kernel32
+    kernel32.OpenProcess.restype = wintypes.HANDLE
+    handle = kernel32.OpenProcess(0x0200, False, pid)  # PROCESS_SET_INFORMATION
+    if not handle:
+        return False
+    # Take control of EXECUTION_SPEED and IGNORE_TIMER_RESOLUTION, both switched off.
+    state = State(1, 0x1 | 0x4, 0)
+    ok = kernel32.SetProcessInformation(handle, 4, ctypes.byref(state), ctypes.sizeof(state))
+    kernel32.CloseHandle(handle)
+    return bool(ok)
+
+
+def descendants(root):
+    """PIDs of every process below `root`, from a Windows process snapshot."""
+    import ctypes
+    from ctypes import wintypes
+
+    class Entry(ctypes.Structure):
+        _fields_ = [
+            ("dwSize", wintypes.DWORD),
+            ("cntUsage", wintypes.DWORD),
+            ("th32ProcessID", wintypes.DWORD),
+            ("th32DefaultHeapID", ctypes.c_size_t),
+            ("th32ModuleID", wintypes.DWORD),
+            ("cntThreads", wintypes.DWORD),
+            ("th32ParentProcessID", wintypes.DWORD),
+            ("pcPriClassBase", wintypes.LONG),
+            ("dwFlags", wintypes.DWORD),
+            ("szExeFile", wintypes.WCHAR * 260),
+        ]
+
+    kernel32 = ctypes.windll.kernel32
+    kernel32.CreateToolhelp32Snapshot.restype = wintypes.HANDLE
+    snapshot = kernel32.CreateToolhelp32Snapshot(0x2, 0)  # TH32CS_SNAPPROCESS
+    children = {}
+    entry = Entry(dwSize=ctypes.sizeof(Entry))
+    more = kernel32.Process32FirstW(snapshot, ctypes.byref(entry))
+    while more:
+        children.setdefault(entry.th32ParentProcessID, []).append(entry.th32ProcessID)
+        more = kernel32.Process32NextW(snapshot, ctypes.byref(entry))
+    kernel32.CloseHandle(snapshot)
+    found, pending = set(), [root]
+    while pending:
+        for child in children.get(pending.pop(), []):
+            if child not in found and child != root:
+                found.add(child)
+                pending.append(child)
+    return found
+
+
+def keep_exempt(finished):
+    """The exemption is not inherited, so apply it to each new descendant."""
+    exempted = set()
+    while not finished.is_set():
+        for pid in descendants(os.getpid()) - exempted:
+            if exempt_from_power_throttling(pid):
+                exempted.add(pid)
+        finished.wait(1)
+
+
 def run(name, command):
     """The detached wrapper: run the command, then record how it ended."""
+    finished = threading.Event()
+    if os.name == "nt":
+        exempt_from_power_throttling(os.getpid())
+        threading.Thread(target=keep_exempt, args=(finished,), daemon=True).start()
     record = load(name)
     record.update(pid=os.getpid(), started=now(), status="running")
     save(name, record)
@@ -141,8 +218,26 @@ def run(name, command):
             stderr=subprocess.STDOUT,
         )
         log.write(f"# {now()} exit code {code}\n")
+    finished.set()
     record.update(finished=now(), exit_code=code, status="finished" if code == 0 else "failed")
     save(name, record)
+
+
+def stop(name):
+    record = load(name)
+    if state(record) != "running":
+        sys.exit(f"{name} is not running")
+    if os.name == "nt":
+        subprocess.run(
+            ["taskkill", "/PID", str(record["pid"]), "/T", "/F"], check=True, capture_output=True
+        )
+    else:
+        os.killpg(record["pid"], signal.SIGTERM)  # the wrapper leads its own session
+    record.update(finished=now(), status="cancelled")
+    save(name, record)
+    with (LOGS / f"{name}.log").open("a", encoding="utf-8") as log:
+        log.write(f"# {now()} cancelled with --stop\n")
+    print(f"{name} cancelled")
 
 
 def show_status():
@@ -167,12 +262,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--name", help="job name; output goes to logs/<name>.log")
     parser.add_argument("--status", action="store_true", help="list jobs and their state")
+    parser.add_argument("--stop", metavar="NAME", help="terminate a running job")
     parser.add_argument("--run", help=argparse.SUPPRESS)
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ["--"] else args.command
     if args.status:
         show_status()
+    elif args.stop:
+        stop(args.stop)
     elif args.run:
         run(args.run, command)
     elif args.name and command:
@@ -180,7 +278,7 @@ def main():
             parser.error("--name may contain only letters, digits, '.', '_' and '-'")
         launch(args.name, command)
     else:
-        parser.error("give --name NAME -- COMMAND ..., or --status")
+        parser.error("give --name NAME -- COMMAND ..., --status, or --stop NAME")
 
 
 if __name__ == "__main__":
