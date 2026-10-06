@@ -1,40 +1,53 @@
 # Progress (laptop, `main`)
 
-Last updated: 2026-10-06 15:05. The Mac Pro keeps its own log in
-`runs/MAC_PROGRESS.md` on the `mac` branch.
+Last updated: 2026-10-06 16:30. The Mac Pro keeps its own log in
+`runs/MAC_PROGRESS.md` on the `mac` branch (Mac offline so far).
 
 **Direction changed on 2026-10-06** (see [PLAN.md](PLAN.md)): the project is now a
 language model built from scratch end to end on TinyStories (tokenizer →
-pretraining → SFT → RL → demo), for ML/DL roles. The serving work below becomes
-supporting infrastructure; the running sweep finishes but no further serving sweeps
-are planned.
+pretraining → SFT → RL → demo), for ML/DL roles. The serving work below is
+supporting infrastructure.
 
 ## Running now
 
 Check with `.\.venv\Scripts\python.exe scripts\detach.py --status`.
 
-- `prepare_tinystories` (started 15:50, expected several minutes): counts chunks
-  over the whole TinyStoriesV2 training split (10 workers), trains the BPE tokenizer
-  at 8192 and saves 2048/4096/8192, compares bytes per token with GPT-2/GPT-4 on
-  validation, encodes both splits with the 4096 vocabulary into
-  `data/tinystories/{train,val}.bin` (uint16) + `manifest.json`; comparison in
-  `results/tokenizer/compare.json`. If it stopped, rerun the command recorded in
-  `logs/prepare_tinystories.json` (it overwrites its outputs).
+- `phase2` (started 16:22, ~10.5 h, expected to finish around 03:00 on 10-07):
+  `python scripts/run_plan.py runs/plans/phase2.json --code ../forge-frozen`.
+  Runs S (115M tokens), six ablation runs at 60M tokens (exact vs bf16 RoPE
+  angles, GQA vs MHA, seeds 17/29), M (315M), L (543M ≈ one pass over the data),
+  each evaluated on the full validation split into `results/phase2/<run>`; S, M, L
+  also get `docs/phase2/<run>/RESULTS.md`. Code runs from the git worktree
+  `../forge-frozen` at commit 0c8adc5, so editing this checkout does not affect it.
+  **If it stopped: rerun the same command through `scripts/detach.py`**; finished
+  runs are skipped and an interrupted run resumes from its last checkpoint
+  (every 100 steps).
+- `keepawake_phase2`: holds off idle sleep until `phase2` exits. The user also set
+  closing the lid not to sleep the laptop.
 
-Raw data in `data/raw/` (pinned revision in PLAN.md): TinyStoriesV2-GPT4-train.txt
-2,227,753,162 bytes, -valid.txt 22,502,601 bytes.
+## Phase 1 results (tokenizer)
 
-Phase 1 code is in: `forge/bpe.py` (tokenizer; matches tiktoken's GPT-4 encoder
-token for token), `forge/tinystories.py` (corpus pipeline), token-level training
-options in `forge/gpu_training.py`, token-aware `forge/evaluation.py`.
+Own byte-level BPE (`forge/bpe.py`; with OpenAI's cl100k merge table it matches
+tiktoken token for token), trained on all 2.72M TinyStoriesV2 training stories in
+under three minutes. Bytes per token on validation: 3.735 (vocab 2,048), 4.049
+(4,096), 4.179 (8,192) vs GPT-2 4.057 (50,257) and GPT-4 4.142 (100,277).
+Training split: 542.9M tokens at vocab 4,096. `results/tokenizer/`.
 
-## Calibration result (mixed, 128 requests, seed 17)
+## Phase 2 so far
+
+- Throughput (bf16, 16x512 micro-batches, laptop thermals vary ±30%): S 5.8M
+  ≈ 95-130k tok/s, M 15.7M ≈ 46-57k, L 33.6M ≈ 24k (≈6 h per pass over the data).
+  This Windows PyTorch build has no FlashAttention; `enable_gqa` falls back to the
+  math kernel (24.9 vs 3.2 ms per layer), so KV heads are copied instead.
+- LR sweep on S (`results/lr_sweep/`, 24.9M tokens): 1e-3 2.3038, **2e-3 2.2495**,
+  4e-3 2.8636, 8e-3 3.2675 nats/token on the full validation split. 4e-3 did not
+  diverge; it plateaued early and never caught up.
+
+## Serving calibration (mixed, 128 requests, seed 17)
 
 All policies meet the SLO (500 ms TTFT, 50 ms mean TPOT) for ≥99% of requests up
 to 20 req/s; at 40 req/s SLO fraction falls to 35% continuous, 31% chunked, 11%
-static. Output throughput plateaus around 370-460 tok/s. Capacity knee lies
-between 20 and 40 req/s, hence the sweep rates above.
-`results/cuda_calibration_14m`.
+static. `results/cuda_calibration_14m`; full sweep in `results/cuda_sweep_mixed`.
 
 ## Done
 
@@ -83,15 +96,14 @@ between 20 and 40 req/s, hence the sweep rates above.
 
 Laptop, following [PLAN.md](PLAN.md):
 
-1. Phase 1, tokenizer: download TinyStoriesV2 (pinned revision) to `data/raw/`;
-   implement byte-level BPE (`src/forge/bpe.py`, GPT-4-style regex pre-split,
-   `<|endoftext|>` special token) with tests; train at vocab 2048/4096/8192 on a
-   sample, compare bytes per token with the GPT-2 tokenizer; encode the corpus to
-   uint16 shards.
-2. Phase 2, pretraining: token-level training with gradient accumulation; calibrate
-   throughput; three sizes plus ablations.
+1. When `phase2` finishes: scaling plot (validation loss vs parameters and vs
+   compute for S/M/L), ablation table (mean and spread over seeds), read the S/M/L
+   samples; write `docs/phase2/` summary.
+2. Phase 3 code meanwhile, in this checkout (not `../forge-frozen`): SFT with loss
+   on story tokens only, generic prompt/completion JSONL input.
 3. Merge the Mac's `mac` branch (instruction data, verifiers, eval harness) before
-   phase 3.
+   running phase 3. If the Mac stays offline, build `forge/instruct.py` here to the
+   spec in `runs/MAC.md`.
 
 ## Notes
 

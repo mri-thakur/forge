@@ -202,6 +202,11 @@ def run(name, command):
     if os.name == "nt":
         exempt_from_power_throttling(os.getpid())
         threading.Thread(target=keep_exempt, args=(finished,), daemon=True).start()
+        # Like macOS caffeinate: no idle sleep while this thread waits for the job.
+        # Closing a laptop lid can still sleep it, depending on the power settings.
+        import ctypes
+
+        ctypes.windll.kernel32.SetThreadExecutionState(0x80000001)  # CONTINUOUS | SYSTEM
     record = load(name)
     record.update(pid=os.getpid(), started=now(), status="running")
     save(name, record)
