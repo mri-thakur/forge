@@ -1,0 +1,87 @@
+{
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.3",
+    "numpy": "1.26.4",
+    "logical_cpus": 12,
+    "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "backend": "numpy",
+    "device": "cpu",
+    "parameters": 115008,
+    "model_config": {
+      "vocab_size": 256,
+      "dim": 64,
+      "layers": 2,
+      "heads": 4,
+      "kv_heads": 2,
+      "hidden": 192,
+      "context": 512,
+      "seed": 17
+    },
+    "commit": null,
+    "dirty": false,
+    "source_sha256": "08e2d404a83bdc7d6fe5eac2160930480b5bee96fc965724590c1cb68ff3e923",
+    "thread_env": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1"
+    },
+    "weights_sha256": "017aba5a5fc8172b16b97bc4e83d9c59c10c8e229747154abf70a5873723ce88"
+  },
+  "prompt_tokens": 64,
+  "output_tokens": 24,
+  "equivalent_greedy_output": true,
+  "rows": [
+    {
+      "path": "recompute_reference",
+      "median_seconds": 0.15053670000634156,
+      "output_tokens_per_second": 159.42956102391622,
+      "seconds_repeats": [
+        0.1597705000312999,
+        0.152729699970223,
+        0.16460219997679815,
+        0.15675439999904484,
+        0.1483437000424601,
+        0.16504039999563247,
+        0.14488719997461885,
+        0.11900079995393753,
+        0.1358660000259988,
+        0.14663769997423515
+      ]
+    },
+    {
+      "path": "contiguous_kv",
+      "median_seconds": 0.05760339999687858,
+      "output_tokens_per_second": 416.6420732335334,
+      "seconds_repeats": [
+        0.042561399983242154,
+        0.05346530000679195,
+        0.057478200003970414,
+        0.06498290004674345,
+        0.0629285000031814,
+        0.06404199998360127,
+        0.05809369997587055,
+        0.05442949995631352,
+        0.057728599989786744,
+        0.053495600004680455
+      ]
+    },
+    {
+      "path": "paged_kv_single_request",
+      "median_seconds": 0.06301924999570474,
+      "output_tokens_per_second": 380.8360144183847,
+      "seconds_repeats": [
+        0.06919220002600923,
+        0.06473260000348091,
+        0.054233199974987656,
+        0.06442860001698136,
+        0.051616799959447235,
+        0.05994900001678616,
+        0.06535230000736192,
+        0.04972670000279322,
+        0.06904550001490861,
+        0.06160989997442812
+      ]
+    }
+  ]
+}

@@ -1,0 +1,183 @@
+{
+  "run": "wikitext103_14m",
+  "heldout": {
+    "split": "validation",
+    "bytes_scored": 1142171,
+    "method": "non-overlapping 256-byte windows; each byte predicted once from 1 to 256 preceding bytes",
+    "precision": "fp32",
+    "loss_nats_per_byte": 1.2724461424860127,
+    "bits_per_byte": 1.835751739562862,
+    "seconds": 29.529974800010677
+  },
+  "monitor_val_loss_at_end": 1.3381133377552032,
+  "monitor_sample_bytes": 4096,
+  "baselines_nats_per_byte": {
+    "uniform": 5.545177444479562,
+    "unigram": 3.183727255815022,
+    "bigram": 2.4398926162000136
+  },
+  "training": {
+    "parameters": 14260608,
+    "config": {
+      "vocab_size": 256,
+      "dim": 384,
+      "layers": 8,
+      "heads": 4,
+      "kv_heads": 2,
+      "hidden": 1152,
+      "context": 512,
+      "seed": 17
+    },
+    "run_config": {
+      "batch": 8,
+      "context": 256,
+      "seed": 17,
+      "steps": 30000,
+      "attention": "sdpa",
+      "precision": "bf16"
+    },
+    "updates": 30000,
+    "training_bytes": 61440000,
+    "precision": "bf16",
+    "seconds": 1834.268987300049,
+    "cuda_peak_allocated_bytes": 657186816,
+    "training_environment": {
+      "os": "Windows-11-10.0.26200-SP0",
+      "python": "3.12.3",
+      "numpy": "2.5.3",
+      "logical_cpus": 12,
+      "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+      "backend": "torch",
+      "device": "cuda",
+      "parameters": 14260608,
+      "model_config": {
+        "vocab_size": 256,
+        "dim": 384,
+        "layers": 8,
+        "heads": 4,
+        "kv_heads": 2,
+        "hidden": 1152,
+        "context": 512,
+        "seed": 17
+      },
+      "commit": null,
+      "dirty": true,
+      "source_sha256": "d18c18714000ff1dd95835ab1094b54bb07e18436a899bb187eb90779473c747",
+      "thread_env": {
+        "OMP_NUM_THREADS": null,
+        "OPENBLAS_NUM_THREADS": null,
+        "MKL_NUM_THREADS": null
+      },
+      "weights_sha256": "2de9fa7c499febbd5fa090e570a17df525cc41184c60e7d621b85c76518cf99c",
+      "torch": "2.8.0+cu128",
+      "attention": "sdpa",
+      "torch_threads": 8,
+      "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+      "gpu_memory_bytes": 6438780928,
+      "cuda_runtime": "12.8"
+    }
+  },
+  "dataset": {
+    "dataset": "Salesforce/wikitext",
+    "config": "wikitext-103-v1",
+    "revision": "f776294184f13b8ff2337b3841cf9269a6216d1e",
+    "homepage": "https://huggingface.co/datasets/Salesforce/wikitext",
+    "licenses": [
+      "CC-BY-SA-3.0",
+      "GFDL"
+    ],
+    "tokenizer": "utf8-bytes-256",
+    "synthetic": false,
+    "split": "official train/validation; nonempty rows joined with newline",
+    "source_files": [
+      {
+        "name": "wikitext-train-0.parquet",
+        "sha256": "31c262678c1361c1762ed8cac46d2cd6ad02c187d158d89a541f5d9a948711f7",
+        "bytes": 155410143
+      },
+      {
+        "name": "wikitext-train-1.parquet",
+        "sha256": "2d2ee912f317834874ce97608fba8ab1fd96c100b5b419f78a3468b9bd33c79b",
+        "bytes": 155537446
+      },
+      {
+        "name": "wikitext-validation.parquet",
+        "sha256": "396eb3e2c1c7b959f6c2319f683de2898c6c50a0ba98b9e3461e062538e855cf",
+        "bytes": 652655
+      }
+    ],
+    "train_rows": 1801350,
+    "val_rows": 3760,
+    "train_tokens": 539101544,
+    "val_tokens": 1142172,
+    "train_sha256": "595a7c448b66990e9540c41ef78d25f2537b04d6e7b3b373abe32ad65f5b89f4",
+    "val_sha256": "73ae762a13258a2d2cd472fe202c8563e066b02ef9d160e0dc126b74d825d417",
+    "manifest_content_sha256": "15c29c72969018af666bd20f251555917cd0facf720577a069d3cbd81d89329f"
+  },
+  "samples": {
+    "settings": {
+      "tokens": 200,
+      "temperature": 0.8,
+      "top_p": 0.95,
+      "seed": 17,
+      "engine_policy": "chunked"
+    },
+    "samples": [
+      {
+        "prompt": " = History of the railway = \n The railway",
+        "greedy": " was a series of the second season , and the second season , and the second season , and the state of the season . The state of the second season , and the second season , and the second season , and ",
+        "sampled": " has to see plantation and the description of Finch and in a hardlet for damage was performed . The choice of California to the pitch was born in the second and dividence . The community counter of th"
+      },
+      {
+        "prompt": "The album was released in",
+        "greedy": " the second season . The state of the second season , and the state of the season , and the state of the season , and the state of the season , and the state of the season , and the state of the seaso",
+        "sampled": " the Taskson leader the president senset of the earlier said of diapers between Trica Common , becoming in the reason of the Man and the Great . It was a series of the popularity directed the game of "
+      },
+      {
+        "prompt": "In the early 19th century , the town",
+        "greedy": " of the season , and the state of the season , and the second season , and the state of the season . The state of the second season , and the second season , and the second season , and the second sea",
+        "sampled": " and armies around 14 @,@ 000 feet ( 34 mm ) tons ) . \n\n = = = Castle expanded in 1986 = = \n\n The main is a primarily populated on the France , and were discovered the league railways and other winnin"
+      },
+      {
+        "prompt": "The species is found in",
+        "greedy": " the second season , and the state of the season , and the second season , and the state of the season . The state of the second series , and the state of the season , and the state of the season , an",
+        "sampled": " the end of the Atlantic , which was discovered the sequence , restricted the parliament , back at the federal regions . He also complete is subside for store and changed over a period diversion of th"
+      }
+    ]
+  },
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.3",
+    "numpy": "2.5.3",
+    "logical_cpus": 12,
+    "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "backend": "torch",
+    "device": "cuda",
+    "parameters": 14260608,
+    "model_config": {
+      "vocab_size": 256,
+      "dim": 384,
+      "layers": 8,
+      "heads": 4,
+      "kv_heads": 2,
+      "hidden": 1152,
+      "context": 512,
+      "seed": 17
+    },
+    "commit": null,
+    "dirty": true,
+    "source_sha256": "e3792fa95714b1d89c368c535ab95c5d4e4c30bba1eae73aa10c6e0ffb972fb8",
+    "thread_env": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null
+    },
+    "weights_sha256": "2de9fa7c499febbd5fa090e570a17df525cc41184c60e7d621b85c76518cf99c",
+    "torch": "2.8.0+cu128",
+    "attention": "sdpa",
+    "torch_threads": 8,
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "gpu_memory_bytes": 6438780928,
+    "cuda_runtime": "12.8"
+  }
+}

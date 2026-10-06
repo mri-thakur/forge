@@ -1,0 +1,13 @@
+.venv/
+.venv-cpu/
+.venv-mps-legacy/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+data/
+checkpoints/
+*.pt
+*.bin
+results/tmp/
+logs/

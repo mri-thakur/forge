@@ -1,0 +1,59 @@
+{
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.3",
+    "numpy": "1.26.4",
+    "logical_cpus": 12,
+    "backend": "numpy",
+    "device": "cpu",
+    "parameters": 115008,
+    "model_config": {
+      "vocab_size": 256,
+      "dim": 64,
+      "layers": 2,
+      "heads": 4,
+      "kv_heads": 2,
+      "hidden": 192,
+      "context": 512,
+      "seed": 17
+    },
+    "commit": null,
+    "dirty": false,
+    "source_sha256": "e3abb04c6e0756a5cf49626c422208ff997128e00616a535181d4f42c6294088",
+    "thread_env": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1"
+    },
+    "weights_sha256": "017aba5a5fc8172b16b97bc4e83d9c59c10c8e229747154abf70a5873723ce88"
+  },
+  "prompt_tokens": 64,
+  "output_tokens": 24,
+  "equivalent_greedy_output": true,
+  "rows": [
+    {
+      "path": "recompute_reference",
+      "median_seconds": 0.042687400011345744,
+      "output_tokens_per_second": 562.226792768384,
+      "seconds_repeats": [
+        0.042687400011345744,
+        0.03958519996376708,
+        0.04798170004505664,
+        0.04319660004694015,
+        0.03731620003236458
+      ]
+    },
+    {
+      "path": "paged_kv_single_request",
+      "median_seconds": 0.012768699962180108,
+      "output_tokens_per_second": 1879.5962056502326,
+      "seconds_repeats": [
+        0.016706899972632527,
+        0.012556400033645332,
+        0.012038999993819743,
+        0.012768699962180108,
+        0.019174400018528104
+      ]
+    }
+  ]
+}
