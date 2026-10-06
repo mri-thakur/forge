@@ -44,6 +44,10 @@ class BlockPool:
         self.cow_copies = 0
         self.peak_blocks = 0
         self.backend = backend
+        # Every layer of one forward writes and reads the same slots. Indices are
+        # built once and reused until block tables or lengths change.
+        self._version = 0
+        self._write_indices = self._read_indices = (None, None)
         shape = (config.layers, blocks, block_size, config.kv_heads, config.head_dim)
         if backend == "torch":
             import torch
@@ -114,6 +118,7 @@ class BlockPool:
         if reused:
             self.prefix_hits += 1
         self.handles[request_id] = handle
+        self._version += 1
         return handle
 
     def fork(self, source, request_id):
@@ -124,6 +129,7 @@ class BlockPool:
             self.refs[block] += 1
         result = CacheHandle(request_id, list(handle.blocks), handle.length, handle.capacity)
         self.handles[request_id] = result
+        self._version += 1
         return result
 
     def prepare_write(self, request_id, positions):
@@ -148,38 +154,47 @@ class BlockPool:
             self.cow_copies += 1
         if positions:
             handle.length = max(handle.length, max(positions) + 1)
+        self._version += 1
 
-    def write(self, layer, requests, positions, keys, values):
-        for row, request_id in enumerate(requests):
-            handle = self.handles[request_id]
-            valid = positions[row] >= 0
-            pos = positions[row, valid]
-            physical = np.array(handle.blocks, dtype=np.int64)[pos // self.block_size]
-            offset = pos % self.block_size
-            if self.backend == "torch":
-                import torch
-
-                physical = torch.as_tensor(physical, device=self.keys.device)
-                offset = torch.as_tensor(offset, device=self.keys.device)
-                valid = torch.as_tensor(valid, device=self.keys.device)
-            self.keys[layer, physical, offset] = keys[row, valid]
-            self.values[layer, physical, offset] = values[row, valid]
-
-    def read(self, layer, requests):
-        lengths = [self.handles[r].length for r in requests]
-        width = max(lengths)
-        physical = np.zeros((len(requests), width), dtype=np.int64)
-        offsets = np.broadcast_to(np.arange(width) % self.block_size, physical.shape).copy()
-        for row, request_id in enumerate(requests):
-            handle = self.handles[request_id]
-            physical[row, : handle.length] = np.array(handle.blocks)[
-                np.arange(handle.length) // self.block_size
-            ]
+    def _to_device(self, array):
         if self.backend == "torch":
             import torch
 
-            physical = torch.as_tensor(physical, device=self.keys.device)
-            offsets = torch.as_tensor(offsets, device=self.keys.device)
+            return torch.as_tensor(array, device=self.keys.device)
+        return array
+
+    def write(self, layer, requests, positions, keys, values):
+        key = (self._version, tuple(requests), positions.shape, positions.tobytes())
+        if self._write_indices[0] != key:
+            rows, columns = np.nonzero(positions >= 0)
+            pos = positions[rows, columns]
+            tables = [self.handles[r].blocks for r in requests]
+            table = np.zeros((len(requests), max(map(len, tables))), dtype=np.int64)
+            for row, blocks in enumerate(tables):
+                table[row, : len(blocks)] = blocks
+            slots = np.stack(
+                [rows, columns, table[rows, pos // self.block_size], pos % self.block_size]
+            )
+            self._write_indices = (key, self._to_device(slots))
+        rows, columns, physical, offset = self._write_indices[1]
+        self.keys[layer, physical, offset] = keys[rows, columns]
+        self.values[layer, physical, offset] = values[rows, columns]
+
+    def read(self, layer, requests):
+        key = (self._version, tuple(requests))
+        if self._read_indices[0] != key:
+            lengths = [self.handles[r].length for r in requests]
+            width = max(lengths)
+            physical = np.zeros((len(requests), width), dtype=np.int64)
+            offsets = np.broadcast_to(np.arange(width) % self.block_size, physical.shape).copy()
+            for row, request_id in enumerate(requests):
+                handle = self.handles[request_id]
+                physical[row, : handle.length] = np.array(handle.blocks)[
+                    np.arange(handle.length) // self.block_size
+                ]
+            slots = self._to_device(np.stack([physical, offsets]))
+            self._read_indices = (key, (slots[0], slots[1], lengths))
+        physical, offsets, lengths = self._read_indices[1]
         return self.keys[layer, physical, offsets], self.values[layer, physical, offsets], lengths
 
     def remember_prefix(self, request_id, prompt):
@@ -209,6 +224,7 @@ class BlockPool:
         handle = self.handles.pop(request_id)
         for block in handle.blocks:
             self._decref(block)
+        self._version += 1
 
     def clear_prefixes(self):
         for blocks in self.prefixes.values():

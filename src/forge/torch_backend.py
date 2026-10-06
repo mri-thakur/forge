@@ -28,14 +28,19 @@ class TorchModel:
     def norm(x, weight):
         return x * (x.square().mean(dim=-1, keepdim=True) + 1e-6).rsqrt() * weight
 
-    def rope(self, x, positions):
+    def rope_tables(self, positions):
+        # float32 even under bf16 autocast: bf16 angles are off by up to 0.5 rad
+        # near position 256. Shared by q and k in every layer of one forward.
         d = self.config.head_dim
-        freq = 10000 ** (-torch.arange(0, d, 2, device=self.device, dtype=x.dtype) / d)
+        freq = 10000 ** (-torch.arange(0, d, 2, device=self.device, dtype=torch.float32) / d)
         angle = positions[..., None, None] * freq
+        return angle.cos(), angle.sin()
+
+    @staticmethod
+    def rope(x, cos, sin):
+        cos, sin = cos.to(x.dtype), sin.to(x.dtype)
         even, odd = x[..., ::2], x[..., 1::2]
-        return torch.stack(
-            (even * angle.cos() - odd * angle.sin(), even * angle.sin() + odd * angle.cos()), dim=-1
-        ).flatten(-2)
+        return torch.stack((even * cos - odd * sin, even * sin + odd * cos), dim=-1).flatten(-2)
 
     def forward_tensor(self, tokens, positions=None, pool=None, requests=None):
         tokens = torch.as_tensor(tokens, device=self.device, dtype=torch.long)
@@ -47,23 +52,27 @@ class TorchModel:
         if raw_positions.max() >= c.context:
             raise ValueError("positions exceed context")
         pos = torch.tensor(raw_positions.copy(), device=self.device)
+        cos, sin = self.rope_tables(pos)
+        mask = None
         x = w["embed"][tokens]
         for layer in range(c.layers):
             p = f"layers.{layer}."
             normalized = self.norm(x, w[p + "attn_norm"])
             q = self.rope(
-                (normalized @ w[p + "q"]).reshape(b, t, c.heads, c.head_dim), pos
+                (normalized @ w[p + "q"]).reshape(b, t, c.heads, c.head_dim), cos, sin
             ).permute(0, 2, 1, 3)
-            k = self.rope((normalized @ w[p + "k"]).reshape(b, t, c.kv_heads, c.head_dim), pos)
+            k = self.rope((normalized @ w[p + "k"]).reshape(b, t, c.kv_heads, c.head_dim), cos, sin)
             v = (normalized @ w[p + "v"]).reshape(b, t, c.kv_heads, c.head_dim)
             if pool is not None:
                 pool.write(layer, requests, raw_positions, k, v)
                 k, v, lengths = pool.read(layer, requests)
+            # Cached lengths and positions are the same in every layer of one forward.
+            if mask is None and pool is not None:
                 indices = torch.arange(k.shape[1], device=self.device)[None, None, None, :]
                 mask = (indices <= pos[:, None, :, None]) & (
                     indices < torch.tensor(lengths, device=self.device)[:, None, None, None]
                 )
-            else:
+            elif mask is None:
                 mask = (
                     torch.arange(t, device=self.device)[None, None, None, :]
                     <= pos[:, None, :, None]

@@ -83,6 +83,30 @@ def test_copy_on_write_never_changes_source(model):
     pool.assert_integrity()
 
 
+def test_forked_branches_read_their_own_blocks_after_copy_on_write(model):
+    prefix = np.random.default_rng(3).integers(0, 32, size=6)
+    pool = BlockPool(model.config, blocks=16, block_size=4)
+    pool.create("a", 12)
+    pool.prepare_write("a", range(6))
+    model.forward(prefix[None], np.arange(6)[None], pool, ["a"])
+    pool.fork("a", "b")
+    branches = {"a": [1, 2], "b": [3, 4]}
+    for step in range(2):
+        position = 6 + step  # inside the shared second block, so "a" detaches it
+        for request in branches:
+            pool.prepare_write(request, [position])
+        tokens = np.array([[branches["a"][step]], [branches["b"][step]]])
+        cached = model.forward(tokens, np.full((2, 1), position), pool, list(branches))
+        for row, (request, continuation) in enumerate(branches.items()):
+            sequence = np.concatenate([prefix, continuation[: step + 1]])
+            expected = model.forward(sequence[None])[:, -1]
+            np.testing.assert_allclose(cached[row], expected, rtol=2e-5, atol=1e-6)
+    assert pool.cow_copies == 1
+    pool.release("a")
+    pool.release("b")
+    pool.assert_integrity()
+
+
 def test_failed_copy_on_write_is_atomic(model):
     pool = BlockPool(model.config, blocks=1, block_size=4)
     pool.create("a", 4)
