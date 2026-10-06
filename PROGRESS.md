@@ -13,15 +13,20 @@ are planned.
 
 Check with `.\.venv\Scripts\python.exe scripts\detach.py --status`.
 
-- `cuda_sweep_mixed` (started 14:43, ~45-60 min), one chained job:
-  1. 1,000-request `mixed` sweep at 10/20/25/30/35 req/s, seeds 101/103/107, all
-     policies, trained checkpoint, CUDA + SDPA → `results/cuda_sweep_mixed`;
-  2. `forge report` → `docs/cuda_sweep_mixed`;
-  3. `head_of_line` calibration, 128 requests at 5/10/20/40 req/s, seed 17 →
-     `results/cuda_calibration_hol`.
-  If it stopped: the sweep cannot resume; delete the unfinished output folder and
-  rerun the chain recorded in `logs/cuda_sweep_mixed.json` (skip finished parts).
-  Low priority after the change of direction; do not rerun it if it is in the way.
+- `prepare_tinystories` (started 15:50, expected several minutes): counts chunks
+  over the whole TinyStoriesV2 training split (10 workers), trains the BPE tokenizer
+  at 8192 and saves 2048/4096/8192, compares bytes per token with GPT-2/GPT-4 on
+  validation, encodes both splits with the 4096 vocabulary into
+  `data/tinystories/{train,val}.bin` (uint16) + `manifest.json`; comparison in
+  `results/tokenizer/compare.json`. If it stopped, rerun the command recorded in
+  `logs/prepare_tinystories.json` (it overwrites its outputs).
+
+Raw data in `data/raw/` (pinned revision in PLAN.md): TinyStoriesV2-GPT4-train.txt
+2,227,753,162 bytes, -valid.txt 22,502,601 bytes.
+
+Phase 1 code is in: `forge/bpe.py` (tokenizer; matches tiktoken's GPT-4 encoder
+token for token), `forge/tinystories.py` (corpus pipeline), token-level training
+options in `forge/gpu_training.py`, token-aware `forge/evaluation.py`.
 
 ## Calibration result (mixed, 128 requests, seed 17)
 

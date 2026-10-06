@@ -1,0 +1,83 @@
+{
+  "comparison": {
+    "split": "valid",
+    "stories": 27630,
+    "text_bytes": 22077118,
+    "rows": [
+      {
+        "tokenizer": "forge BPE 2048",
+        "vocab_size": 2048,
+        "tokens": 5910899,
+        "bytes_per_token": 3.7349848136467902
+      },
+      {
+        "tokenizer": "forge BPE 4096",
+        "vocab_size": 4096,
+        "tokens": 5453105,
+        "bytes_per_token": 4.048540785479099
+      },
+      {
+        "tokenizer": "forge BPE 8192",
+        "vocab_size": 8192,
+        "tokens": 5282810,
+        "bytes_per_token": 4.179048271658455
+      },
+      {
+        "tokenizer": "GPT-2",
+        "vocab_size": 50257,
+        "tokens": 5441394,
+        "bytes_per_token": 4.057254078642348
+      },
+      {
+        "tokenizer": "GPT-4 (cl100k)",
+        "vocab_size": 100277,
+        "tokens": 5329545,
+        "bytes_per_token": 4.142402024938339
+      }
+    ]
+  },
+  "manifest": {
+    "dataset": "roneneldan/TinyStories",
+    "revision": "f54c09fd23315a6f9c86f9dc80f725de7d8f9c64",
+    "homepage": "https://huggingface.co/datasets/roneneldan/TinyStories",
+    "licenses": [
+      "CDLA-Sharing-1.0"
+    ],
+    "synthetic": false,
+    "split": "official TinyStoriesV2-GPT4 train/valid files",
+    "source_files": [
+      {
+        "name": "TinyStoriesV2-GPT4-train.txt",
+        "sha256": "6418d412de72888f52b5142c761ac21a582f7d1166f0bfbdb5f03ccfdec90443",
+        "bytes": 2227753162
+      },
+      {
+        "name": "TinyStoriesV2-GPT4-valid.txt",
+        "sha256": "6874bae9a4c1a4e7edcf0e53b86c17817e9cf881fc75ff2368da457b80c0585d",
+        "bytes": 22502601
+      }
+    ],
+    "tokenizer": "forge-bpe-v1, vocab 4096, GPT-4 split pattern",
+    "tokenizer_file": "tokenizer_4096.json",
+    "tokenizer_sha256": "8587ac111c62a40dfab02e745f407a798a08517fb7b9f5c330c808cc04ef787d",
+    "vocab_size": 4096,
+    "dtype": "uint16",
+    "end_of_text_id": 4095,
+    "distinct_chunks": 66545,
+    "train_stories": 2717495,
+    "val_stories": 27630,
+    "train_tokens": 542857448,
+    "val_tokens": 5480735,
+    "train_text_bytes": 2185895233,
+    "val_text_bytes": 22077118,
+    "train_sha256": "19648307845e9b2dbe429718f38f8bc1f231fe1abc97df7c32a12fdc146c40b9",
+    "val_sha256": "b04dff0476d7c48810103d2c8838ebaf5aa3720b3321b919837e6597b03d1b56",
+    "seconds": {
+      "count_chunks": 69.0659518999746,
+      "train_tokenizer": 2.280420100025367,
+      "encode": 94.48067130002892
+    },
+    "workers": 10,
+    "manifest_content_sha256": "afa9fb5610608d25fd5c1393ec41964d74bcf1439289ad863d176e815526c77b"
+  }
+}
