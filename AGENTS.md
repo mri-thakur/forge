@@ -6,8 +6,8 @@ task must survive the agent stopping mid-way and be easy for the next one to res
 
 ## Start here
 
-Read [PROGRESS.md](PROGRESS.md) first. It records what has finished, what is running,
-and the exact next step.
+Read [PLAN.md](PLAN.md) for the project's direction, then [PROGRESS.md](PROGRESS.md)
+for what has finished, what is running, and the exact next step.
 
 ## Long-running work
 
@@ -39,6 +39,7 @@ and the exact next step.
 - **Laptop (Windows, `main` branch)**: `.venv` has Python 3.12 and PyTorch
   2.8.0+cu128 on an RTX 4050 Laptop GPU (6 GB). Training and CUDA benchmarks run here.
   Tests: `.\.venv\Scripts\python.exe -m pytest`; lint: `.\.venv\Scripts\python.exe -m ruff check .`
-- **Mac Pro (macOS, `mac` branch)**: CPU benchmarks and data work; no CUDA. Follow
-  [runs/MAC.md](runs/MAC.md) and keep `runs/MAC_PROGRESS.md` instead of `PROGRESS.md`.
+- **Mac Pro (macOS, `mac` branch)**: instruction data, constraint verifiers, and the
+  evaluation harness; no CUDA. Follow [runs/MAC.md](runs/MAC.md) and keep
+  `runs/MAC_PROGRESS.md` instead of `PROGRESS.md`.
   Use `.venv/bin/python` in place of `.\.venv\Scripts\python.exe` in the commands above.

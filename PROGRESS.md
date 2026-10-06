@@ -1,7 +1,13 @@
 # Progress (laptop, `main`)
 
-Last updated: 2026-10-06 14:25. The Mac Pro keeps its own log in
+Last updated: 2026-10-06 15:05. The Mac Pro keeps its own log in
 `runs/MAC_PROGRESS.md` on the `mac` branch.
+
+**Direction changed on 2026-10-06** (see [PLAN.md](PLAN.md)): the project is now a
+language model built from scratch end to end on TinyStories (tokenizer →
+pretraining → SFT → RL → demo), for ML/DL roles. The serving work below becomes
+supporting infrastructure; the running sweep finishes but no further serving sweeps
+are planned.
 
 ## Running now
 
@@ -15,8 +21,7 @@ Check with `.\.venv\Scripts\python.exe scripts\detach.py --status`.
      `results/cuda_calibration_hol`.
   If it stopped: the sweep cannot resume; delete the unfinished output folder and
   rerun the chain recorded in `logs/cuda_sweep_mixed.json` (skip finished parts).
-  Next after it: choose `head_of_line` sweep rates from step 3 and run that sweep
-  the same way.
+  Low priority after the change of direction; do not rerun it if it is in the way.
 
 ## Calibration result (mixed, 128 requests, seed 17)
 
@@ -71,12 +76,17 @@ between 20 and 40 req/s, hence the sweep rates above.
 
 ## Next
 
-1. Calibrate CUDA serving rates (128 requests, a few rates), then README roadmap
-   item 1: 1,000-request sweeps across load, chunk budget, prefix reuse, and KV
-   capacity.
-2. Optional: a longer training run (loss was still falling), now with exact
-   float32 RoPE angles under bf16.
-3. Later: fused kernels or CUDA graphs for decode (launch-bound, see above).
+Laptop, following [PLAN.md](PLAN.md):
+
+1. Phase 1, tokenizer: download TinyStoriesV2 (pinned revision) to `data/raw/`;
+   implement byte-level BPE (`src/forge/bpe.py`, GPT-4-style regex pre-split,
+   `<|endoftext|>` special token) with tests; train at vocab 2048/4096/8192 on a
+   sample, compare bytes per token with the GPT-2 tokenizer; encode the corpus to
+   uint16 shards.
+2. Phase 2, pretraining: token-level training with gradient accumulation; calibrate
+   throughput; three sizes plus ablations.
+3. Merge the Mac's `mac` branch (instruction data, verifiers, eval harness) before
+   phase 3.
 
 ## Notes
 
