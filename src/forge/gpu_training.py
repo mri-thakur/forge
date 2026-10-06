@@ -17,6 +17,7 @@ import numpy as np
 import torch
 
 from forge.model import ModelConfig, NumpyModel
+from forge.thermal import ThermalGuard
 from forge.torch_backend import TorchModel
 from forge.training import sample_batch, sha256
 
@@ -169,6 +170,7 @@ def train_torch(
         temporary.replace(checkpoint)
 
     initial = validate()
+    guard = ThermalGuard.for_device(device)
     start, tokens = time.perf_counter(), 0
     try:
         with (out / "training.jsonl").open("a", encoding="utf-8") as log:
@@ -194,17 +196,22 @@ def train_torch(
                 for group in optimizer.param_groups:
                     group["lr"] = rate
                 optimizer.step()
+                paused = guard.paused_seconds if guard else 0.0
                 row = {
                     "step": step,
                     "loss": float(total),
                     "gradient_norm": float(norm.item()),
                     "lr": rate,
-                    "tokens_per_second": tokens / (time.perf_counter() - start),
+                    # Excludes thermal pauses, so it measures training speed.
+                    "tokens_per_second": tokens / (time.perf_counter() - start - paused),
                 }
                 if step % 100 == 0 or step == steps:
                     row["val_loss"] = validate()
                     save()
                     print(json.dumps(row), flush=True)
+                # The .item() calls above synchronized, so the GPU is idle here.
+                if guard and guard.wait_if_hot():
+                    row["thermal_paused_seconds_total"] = guard.paused_seconds
                 log.write(json.dumps(row) + "\n")
                 log.flush()
     except KeyboardInterrupt:
@@ -226,6 +233,8 @@ def train_torch(
         "steps": step,
         "tokens_this_session": tokens,
         "seconds_this_session": time.perf_counter() - start,
+        "thermal_pauses": guard.pauses if guard else 0,
+        "thermal_paused_seconds": guard.paused_seconds if guard else 0.0,
         "initial_val_loss_this_session": initial,
         "final_val_loss": final,
         "val_bits_per_token": final / math.log(2),
