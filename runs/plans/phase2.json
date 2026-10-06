@@ -1,0 +1,31 @@
+{
+  "description": "Phase 2 pretraining on TinyStoriesV2, 65,536 tokens per step, cosine to 10%. Scaling: S/M/L at about 20/20/16 tokens per parameter. Ablations at 60M tokens, seeds 17 and 29: exact float32 RoPE angles (baseline) vs the original bf16 angles, and grouped-query (2 KV heads) vs full multi-head attention. LR: 2e-3 for S, best of 1e-3/2e-3/4e-3/8e-3 in the lr_sweep plan; M and L scale it by 256/width (1.33e-3, 1e-3).",
+  "data": "data/tinystories",
+  "common": {
+    "backend": "torch",
+    "device": "cuda",
+    "attention": "sdpa",
+    "precision": "bf16",
+    "context": 512,
+    "batch": 16,
+    "accumulate": 8,
+    "eval_batches": 20,
+    "eval_batch": 16,
+    "min_lr_ratio": 0.1,
+    "seed": 17
+  },
+  "runs": [
+    {"name": "S", "report": true,
+     "train": {"dim": 256, "layers": 6, "heads": 4, "kv_heads": 2, "steps": 1760, "warmup": 50, "lr": 0.002}},
+    {"name": "abl_base_s17", "train": {"dim": 256, "layers": 6, "heads": 4, "kv_heads": 2, "steps": 920, "warmup": 30, "lr": 0.002}},
+    {"name": "abl_bf16rope_s17", "train": {"dim": 256, "layers": 6, "heads": 4, "kv_heads": 2, "steps": 920, "warmup": 30, "lr": 0.002, "rope_dtype": "bfloat16"}},
+    {"name": "abl_mha_s17", "train": {"dim": 256, "layers": 6, "heads": 4, "kv_heads": 4, "steps": 920, "warmup": 30, "lr": 0.002}},
+    {"name": "abl_base_s29", "train": {"dim": 256, "layers": 6, "heads": 4, "kv_heads": 2, "steps": 920, "warmup": 30, "lr": 0.002, "seed": 29}},
+    {"name": "abl_bf16rope_s29", "train": {"dim": 256, "layers": 6, "heads": 4, "kv_heads": 2, "steps": 920, "warmup": 30, "lr": 0.002, "rope_dtype": "bfloat16", "seed": 29}},
+    {"name": "abl_mha_s29", "train": {"dim": 256, "layers": 6, "heads": 4, "kv_heads": 4, "steps": 920, "warmup": 30, "lr": 0.002, "seed": 29}},
+    {"name": "M", "report": true,
+     "train": {"dim": 384, "layers": 8, "heads": 6, "kv_heads": 3, "steps": 4810, "warmup": 100, "lr": 0.00133}},
+    {"name": "L", "report": true,
+     "train": {"dim": 512, "layers": 10, "heads": 8, "kv_heads": 4, "steps": 8280, "warmup": 150, "lr": 0.001}}
+  ]
+}

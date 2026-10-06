@@ -1,0 +1,4 @@
+{"step": 100, "tokens": 6553600, "train_loss": 5.159655256271362, "lr": 0.00357887999761416, "tokens_per_second": 125873.215663305, "monitor_val_loss": 4.083320140838623}
+{"step": 200, "tokens": 13107200, "train_loss": 3.683085083961487, "lr": 0.0022, "tokens_per_second": 122675.7629876685, "monitor_val_loss": 3.350825071334839}
+{"step": 300, "tokens": 19660800, "train_loss": 3.1419711613655092, "lr": 0.0008211200023858398, "tokens_per_second": 121422.2808202169, "monitor_val_loss": 2.9899957180023193}
+{"step": 380, "tokens": 24903680, "train_loss": 2.9223136603832245, "lr": 0.0004, "tokens_per_second": 120823.82872719855, "monitor_val_loss": 2.8689324855804443}
