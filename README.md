@@ -1,158 +1,169 @@
 # Forge
 
-**A transformer training and serving laboratory that measures useful throughput
-under latency constraints on consumer hardware.**
+**A small language model built from scratch, end to end, on a 6 GB laptop GPU:
+own BPE tokenizer → pretraining → supervised fine-tuning → reinforcement learning
+with verifiable rewards → demo.**
 
-Forge implements a decoder, an independent reverse-mode training engine,
-contiguous and paged KV caches, prefix reuse, copy-on-write ownership, and three
-serving policies. Its central experiment asks which policy produces the most
-requests meeting a latency target at a fixed memory budget. Results include
-queueing, rejected requests, raw arrival traces, and implementation hashes.
+Every stage is implemented in this repository rather than imported: the tokenizer,
+the transformer (with an independent NumPy autograd engine as a reference), the
+training loop, evaluation, and a batched KV-cache inference engine. Each stage is
+tested against a reference implementation and measured on full held-out splits.
+Training data is [TinyStories](https://arxiv.org/abs/2305.07759), where models of a
+few tens of millions of parameters can learn to write coherent stories.
 
-## Current evidence
+| Stage | Status | Result so far |
+|---|---|---|
+| 1. Tokenizer | **Done** | Byte-level BPE; 4,096-token vocabulary compresses TinyStories as well as GPT-2's 50,257 |
+| 2. Pretraining | **In progress** | Learning-rate sweep done; scaling runs (6M/16M/34M parameters) and ablations training now |
+| 3. Supervised fine-tuning | Planned | Follow story instructions (required words, a given sentence, dialogue) |
+| 4. RL with verifiable rewards | Planned | GRPO with rule-checked rewards and a KL penalty |
+| 5. Demo and write-up | Planned | |
 
-This is a first measured release, not a finished production LLM engine. CUDA
-training and the optional HTTP server are verified on an RTX 4050 Laptop GPU; the
-MPS path is implemented but not verified.
+The phases follow Andrej Karpathy's *Neural Networks: Zero to Hero* series;
+phases 3 and 4 go beyond it. The full plan is in [PLAN.md](PLAN.md).
 
-- **A 14.26M-parameter byte-level decoder trained on WikiText-103 reaches 1.272
-  nats/byte (1.836 bits/byte) on the full official validation split**, against 2.440
-  for a byte bigram and 3.184 for a byte unigram fit on the same training bytes.
-  Training: 30,000 updates, 61.44M bytes, 30.6 minutes in bf16 on the RTX 4050, peak
-  CUDA allocation 627 MiB. [Results, loss curve, and fixed samples](docs/wikitext103_14m/RESULTS.md);
-  [raw evaluation](results/wikitext103_14m/evaluation.json). Greedy decoding falls
-  into repetition loops; sampled text is locally fluent but not coherent.
-- **Profiling the CUDA serving path found host-side overhead, not GPU work, in
-  charge.** The paged cache rebuilt its indices in every layer with per-request
-  host-to-device copies. Building them once per forward cut single-request paged
-  decode from 15.98 to 8.79 ms/token and engine iterations by about a third
-  (continuous batching 22.8 → 15.6 ms; p99 TTFT at 5 req/s 82 → 35 ms), with
-  identical greedy output. At this size decode is bound by kernel launches: full
-  recomputation (7.81 ms/token) still beats contiguous (8.32) and paged (8.79) KV.
-  [Raw before/after results](results/engine_overhead/).
-- 64 tests pass on the laptop's CUDA environment; 2 skip because MPS is unavailable.
-  CUDA logits match the independent NumPy oracle for manual and SDPA attention,
-  including through the paged KV cache.
-- Cached logits match full-sequence logits across chunks, with explicit tolerances.
-- Heterogeneous batched generation matches independent generation for all policies.
-- Allocation stress tests check ownership after every transition. Cancellation,
-  exhaustion, prefix eviction, and failed copy-on-write do not leak references.
-- Finite differences check reverse-mode gradients, including a complete transformer.
-- A save/restart test reproduces uninterrupted CPU training **bit for bit**.
-- A 32,928-parameter model trained for 200 updates / 51,200 byte-token observations
-  on a synthetic JSON grammar. Held-out diagnostic loss fell from 5.565 to 1.016
-  nats/byte; the unigram baseline is 3.054. This validates training machinery, not
-  natural-language capability. [Raw summary](results/cpu_training_summary.json).
-- CPU serving results use a **randomly initialized 115,008-parameter model**.
-  They measure implementation overhead and workload behavior, not language quality.
-  [Cache paths](results/cpu_ladder_v1.json),
-  [raw scheduling runs](results/cpu_head_of_line_v1/benchmark.json), and
-  [generated results table](docs/cpu_head_of_line/RESULTS.md).
+## Results
 
-The CI workflow is checked in but has not run on a remote repository. It installs
-CPU PyTorch and the serving dependencies so the optional modules run there too.
-No GPU serving speedup or production p99 is claimed yet.
+### Tokenizer
 
-## Why this project
+[`forge/bpe.py`](src/forge/bpe.py) implements byte-level BPE with the GPT-4
+pre-split pattern. Loaded with OpenAI's published cl100k (GPT-4) merge table, its
+encoder reproduces `tiktoken` token for token on the test texts (English,
+contractions, numbers, emoji, accents, CJK, code, whitespace runs).
+Training counts distinct pre-split chunks once and updates only the words each
+merge touches (checked against a naive recount), so the full 2.2 GB corpus trains
+in under three minutes on 10 CPU workers.
 
-The interesting evidence is the relationship between capacity, latency, and memory.
-An optimization can improve raw throughput while reducing the fraction of requests
-that finish within the latency target. A tiny model can expose Python, padding, and
-gather overhead that a large model hides. Forge publishes losing configurations
-alongside winning ones and tests the cache transformations before measuring them.
+Bytes per token on the TinyStories validation split (higher is better), with our
+tokenizers trained on the training split only:
 
-## Architecture
+| Tokenizer | Vocabulary | Bytes per token |
+|---|---:|---:|
+| Forge BPE | 2,048 | 3.735 |
+| **Forge BPE** | **4,096** | **4.049** |
+| GPT-2 | 50,257 | 4.057 |
+| GPT-4 (cl100k) | 100,277 | 4.142 |
+| Forge BPE | 8,192 | 4.179 |
+
+A tokenizer fit to its domain matches GPT-2's compression with a vocabulary 12
+times smaller. The model uses the 4,096 vocabulary: 542.9M training tokens.
+[Raw comparison](results/tokenizer/compare.json).
+
+### Pretraining (in progress)
+
+Learning-rate sweep for the smallest model (5.8M parameters, 24.9M tokens each,
+65,536 tokens per step), scored on the full validation split:
+
+| Peak learning rate | Validation loss (nats/token) | Bits per byte |
+|---:|---:|---:|
+| 1e-3 | 2.3038 | 0.8251 |
+| **2e-3** | **2.2495** | **0.8057** |
+| 4e-3 | 2.8636 | 1.0256 |
+| 8e-3 | 3.2675 | 1.1703 |
+
+At 4e-3 training did not diverge; it stalled on an early plateau (validation 4.08 at
+step 100 against 3.38 at 2e-3) and never recovered within the budget.
+[Raw results](results/lr_sweep/).
+
+Now training ([plan](runs/plans/phase2.json)): three model sizes at roughly 16-20
+tokens per parameter for a scaling curve, and two ablations with two seeds each:
+
+- **RoPE angle precision.** Under bf16 autocast, the original code computed rotary
+  angles in bf16. At positions up to 511 that perturbs some cosines by up to 1.56;
+  the ablation measures what it costs the model.
+- **Grouped-query vs full multi-head attention.**
+
+## How it is built
 
 ```mermaid
 flowchart LR
-  D[Text bytes + SHA-256 manifest] --> T[Training: NumPy reverse mode or optional PyTorch]
-  T --> W[Portable model checkpoint]
-  W --> M[RoPE / RMSNorm / SwiGLU / GQA decoder]
-  R[Hashed open-loop request traces] --> S[Static / continuous / chunked scheduler]
-  S --> K[Paged allocator / prefix LRU / copy-on-write]
-  K --> M
-  M --> O[Per-request token emissions]
-  O --> B[Latency / throughput / SLO goodput / cache metrics]
-  B --> J[Raw JSON + generated tables and figures]
-  A[Optional completions / SSE server] --> S
+  R[TinyStories text] --> T[BPE tokenizer<br/>forge/bpe.py]
+  T --> S[uint16 token shards<br/>forge/tinystories.py]
+  S --> P[Pretraining<br/>forge/gpu_training.py]
+  P --> B[Base model]
+  B --> F[Supervised fine-tuning]
+  F --> G[GRPO with verifiable rewards]
+  G --> D[Demo]
+  E[Batched KV-cache engine<br/>forge/engine.py, cache.py] --> G
+  E --> D
+  V[Full-split evaluation<br/>forge/evaluation.py] -.-> B
+  V -.-> F
+  V -.-> G
 ```
 
-The model uses tied byte embeddings, pre-normalization, causal attention and
-grouped KV heads. All model/cache code is local. The CPU reference uses NumPy;
-PyTorch provides tensor execution and AdamW on its optional backend. The optional
-SDPA path is a **PyTorch built-in optimized baseline**, separately identified in
-results. Forge does not implement a fused attention kernel or use a serving engine.
+- **Model** ([`model.py`](src/forge/model.py), [`torch_backend.py`](src/forge/torch_backend.py)):
+  decoder-only transformer with RoPE, RMSNorm, SwiGLU, grouped-query attention, and
+  tied embeddings. The NumPy implementation runs on its own reverse-mode autograd
+  ([`autograd.py`](src/forge/autograd.py), checked by finite differences) and is the
+  oracle the PyTorch/CUDA path is tested against.
+- **Training** ([`gpu_training.py`](src/forge/gpu_training.py)): AdamW, warmup and
+  cosine decay, gradient accumulation (tested equal to one large batch), gradient
+  clipping, bf16 autocast, and checkpoints every 100 steps holding weights,
+  optimizer state, data-sampling RNG, and schedule, so an interrupted run resumes.
+- **Evaluation** ([`evaluation.py`](src/forge/evaluation.py)): every token of the
+  validation split scored once, bits per byte (comparable across tokenizers),
+  n-gram baselines fit on the same training data, loss curves, fixed-seed samples.
+- **Inference** ([`engine.py`](src/forge/engine.py), [`cache.py`](src/forge/cache.py)):
+  paged KV cache with copy-on-write prefix sharing and continuous batching; it will
+  generate the RL rollouts and serve the demo.
 
-The pool preallocates fixed physical blocks. Admitted requests reserve enough
-blocks for their maximum continuation, preventing a full pool from deadlocking
-decoders. Admission is FIFO; chunked prefill prioritizes decode and rotates prompt
-selection. Full prompt blocks can be shared, and shared writable blocks detach
-before modification. Prefix cache entries consume pool memory and are evicted
-under allocation pressure.
+## Engineering findings
 
-## Run it
+Measured along the way, each with the evidence in this repository:
 
-Python 3.11+ and NumPy are enough for the CPU path:
+- **No FlashAttention in the Windows PyTorch build.** There, `enable_gqa` silently
+  falls back to the math kernel: 24.9 ms per layer forward+backward against 3.2 ms
+  for causal SDPA with copied KV heads, so Forge copies the heads.
+- **Host overhead dominated KV-cache decoding.** The paged cache rebuilt its indices
+  in every layer with per-request host-to-device copies. Building them once per
+  forward cut paged decode from 15.98 to 8.79 ms/token with identical output; at
+  this model size decode is limited by kernel launches. [Before/after](results/engine_overhead/).
+- **Windows throttles background jobs.** Detached processes without a window ran 8x
+  slower (efficiency cores, low clocks) until the job launcher opted them out of
+  power throttling.
+
+## Earlier work
+
+Before the move to TinyStories, the same code trained a 14.26M-parameter
+byte-level model on WikiText-103: 1.272 nats/byte (1.836 bits/byte) on the full
+validation split, against 2.440 for a byte bigram, in 30.6 minutes on the RTX 4050
+([results](docs/wikitext103_14m/RESULTS.md)). It also served as a test bed for
+batching policies: in a 1,000-request open-loop benchmark at 35 requests/s,
+continuous batching kept 95.1% of requests within the latency target against 3.3%
+for static batching ([results](docs/cuda_sweep_mixed/RESULTS.md),
+[method](docs/EXPERIMENTS.md)).
+
+## Reproduce
+
+Python 3.11+, with PyTorch for GPU training (the laptop uses 2.8 with CUDA 12.8).
+Commands assume the virtual environment is active.
 
 ```bash
 python -m venv .venv
-# Activate .venv using your shell's standard activation command.
-python -m pip install -e '.[dev,plots]'
-pytest
-python -m forge prepare --synthetic --out data/diagnostic
-python -m forge train --data data/diagnostic --out checkpoints/demo --steps 200 --dim 32 --batch 8
-python -m forge generate --checkpoint checkpoints/demo/model.npz --prompt '{"id":' --tokens 32
-python -m forge ladder --out results/my_ladder.json --repeats 10
-python -m forge bench --out results/my_run --workload mixed --requests 128 --rates 10 30 --seeds 17 29 43
-python -m forge report --input results/my_run/benchmark.json --out docs/my_run
-python -m forge evaluate --run checkpoints/demo --data data/diagnostic --out results/demo_eval
+python -m pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cu128
+python -m pip install -e ".[dev,plots]"
+python -m pytest
+
+# Tokenizer and corpus (TinyStoriesV2 files in data/raw/, revision pinned in PLAN.md)
+python -m forge prepare-tinystories --train data/raw/TinyStoriesV2-GPT4-train.txt \
+  --valid data/raw/TinyStoriesV2-GPT4-valid.txt --out data/tinystories --results results/tokenizer
+
+# Training plans: each run is trained, then evaluated on the full validation split
+python scripts/run_plan.py runs/plans/lr_sweep.json
+python scripts/run_plan.py runs/plans/phase2.json
 ```
 
-Long jobs (training, sweeps, full evaluations) should be started with
-`python scripts/detach.py --name <job> -- <command>` so they keep running when the
-terminal, editor, or coding agent that started them exits; `--status` lists them.
+Long jobs go through `python scripts/detach.py --name <job> -- <command>`, which
+keeps them running after the terminal or editor that started them closes
+(`--status`, `--stop <job>`). A plan restarted with the same command skips
+finished runs and resumes an interrupted one from its last checkpoint. Machine
+specific notes: [laptop](runs/LAPTOP.md), [Mac](runs/MAC.md).
 
-`--text path/to/corpus.txt` prepares a local corpus instead of the synthetic
-diagnostic. Byte-level losses are not comparable to published BPE perplexities.
-Corpora/checkpoints are ignored by Git. Retain corpus license and source metadata
-when preparing real training evidence. Choose a new output folder for a new
-training schedule; `--resume` preserves the original schedule and dataset identity.
+## Data and licenses
 
-On this laptop a `.venv-cpu` environment was installed offline, sharing the
-existing NumPy installation read-only. It runs `python -m forge` without setting
-`PYTHONPATH`. The existing `eqdata` environment was used to execute pytest/ruff;
-no `eqdata` source or dependencies were changed.
+- TinyStories (Eldan and Li, 2023): CDLA-Sharing-1.0, Hugging Face
+  `roneneldan/TinyStories` and `roneneldan/TinyStoriesInstruct` at pinned revisions.
+- WikiText-103: CC BY-SA 3.0 and GFDL.
 
-For GPU and server commands see the [laptop runbook](runs/LAPTOP.md). For the
-16-core Xeon / 96 GiB Intel Mac see the [Mac runbook](runs/MAC.md). Its AMD GPU has
-8 GB discrete VRAM; the system RAM is not a 96 GB GPU budget. The older MPS stack
-is an optional compatibility experiment, not the primary training platform.
-
-## Read and reproduce the results
-
-[The experiment contract](docs/EXPERIMENTS.md) defines the metrics, controls,
-workloads, and limits. Each scheduling output contains the environment, model
-configuration, weight and source hashes, exact seeds, request traces, and
-per-request outcomes. Policy ordering rotates across seeds. The benchmark is an
-in-process open-loop experiment; HTTP/SSE timings are a separate measurement.
-
-The cache microbenchmark compares full recomputation, contiguous KV, and paged
-KV. A headline speedup against recomputation should not be attributed to paging.
-Compare the two cached paths before claiming that paging accelerates a request.
-
-## What remains for the portfolio release
-
-Done: CUDA verification on the RTX 4050, and WikiText-103 training with full-split
-evaluation, baselines, loss curve, and fixed samples (see Current evidence).
-
-1. Run sustained CUDA traces with at least 1,000 requests per setting and repeat
-   across load, chunk budgets, prefix reuse, and KV capacity. Publish full sweeps.
-2. Add an HTTP open-loop load generator and compare its timings with the in-process
-   trace harness. Record disconnect/cancellation and overload behavior.
-3. Choose one advanced extension justified by profiling: a fused paged gather
-   kernel, speculative sampling, or quantization. Each needs correctness checks and
-   a workload where its benefits and costs can be measured.
-
-These are pending milestones, not features listed as completed for a resume.
-See the [interview walkthrough](docs/INTERVIEW.md) for the decisions already
-supported by code and tests.
+Datasets and checkpoints are not stored in Git. The trained WikiText-103 weights
+are attached to the `wikitext103-14m` release.
