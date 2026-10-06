@@ -7,7 +7,24 @@ Last updated: 2026-10-06 14:25. The Mac Pro keeps its own log in
 
 Check with `.\.venv\Scripts\python.exe scripts\detach.py --status`.
 
-Nothing.
+- `cuda_sweep_mixed` (started 14:43, ~45-60 min), one chained job:
+  1. 1,000-request `mixed` sweep at 10/20/25/30/35 req/s, seeds 101/103/107, all
+     policies, trained checkpoint, CUDA + SDPA → `results/cuda_sweep_mixed`;
+  2. `forge report` → `docs/cuda_sweep_mixed`;
+  3. `head_of_line` calibration, 128 requests at 5/10/20/40 req/s, seed 17 →
+     `results/cuda_calibration_hol`.
+  If it stopped: the sweep cannot resume; delete the unfinished output folder and
+  rerun the chain recorded in `logs/cuda_sweep_mixed.json` (skip finished parts).
+  Next after it: choose `head_of_line` sweep rates from step 3 and run that sweep
+  the same way.
+
+## Calibration result (mixed, 128 requests, seed 17)
+
+All policies meet the SLO (500 ms TTFT, 50 ms mean TPOT) for ≥99% of requests up
+to 20 req/s; at 40 req/s SLO fraction falls to 35% continuous, 31% chunked, 11%
+static. Output throughput plateaus around 370-460 tok/s. Capacity knee lies
+between 20 and 40 req/s, hence the sweep rates above.
+`results/cuda_calibration_14m`.
 
 ## Done
 
