@@ -12,8 +12,13 @@ supporting infrastructure.
 
 Check with `.\.venv\Scripts\python.exe scripts\detach.py --status`.
 
-- `phase2` (started 16:22, ~10.5 h, expected to finish around 03:00 on 10-07):
+- `phase2` (started 16:22; S, ablations, and M done; L resumed at 23:04 from its
+  step-100 checkpoint, expected to finish around 05:45 on 10-07):
   `python scripts/run_plan.py runs/plans/phase2.json --code ../forge-frozen`.
+  The frozen worktree was moved to fc27cc2 for L, adding the thermal guard
+  (`forge/thermal.py`): after each step, at GPU ≥ 85 °C, training sleeps until
+  75 °C. On L about 40% of steps pause for ~2.3 s; training-only speed rose to
+  ~32k tok/s because the GPU no longer throttles its clocks.
   Runs S (115M tokens), six ablation runs at 60M tokens (exact vs bf16 RoPE
   angles, GQA vs MHA, seeds 17/29), M (315M), L (543M ≈ one pass over the data),
   each evaluated on the full validation split into `results/phase2/<run>`; S, M, L
