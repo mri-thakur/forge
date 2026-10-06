@@ -1,0 +1,1930 @@
+{
+  "schema_version": 1,
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.3",
+    "numpy": "2.5.3",
+    "logical_cpus": 12,
+    "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "backend": "torch",
+    "device": "cuda",
+    "parameters": 14260608,
+    "model_config": {
+      "vocab_size": 256,
+      "dim": 384,
+      "layers": 8,
+      "heads": 4,
+      "kv_heads": 2,
+      "hidden": 1152,
+      "context": 512,
+      "seed": 17
+    },
+    "commit": "4eec0f9514b68f275301050e14ee895c25e2c744",
+    "dirty": true,
+    "source_sha256": "69a4b5a9826d43b2d34723df6c8e5ea81d14335ea138ba4d4da10cf7bca6dcf8",
+    "thread_env": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null
+    },
+    "weights_sha256": "2de9fa7c499febbd5fa090e570a17df525cc41184c60e7d621b85c76518cf99c",
+    "torch": "2.8.0+cu128",
+    "attention": "sdpa",
+    "torch_threads": 8,
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "gpu_memory_bytes": 6438780928,
+    "cuda_runtime": "12.8"
+  },
+  "scope": "in-process open-loop; includes scheduler and sampling; excludes HTTP",
+  "weights": "checkpoint:model.npz",
+  "workload": "mixed",
+  "runs": [
+    {
+      "submitted": 64,
+      "completed": 64,
+      "rejected": 0,
+      "cancelled": 0,
+      "elapsed_including_drain_s": 14.907199000008404,
+      "output_tokens": 1312,
+      "output_tokens_per_second": 88.01116829521497,
+      "slo_requests": 54,
+      "slo_fraction_all_submissions": 0.84375,
+      "slo_goodput_requests_per_second": 3.6224108901993968,
+      "ttft_p50_ms": 255.06166694685817,
+      "ttft_p95_ms": 590.9601898456457,
+      "ttft_p99_ms": 628.1664718245156,
+      "inter_token_p99_ms": 35.011941017583,
+      "tpot_p95_ms": 26.686694716585656,
+      "e2e_p99_ms": 1176.4513248606813,
+      "slo": {
+        "ttft_ms": 500.0,
+        "mean_tpot_ms": 50.0
+      },
+      "per_request": [
+        {
+          "id": "r0000",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 0.14190003275871277,
+          "ttft_ms": 34.501600021030754
+        },
+        {
+          "id": "r0001",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 389.18713212478906,
+          "ttft_ms": 432.9190321150236
+        },
+        {
+          "id": "r0002",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 249.13554958766326,
+          "ttft_ms": 292.8579496219754
+        },
+        {
+          "id": "r0003",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 37.179005215875804,
+          "ttft_ms": 80.90680523309857
+        },
+        {
+          "id": "r0004",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 214.50097166234627,
+          "ttft_ms": 234.03537168633193
+        },
+        {
+          "id": "r0005",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 438.3980489219539,
+          "ttft_ms": 482.22514893859625
+        },
+        {
+          "id": "r0006",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 276.36597474338487,
+          "ttft_ms": 320.1965747284703
+        },
+        {
+          "id": "r0007",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 133.6439368315041,
+          "ttft_ms": 177.47783684171736
+        },
+        {
+          "id": "r0008",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 8,
+          "queue_wait_ms": 17.325799097307026,
+          "ttft_ms": 61.14759907359257
+        },
+        {
+          "id": "r0009",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 392.1017205575481,
+          "ttft_ms": 413.23792055482045
+        },
+        {
+          "id": "r0010",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 171.95366026135162,
+          "ttft_ms": 193.09556030202657
+        },
+        {
+          "id": "r0011",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 0.7486450485885143,
+          "ttft_ms": 24.95594503125176
+        },
+        {
+          "id": "r0012",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 158.6356528569013,
+          "ttft_ms": 178.8074528449215
+        },
+        {
+          "id": "r0013",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 67.73698190227151,
+          "ttft_ms": 87.91428187396377
+        },
+        {
+          "id": "r0014",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 374.48211322771385,
+          "ttft_ms": 396.54021320166066
+        },
+        {
+          "id": "r0015",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 3.3622192568145692,
+          "ttft_ms": 29.16721923975274
+        },
+        {
+          "id": "r0016",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 8,
+          "queue_wait_ms": 85.80810553394258,
+          "ttft_ms": 110.76680553378537
+        },
+        {
+          "id": "r0017",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 8,
+          "queue_wait_ms": 68.19522072328255,
+          "ttft_ms": 93.16142072202638
+        },
+        {
+          "id": "r0018",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 51.451000676024705,
+          "ttft_ms": 76.42230071360245
+        },
+        {
+          "id": "r0019",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 248.45626135356724,
+          "ttft_ms": 265.42856136802584
+        },
+        {
+          "id": "r0020",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 37.651448510587215,
+          "ttft_ms": 54.62884850567207
+        },
+        {
+          "id": "r0021",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 526.3576622819528,
+          "ttft_ms": 552.9208622756414
+        },
+        {
+          "id": "r0022",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 16,
+          "queue_wait_ms": 513.9812642592005,
+          "ttft_ms": 540.5519642517902
+        },
+        {
+          "id": "r0023",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 372.30750982416794,
+          "ttft_ms": 398.886009817943
+        },
+        {
+          "id": "r0024",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 246.33996142074466,
+          "ttft_ms": 272.8932614554651
+        },
+        {
+          "id": "r0025",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 573.9753631060012,
+          "ttft_ms": 614.4409630796872
+        },
+        {
+          "id": "r0026",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 553.5126100876369,
+          "ttft_ms": 593.9841101062484
+        },
+        {
+          "id": "r0027",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 533.349541714415,
+          "ttft_ms": 573.824641702231
+        },
+        {
+          "id": "r0028",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 31.877840869128704,
+          "ttft_ms": 72.3560408805497
+        },
+        {
+          "id": "r0029",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 382.5065030832775,
+          "ttft_ms": 398.60840304754674
+        },
+        {
+          "id": "r0030",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 166.9001478003338,
+          "ttft_ms": 180.5457478039898
+        },
+        {
+          "id": "r0031",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 31.468471745029092,
+          "ttft_ms": 53.099371783901006
+        },
+        {
+          "id": "r0032",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 15.999621711671352,
+          "ttft_ms": 37.6253217109479
+        },
+        {
+          "id": "r0033",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 278.22670788737014,
+          "ttft_ms": 292.7025078679435
+        },
+        {
+          "id": "r0034",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 0.46143075451254845,
+          "ttft_ms": 14.618530753068626
+        },
+        {
+          "id": "r0035",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 460.9488195856102,
+          "ttft_ms": 523.7312195822597
+        },
+        {
+          "id": "r0036",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 8,
+          "queue_wait_ms": 451.833694241941,
+          "ttft_ms": 514.6202942705713
+        },
+        {
+          "id": "r0037",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 16,
+          "queue_wait_ms": 410.1956228259951,
+          "ttft_ms": 472.98582282382995
+        },
+        {
+          "id": "r0038",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 355.5682266014628,
+          "ttft_ms": 418.33872662391514
+        },
+        {
+          "id": "r0039",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 8,
+          "queue_wait_ms": 40.00881977844983,
+          "ttft_ms": 102.7866197982803
+        },
+        {
+          "id": "r0040",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 586.105605121702,
+          "ttft_ms": 621.8570051132701
+        },
+        {
+          "id": "r0041",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 470.89643351500854,
+          "ttft_ms": 506.65153353475034
+        },
+        {
+          "id": "r0042",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 329.74149438086897,
+          "ttft_ms": 365.4993943637237
+        },
+        {
+          "id": "r0043",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 165.42658221442252,
+          "ttft_ms": 201.1719822185114
+        },
+        {
+          "id": "r0044",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 107.78364882571623,
+          "ttft_ms": 125.86674885824323
+        },
+        {
+          "id": "r0045",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 67.67283962108195,
+          "ttft_ms": 80.35213960101828
+        },
+        {
+          "id": "r0046",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 222.8554380708374,
+          "ttft_ms": 242.75993806077167
+        },
+        {
+          "id": "r0047",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 42.98395634396002,
+          "ttft_ms": 62.893956317566335
+        },
+        {
+          "id": "r0048",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 16,
+          "queue_wait_ms": 263.94499925663695,
+          "ttft_ms": 286.78069927264005
+        },
+        {
+          "id": "r0049",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 51.84348032344133,
+          "ttft_ms": 74.67388035729527
+        },
+        {
+          "id": "r0050",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 376.57299189595506,
+          "ttft_ms": 404.28509190678596
+        },
+        {
+          "id": "r0051",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 368.9426467753947,
+          "ttft_ms": 396.6615467797965
+        },
+        {
+          "id": "r0052",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 269.9145654332824,
+          "ttft_ms": 297.638465417549
+        },
+        {
+          "id": "r0053",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 266.1675975541584,
+          "ttft_ms": 282.01329754665494
+        },
+        {
+          "id": "r0054",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 8,
+          "queue_wait_ms": 101.0029258322902,
+          "ttft_ms": 116.84342584339902
+        },
+        {
+          "id": "r0055",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 16,
+          "queue_wait_ms": 454.71150981029496,
+          "ttft_ms": 487.0699098100886
+        },
+        {
+          "id": "r0056",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 212.3323724954389,
+          "ttft_ms": 244.6947725256905
+        },
+        {
+          "id": "r0057",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 113.02257748320699,
+          "ttft_ms": 145.36777749890462
+        },
+        {
+          "id": "r0058",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 17.142619646620005,
+          "ttft_ms": 49.49601966654882
+        },
+        {
+          "id": "r0059",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 16,
+          "queue_wait_ms": 345.86165484506637,
+          "ttft_ms": 362.8552548470907
+        },
+        {
+          "id": "r0060",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 242.94473917689174,
+          "ttft_ms": 275.2971391309984
+        },
+        {
+          "id": "r0061",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 131.17972580948845,
+          "ttft_ms": 163.5203257901594
+        },
+        {
+          "id": "r0062",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 44.12270488683134,
+          "ttft_ms": 76.4701048610732
+        },
+        {
+          "id": "r0063",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 621.812317869626,
+          "ttft_ms": 638.909617846366
+        }
+      ],
+      "policy": "static",
+      "settings": {
+        "max_batch": 8,
+        "token_budget": 64,
+        "blocks": 128,
+        "block_size": 16,
+        "prefix_entries": 0,
+        "seed": 17
+      },
+      "cache": {
+        "pool_bytes": 25165824,
+        "used_blocks": 0,
+        "peak_blocks": 55,
+        "prefix_hits": 0,
+        "cow_copies": 0,
+        "reserved_token_slots": 0,
+        "live_tokens": 0,
+        "reserved_slack_slots": 0,
+        "peak_live_tokens": 860,
+        "peak_reserved_token_slots": 880,
+        "median_reserved_slot_utilization": 0.9125
+      },
+      "iterations": 760,
+      "executed_tokens": 9920,
+      "padding_tokens": 5760,
+      "cuda_peak_allocated_bytes": 129613312,
+      "arrival_rate": 5.0,
+      "seed": 17,
+      "trace_sha256": "bb445410e0cff0a7cfb7cd69f80270dc90b90088cb374b0192ad6c8ec65b5410"
+    },
+    {
+      "submitted": 64,
+      "completed": 64,
+      "rejected": 0,
+      "cancelled": 0,
+      "elapsed_including_drain_s": 14.464042200008407,
+      "output_tokens": 1312,
+      "output_tokens_per_second": 90.70769995397534,
+      "slo_requests": 64,
+      "slo_fraction_all_submissions": 1.0,
+      "slo_goodput_requests_per_second": 4.424765851413431,
+      "ttft_p50_ms": 30.758682289160788,
+      "ttft_p95_ms": 55.30414471577386,
+      "ttft_p99_ms": 82.23594319832046,
+      "inter_token_p99_ms": 47.22341200278606,
+      "tpot_p95_ms": 27.475613710453864,
+      "e2e_p99_ms": 793.7273093580733,
+      "slo": {
+        "ttft_ms": 500.0,
+        "mean_tpot_ms": 50.0
+      },
+      "per_request": [
+        {
+          "id": "r0000",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 0.10950001887977123,
+          "ttft_ms": 16.299800015985966
+        },
+        {
+          "id": "r0001",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 6.318632105831057,
+          "ttft_ms": 27.83713210374117
+        },
+        {
+          "id": "r0002",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 11.338749551214278,
+          "ttft_ms": 38.72934955870733
+        },
+        {
+          "id": "r0003",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 14.332205231767148,
+          "ttft_ms": 41.3490051869303
+        },
+        {
+          "id": "r0004",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 0.5644716438837349,
+          "ttft_ms": 26.10337163787335
+        },
+        {
+          "id": "r0005",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 11.26724889036268,
+          "ttft_ms": 37.359048903454095
+        },
+        {
+          "id": "r0006",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 9.808074682950974,
+          "ttft_ms": 33.66567468037829
+        },
+        {
+          "id": "r0007",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 5.219436774495989,
+          "ttft_ms": 28.797136794310063
+        },
+        {
+          "id": "r0008",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 8,
+          "queue_wait_ms": 8.810199040453881,
+          "ttft_ms": 37.13089908706024
+        },
+        {
+          "id": "r0009",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 8.927320537623018,
+          "ttft_ms": 36.89412056701258
+        },
+        {
+          "id": "r0010",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 8.159560267813504,
+          "ttft_ms": 23.38506025262177
+        },
+        {
+          "id": "r0011",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 1.006445032544434,
+          "ttft_ms": 26.54824499040842
+        },
+        {
+          "id": "r0012",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 4.554952844046056,
+          "ttft_ms": 27.945452835410833
+        },
+        {
+          "id": "r0013",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 16.770681890193373,
+          "ttft_ms": 59.19988185632974
+        },
+        {
+          "id": "r0014",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 8.056213147938251,
+          "ttft_ms": 30.413113185204566
+        },
+        {
+          "id": "r0015",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 0.4948192508891225,
+          "ttft_ms": 18.45831924583763
+        },
+        {
+          "id": "r0016",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 8,
+          "queue_wait_ms": 10.19590551732108,
+          "ttft_ms": 28.635505528654903
+        },
+        {
+          "id": "r0017",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 8,
+          "queue_wait_ms": 11.127820704132318,
+          "ttft_ms": 33.57632068218663
+        },
+        {
+          "id": "r0018",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 17.016900645103306,
+          "ttft_ms": 55.66440068650991
+        },
+        {
+          "id": "r0019",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 0.6147613166831434,
+          "ttft_ms": 31.240561336744577
+        },
+        {
+          "id": "r0020",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 10.01864846330136,
+          "ttft_ms": 31.96584846591577
+        },
+        {
+          "id": "r0021",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 5.608662264421582,
+          "ttft_ms": 27.21516229212284
+        },
+        {
+          "id": "r0022",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 16,
+          "queue_wait_ms": 14.97736421879381,
+          "ttft_ms": 39.26976426737383
+        },
+        {
+          "id": "r0023",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 4.540709778666496,
+          "ttft_ms": 30.623109778389335
+        },
+        {
+          "id": "r0024",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 7.1565614198334515,
+          "ttft_ms": 43.61056140623987
+        },
+        {
+          "id": "r0025",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 13.323163089808077,
+          "ttft_ms": 35.46516306232661
+        },
+        {
+          "id": "r0026",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 15.105410071555525,
+          "ttft_ms": 38.58691005734727
+        },
+        {
+          "id": "r0027",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 18.60374165698886,
+          "ttft_ms": 83.25674169464037
+        },
+        {
+          "id": "r0028",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 9.560640843119472,
+          "ttft_ms": 27.37864083610475
+        },
+        {
+          "id": "r0029",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 6.561903050169349,
+          "ttft_ms": 27.657503029331565
+        },
+        {
+          "id": "r0030",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 1.3410477549768984,
+          "ttft_ms": 22.08634780254215
+        },
+        {
+          "id": "r0031",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 0.8068717434071004,
+          "ttft_ms": 20.145671733189374
+        },
+        {
+          "id": "r0032",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 4.803721676580608,
+          "ttft_ms": 26.333621703088284
+        },
+        {
+          "id": "r0033",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 1.8053078092634678,
+          "ttft_ms": 28.025707812048495
+        },
+        {
+          "id": "r0034",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 0.9816307574510574,
+          "ttft_ms": 19.347430730704218
+        },
+        {
+          "id": "r0035",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 6.641619605943561,
+          "ttft_ms": 36.784019554033875
+        },
+        {
+          "id": "r0036",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 8,
+          "queue_wait_ms": 27.788294246420264,
+          "ttft_ms": 53.262694214936346
+        },
+        {
+          "id": "r0037",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 16,
+          "queue_wait_ms": 11.730522848665714,
+          "ttft_ms": 39.76872283965349
+        },
+        {
+          "id": "r0038",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 32.45832660468295,
+          "ttft_ms": 81.6364266211167
+        },
+        {
+          "id": "r0039",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 8,
+          "queue_wait_ms": 10.482919751666486,
+          "ttft_ms": 32.8083197819069
+        },
+        {
+          "id": "r0040",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 11.626405117567629,
+          "ttft_ms": 34.43850507028401
+        },
+        {
+          "id": "r0041",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 10.316833504475653,
+          "ttft_ms": 27.421733480878174
+        },
+        {
+          "id": "r0042",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 8.3757943357341,
+          "ttft_ms": 45.83199432818219
+        },
+        {
+          "id": "r0043",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 7.9310821602120996,
+          "ttft_ms": 39.23268220387399
+        },
+        {
+          "id": "r0044",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 0.7275487878359854,
+          "ttft_ms": 20.825848798267543
+        },
+        {
+          "id": "r0045",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 0.40653959149494767,
+          "ttft_ms": 28.672939573880285
+        },
+        {
+          "id": "r0046",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 6.149938039015979,
+          "ttft_ms": 26.147838041651994
+        },
+        {
+          "id": "r0047",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 2.1356563083827496,
+          "ttft_ms": 23.290956334676594
+        },
+        {
+          "id": "r0048",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 16,
+          "queue_wait_ms": 0.7266992470249534,
+          "ttft_ms": 18.921899260021746
+        },
+        {
+          "id": "r0049",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 5.188580311369151,
+          "ttft_ms": 24.260280304588377
+        },
+        {
+          "id": "r0050",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 6.350591836962849,
+          "ttft_ms": 33.22199184913188
+        },
+        {
+          "id": "r0051",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 25.728946726303548,
+          "ttft_ms": 51.94224673323333
+        },
+        {
+          "id": "r0052",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 9.962865384295583,
+          "ttft_ms": 31.579165370203555
+        },
+        {
+          "id": "r0053",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 9.505597525276244,
+          "ttft_ms": 27.887197502423078
+        },
+        {
+          "id": "r0054",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 8,
+          "queue_wait_ms": 10.477425763383508,
+          "ttft_ms": 27.1217257832177
+        },
+        {
+          "id": "r0055",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 16,
+          "queue_wait_ms": 11.62240980193019,
+          "ttft_ms": 27.680509781930596
+        },
+        {
+          "id": "r0056",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 10.063672496471554,
+          "ttft_ms": 33.77177246147767
+        },
+        {
+          "id": "r0057",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 3.892077482305467,
+          "ttft_ms": 24.827677465509623
+        },
+        {
+          "id": "r0058",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 9.379119612276554,
+          "ttft_ms": 36.261219647713006
+        },
+        {
+          "id": "r0059",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 16,
+          "queue_wait_ms": 5.967054807115346,
+          "ttft_ms": 30.89425479993224
+        },
+        {
+          "id": "r0060",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 0.6535391439683735,
+          "ttft_ms": 16.340639092959464
+        },
+        {
+          "id": "r0061",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 6.387225759681314,
+          "ttft_ms": 26.44012577366084
+        },
+        {
+          "id": "r0062",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 12.509804859291762,
+          "ttft_ms": 40.357804857194424
+        },
+        {
+          "id": "r0063",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 10.529517836403102,
+          "ttft_ms": 31.822517863474786
+        }
+      ],
+      "policy": "continuous",
+      "settings": {
+        "max_batch": 8,
+        "token_budget": 64,
+        "blocks": 128,
+        "block_size": 16,
+        "prefix_entries": 0,
+        "seed": 17
+      },
+      "cache": {
+        "pool_bytes": 25165824,
+        "used_blocks": 0,
+        "peak_blocks": 52,
+        "prefix_hits": 0,
+        "cow_copies": 0,
+        "reserved_token_slots": 0,
+        "live_tokens": 0,
+        "reserved_slack_slots": 0,
+        "peak_live_tokens": 813,
+        "peak_reserved_token_slots": 832,
+        "median_reserved_slot_utilization": 0.90625
+      },
+      "iterations": 633,
+      "executed_tokens": 9920,
+      "padding_tokens": 12091,
+      "cuda_peak_allocated_bytes": 119456768,
+      "arrival_rate": 5.0,
+      "seed": 17,
+      "trace_sha256": "bb445410e0cff0a7cfb7cd69f80270dc90b90088cb374b0192ad6c8ec65b5410"
+    },
+    {
+      "submitted": 64,
+      "completed": 64,
+      "rejected": 0,
+      "cancelled": 0,
+      "elapsed_including_drain_s": 14.521753500041086,
+      "output_tokens": 1312,
+      "output_tokens_per_second": 90.34721598850221,
+      "slo_requests": 64,
+      "slo_fraction_all_submissions": 1.0,
+      "slo_goodput_requests_per_second": 4.407181267731815,
+      "ttft_p50_ms": 65.17252104822546,
+      "ttft_p95_ms": 180.0898600573417,
+      "ttft_p99_ms": 190.84468050918073,
+      "inter_token_p99_ms": 38.05023697554134,
+      "tpot_p95_ms": 26.795380664989352,
+      "e2e_p99_ms": 871.9785405037691,
+      "slo": {
+        "ttft_ms": 500.0,
+        "mean_tpot_ms": 50.0
+      },
+      "per_request": [
+        {
+          "id": "r0000",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 0.11490000179037452,
+          "ttft_ms": 68.27510002767667
+        },
+        {
+          "id": "r0001",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 13.165632146410644,
+          "ttft_ms": 29.107932175975293
+        },
+        {
+          "id": "r0002",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 8.480249613057822,
+          "ttft_ms": 46.963049622718245
+        },
+        {
+          "id": "r0003",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 2.8667052392847836,
+          "ttft_ms": 118.99110523518175
+        },
+        {
+          "id": "r0004",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 0.6112717092037201,
+          "ttft_ms": 96.10857168445364
+        },
+        {
+          "id": "r0005",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 2.480648923665285,
+          "ttft_ms": 111.58554890425876
+        },
+        {
+          "id": "r0006",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 2.724774763919413,
+          "ttft_ms": 50.43087474768981
+        },
+        {
+          "id": "r0007",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 3.233036841265857,
+          "ttft_ms": 36.535336810629815
+        },
+        {
+          "id": "r0008",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 8,
+          "queue_wait_ms": 9.090999083127826,
+          "ttft_ms": 33.49989908747375
+        },
+        {
+          "id": "r0009",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 4.231820581480861,
+          "ttft_ms": 125.44482061639428
+        },
+        {
+          "id": "r0010",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 1.3200602843426168,
+          "ttft_ms": 38.883560278918594
+        },
+        {
+          "id": "r0011",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 0.7928450359031558,
+          "ttft_ms": 17.566645052284002
+        },
+        {
+          "id": "r0012",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 10.295152838807553,
+          "ttft_ms": 48.93565288512036
+        },
+        {
+          "id": "r0013",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 1.0961819207295775,
+          "ttft_ms": 133.7640819256194
+        },
+        {
+          "id": "r0014",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 2.942213206551969,
+          "ttft_ms": 109.7445132327266
+        },
+        {
+          "id": "r0015",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 0.3971192636527121,
+          "ttft_ms": 79.27061925875023
+        },
+        {
+          "id": "r0016",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 8,
+          "queue_wait_ms": 7.387305551674217,
+          "ttft_ms": 55.11620553443208
+        },
+        {
+          "id": "r0017",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 8,
+          "queue_wait_ms": 14.296620734967291,
+          "ttft_ms": 91.36152075370774
+        },
+        {
+          "id": "r0018",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 20.872000721283257,
+          "ttft_ms": 184.64070069603622
+        },
+        {
+          "id": "r0019",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 13.142561365384609,
+          "ttft_ms": 61.48116139229387
+        },
+        {
+          "id": "r0020",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 21.00924850674346,
+          "ttft_ms": 41.78934852825478
+        },
+        {
+          "id": "r0021",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 1.7091623158194125,
+          "ttft_ms": 129.46296232985333
+        },
+        {
+          "id": "r0022",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 16,
+          "queue_wait_ms": 18.757364305201918,
+          "ttft_ms": 49.48596429312602
+        },
+        {
+          "id": "r0023",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 20.969109842553735,
+          "ttft_ms": 68.93620983464643
+        },
+        {
+          "id": "r0024",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 15.530261443927884,
+          "ttft_ms": 89.93406145600602
+        },
+        {
+          "id": "r0025",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 21.161363110877573,
+          "ttft_ms": 154.30176310474053
+        },
+        {
+          "id": "r0026",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 0.6986100925132632,
+          "ttft_ms": 92.58361009415239
+        },
+        {
+          "id": "r0027",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 0.2969417255371809,
+          "ttft_ms": 135.48254169290885
+        },
+        {
+          "id": "r0028",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 5.003940896131098,
+          "ttft_ms": 46.27564089605585
+        },
+        {
+          "id": "r0029",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 2.157603041268885,
+          "ttft_ms": 37.327903090044856
+        },
+        {
+          "id": "r0030",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 0.7725477917119861,
+          "ttft_ms": 68.08224780252203
+        },
+        {
+          "id": "r0031",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 0.757971778512001,
+          "ttft_ms": 192.91597174014896
+        },
+        {
+          "id": "r0032",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 9.440321708098054,
+          "ttft_ms": 28.963421704247594
+        },
+        {
+          "id": "r0033",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 4.338607890531421,
+          "ttft_ms": 189.62820788146928
+        },
+        {
+          "id": "r0034",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 0.5446308059617877,
+          "ttft_ms": 20.024630764964968
+        },
+        {
+          "id": "r0035",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 14.225919614546001,
+          "ttft_ms": 188.25701961759478
+        },
+        {
+          "id": "r0036",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 8,
+          "queue_wait_ms": 5.110794270876795,
+          "ttft_ms": 62.26279429392889
+        },
+        {
+          "id": "r0037",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 16,
+          "queue_wait_ms": 20.719222840853035,
+          "ttft_ms": 89.06882285373285
+        },
+        {
+          "id": "r0038",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 2.9347266536206007,
+          "ttft_ms": 82.87112665129825
+        },
+        {
+          "id": "r0039",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 8,
+          "queue_wait_ms": 3.804519830737263,
+          "ttft_ms": 50.430419796612114
+        },
+        {
+          "id": "r0040",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 16,
+          "queue_wait_ms": 3.670605132356286,
+          "ttft_ms": 43.0970051093027
+        },
+        {
+          "id": "r0041",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 14.35913355089724,
+          "ttft_ms": 40.724833495914936
+        },
+        {
+          "id": "r0042",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 8,
+          "queue_wait_ms": 7.051794382277876,
+          "ttft_ms": 127.87529436172917
+        },
+        {
+          "id": "r0043",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 8.251582214143127,
+          "ttft_ms": 117.3689822317101
+        },
+        {
+          "id": "r0044",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 0.49674883484840393,
+          "ttft_ms": 16.64384885225445
+        },
+        {
+          "id": "r0045",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 0.8571395883336663,
+          "ttft_ms": 59.20553958276287
+        },
+        {
+          "id": "r0046",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 3.6770380684174597,
+          "ttft_ms": 106.31733806803823
+        },
+        {
+          "id": "r0047",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 0.397156341932714,
+          "ttft_ms": 44.790456362534314
+        },
+        {
+          "id": "r0048",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 16,
+          "queue_wait_ms": 5.8932992978952825,
+          "ttft_ms": 32.032799266744405
+        },
+        {
+          "id": "r0049",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 10.739080316852778,
+          "ttft_ms": 86.77498035831377
+        },
+        {
+          "id": "r0050",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 2.374391886405647,
+          "ttft_ms": 42.01179189840332
+        },
+        {
+          "id": "r0051",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 11.001246748492122,
+          "ttft_ms": 126.41664675902575
+        },
+        {
+          "id": "r0052",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 3.6593654076568782,
+          "ttft_ms": 54.12676540436223
+        },
+        {
+          "id": "r0053",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 19.92329757194966,
+          "ttft_ms": 39.127297524828464
+        },
+        {
+          "id": "r0054",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 8,
+          "queue_wait_ms": 8.163225837051868,
+          "ttft_ms": 43.897025811020285
+        },
+        {
+          "id": "r0055",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 16,
+          "queue_wait_ms": 6.703609833493829,
+          "ttft_ms": 28.790009848307818
+        },
+        {
+          "id": "r0056",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 2.7439725236035883,
+          "ttft_ms": 92.74617250775918
+        },
+        {
+          "id": "r0057",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 6.06087752385065,
+          "ttft_ms": 100.94057751121
+        },
+        {
+          "id": "r0058",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 5.197419668547809,
+          "ttft_ms": 108.80921967327595
+        },
+        {
+          "id": "r0059",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 16,
+          "queue_wait_ms": 17.76465482544154,
+          "ttft_ms": 41.4363548043184
+        },
+        {
+          "id": "r0060",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 32,
+          "output_tokens": 32,
+          "queue_wait_ms": 0.906839151866734,
+          "ttft_ms": 16.289039165712893
+        },
+        {
+          "id": "r0061",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 16,
+          "queue_wait_ms": 11.112925771158189,
+          "ttft_ms": 134.26172581966966
+        },
+        {
+          "id": "r0062",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 256,
+          "output_tokens": 32,
+          "queue_wait_ms": 0.7233048672787845,
+          "ttft_ms": 127.84270488191396
+        },
+        {
+          "id": "r0063",
+          "status": "completed",
+          "reason": null,
+          "prompt_tokens": 64,
+          "output_tokens": 32,
+          "queue_wait_ms": 19.324317865539342,
+          "ttft_ms": 60.06731785601005
+        }
+      ],
+      "policy": "chunked",
+      "settings": {
+        "max_batch": 8,
+        "token_budget": 64,
+        "blocks": 128,
+        "block_size": 16,
+        "prefix_entries": 0,
+        "seed": 17
+      },
+      "cache": {
+        "pool_bytes": 25165824,
+        "used_blocks": 0,
+        "peak_blocks": 55,
+        "prefix_hits": 0,
+        "cow_copies": 0,
+        "reserved_token_slots": 0,
+        "live_tokens": 0,
+        "reserved_slack_slots": 0,
+        "peak_live_tokens": 846,
+        "peak_reserved_token_slots": 880,
+        "median_reserved_slot_utilization": 0.8948863636363636
+      },
+      "iterations": 655,
+      "executed_tokens": 9920,
+      "padding_tokens": 12486,
+      "cuda_peak_allocated_bytes": 102602240,
+      "arrival_rate": 5.0,
+      "seed": 17,
+      "trace_sha256": "bb445410e0cff0a7cfb7cd69f80270dc90b90088cb374b0192ad6c8ec65b5410"
+    }
+  ]
+}

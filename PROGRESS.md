@@ -9,24 +9,23 @@ Check with `.\.venv\Scripts\python.exe scripts\detach.py --status`.
 
 Nothing.
 
-## In progress: serving-engine overhead (laptop)
-
-Serving on CUDA is dominated by host-side overhead, not GPU work. Profile of the
-trained 14M model, `mixed` trace, `continuous` policy, foreground process:
-~26 ms per engine iteration (~80 output tok/s at 5 req/s offered). A bare model
-forward for 8 decode tokens alone takes 11 ms (kernel-launch bound). Hot spots:
-
-- `BlockPool.write`: per-request, per-layer Python loop with three host-to-device
-  index copies and a boolean-mask sync each (~25% of time).
-- `TorchModel.rope`: recomputes frequencies and cos/sin for q and k in every layer
-  (~20%).
-- `BlockPool.read`: rebuilds the same gather indices in every layer.
-
-Plan: vectorize/memoize cache indices once per forward, compute RoPE tables once
-per forward, keep outputs identical (NumPy oracle tests), and record before/after
-with the same fixed trace. Then calibrate rates and run the 1,000-request sweeps.
-
 ## Done
+
+- **Serving-engine overhead cut** (commit d9c6e7a; before = 4eec0f9). The paged
+  cache built scatter/gather indices per request per layer with host-to-device
+  copies and mask syncs; RoPE tables were recomputed for q and k in every layer.
+  Both now happen once per forward. Same trace and commands before/after
+  (`results/engine_overhead/`): paged decode 15.98 → 8.79 ms/token; engine
+  iteration static/continuous/chunked 19.6/22.8/22.2 → 13.5/15.6/14.9 ms; p99 TTFT
+  628/82/191 → 325/35/83 ms (64 requests, 5 req/s, `mixed`, seed 17). Greedy output
+  identical. A new test covers reads after copy-on-write; removing the cache
+  invalidation makes 5 tests fail.
+  - Remaining cost is kernel launches (~360 small kernels per forward): full
+    recomputation is 7.81 ms/token, below both KV paths. That justifies the
+    roadmap's fused-kernel / CUDA-graph extension later.
+  - RoPE tables are now float32 under bf16 autocast. The existing bf16 run trained
+    with bf16 angles (up to 0.5 rad off near position 256); fp32 inference uses
+    exact ones. Future training runs get exact angles.
 
 - CUDA environment in `.venv` (PyTorch 2.8.0+cu128) verified on the RTX 4050:
   63 tests pass, 2 MPS-only tests skip. CUDA matches the NumPy oracle for manual and
@@ -55,11 +54,12 @@ with the same fixed trace. Then calibrate rates and run the 1,000-request sweeps
 
 ## Next
 
-1. Finish the engine-overhead work above, with before/after numbers.
-2. Calibrate CUDA serving rates (128 requests, a few rates), then README roadmap
+1. Calibrate CUDA serving rates (128 requests, a few rates), then README roadmap
    item 1: 1,000-request sweeps across load, chunk budget, prefix reuse, and KV
    capacity.
-3. Optional: a longer training run (loss was still falling).
+2. Optional: a longer training run (loss was still falling), now with exact
+   float32 RoPE angles under bf16.
+3. Later: fused kernels or CUDA graphs for decode (launch-bound, see above).
 
 ## Notes
 

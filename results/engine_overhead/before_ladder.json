@@ -1,0 +1,93 @@
+{
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.3",
+    "numpy": "2.5.3",
+    "logical_cpus": 12,
+    "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "backend": "torch",
+    "device": "cuda",
+    "parameters": 14260608,
+    "model_config": {
+      "vocab_size": 256,
+      "dim": 384,
+      "layers": 8,
+      "heads": 4,
+      "kv_heads": 2,
+      "hidden": 1152,
+      "context": 512,
+      "seed": 17
+    },
+    "commit": "4eec0f9514b68f275301050e14ee895c25e2c744",
+    "dirty": false,
+    "source_sha256": "69a4b5a9826d43b2d34723df6c8e5ea81d14335ea138ba4d4da10cf7bca6dcf8",
+    "thread_env": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null
+    },
+    "weights_sha256": "2de9fa7c499febbd5fa090e570a17df525cc41184c60e7d621b85c76518cf99c",
+    "torch": "2.8.0+cu128",
+    "attention": "sdpa",
+    "torch_threads": 8,
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "gpu_memory_bytes": 6438780928,
+    "cuda_runtime": "12.8"
+  },
+  "prompt_tokens": 64,
+  "output_tokens": 24,
+  "equivalent_greedy_output": true,
+  "rows": [
+    {
+      "path": "recompute_reference",
+      "median_seconds": 0.2739329999894835,
+      "output_tokens_per_second": 87.61266441400407,
+      "seconds_repeats": [
+        0.30162889999337494,
+        0.28960950003238395,
+        0.26735169999301434,
+        0.29561989998910576,
+        0.28183870000066236,
+        0.25700680003501475,
+        0.2379886000417173,
+        0.2385513999615796,
+        0.2805142999859527,
+        0.24952040001517162
+      ]
+    },
+    {
+      "path": "contiguous_kv",
+      "median_seconds": 0.29769424998085015,
+      "output_tokens_per_second": 80.6196290373222,
+      "seconds_repeats": [
+        0.35945429996354505,
+        0.269051400013268,
+        0.3106414999929257,
+        0.30115059996023774,
+        0.31680680002318695,
+        0.27845639997394755,
+        0.2661352999857627,
+        0.29954839998390526,
+        0.29584009997779503,
+        0.28290789999300614
+      ]
+    },
+    {
+      "path": "paged_kv_single_request",
+      "median_seconds": 0.38359874999150634,
+      "output_tokens_per_second": 62.565375931312104,
+      "seconds_repeats": [
+        0.3897165000089444,
+        0.44021589995827526,
+        0.438513100030832,
+        0.33992319996468723,
+        0.347019899985753,
+        0.38440219999756664,
+        0.3666076000081375,
+        0.40665630000876263,
+        0.3541857000091113,
+        0.38279529998544604
+      ]
+    }
+  ]
+}

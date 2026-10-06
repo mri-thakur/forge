@@ -26,7 +26,10 @@ environment; it is not needed for this first PyTorch implementation.
 ## Long runs
 
 Start anything long through the detached launcher, so it keeps running if the
-terminal, VS Code, or a coding agent exits. Keep the laptop plugged in and stop it
+terminal, VS Code, or a coding agent exits. Windows power-throttles windowless
+background processes (efficiency cores, low clocks, coarse timers), which made a
+detached CUDA benchmark 8x slower; the launcher opts every process it starts out of
+that. A job started some other way in the background is not protected. Keep the laptop plugged in and stop it
 from sleeping; sleep or shutdown still interrupt a run, which then resumes from its
 last checkpoint (every 100 updates) by rerunning the same command with `--resume`.
 

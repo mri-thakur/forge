@@ -22,7 +22,15 @@ MPS path is implemented but not verified.
   CUDA allocation 627 MiB. [Results, loss curve, and fixed samples](docs/wikitext103_14m/RESULTS.md);
   [raw evaluation](results/wikitext103_14m/evaluation.json). Greedy decoding falls
   into repetition loops; sampled text is locally fluent but not coherent.
-- 62 tests pass on the laptop's CUDA environment; 2 skip because MPS is unavailable.
+- **Profiling the CUDA serving path found host-side overhead, not GPU work, in
+  charge.** The paged cache rebuilt its indices in every layer with per-request
+  host-to-device copies. Building them once per forward cut single-request paged
+  decode from 15.98 to 8.79 ms/token and engine iterations by about a third
+  (continuous batching 22.8 → 15.6 ms; p99 TTFT at 5 req/s 82 → 35 ms), with
+  identical greedy output. At this size decode is bound by kernel launches: full
+  recomputation (7.81 ms/token) still beats contiguous (8.32) and paged (8.79) KV.
+  [Raw before/after results](results/engine_overhead/).
+- 64 tests pass on the laptop's CUDA environment; 2 skip because MPS is unavailable.
   CUDA logits match the independent NumPy oracle for manual and SDPA attention,
   including through the paged KV cache.
 - Cached logits match full-sequence logits across chunks, with explicit tolerances.
