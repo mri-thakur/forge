@@ -1,23 +1,42 @@
 # Forge
 
-**A small language model built from scratch, end to end, on a 6 GB laptop GPU:
-own BPE tokenizer → pretraining → supervised fine-tuning → reinforcement learning
-with verifiable rewards → demo.**
+**A 34M-parameter language model built from scratch on one 6 GB laptop GPU and
+taken through the modern LLM pipeline: its own BPE tokenizer → pretraining →
+supervised fine-tuning → reinforcement learning with verifiable rewards.**
 
-Every stage is implemented in this repository rather than imported: the tokenizer,
-the transformer (with an independent NumPy autograd engine as a reference), the
-training loop, evaluation, and a batched KV-cache inference engine. Each stage is
-tested against a reference implementation and measured on full held-out splits.
-Training data is [TinyStories](https://arxiv.org/abs/2305.07759), where models of a
-few tens of millions of parameters can learn to write coherent stories.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/headline-dark.png">
+  <img alt="Share of held-out stories meeting every instruction: pretrained model 1.8%, after supervised fine-tuning 35.4%, after RL with a KL penalty 56.1%; RL without the penalty 80.5% by gaming the checks, with 30% of its stories looping; the dataset's own stories 95.2%" src="docs/headline.png">
+</picture>
 
-| Stage | Status | Result so far |
+- **Built, not imported.** The tokenizer (it reproduces OpenAI's `tiktoken` GPT-4
+  encoding token for token on the test texts), the transformer (checked against an independent NumPy
+  autograd implementation), the training loop, a paged-KV-cache inference engine with
+  continuous batching, supervised fine-tuning, and GRPO are all implemented here.
+- **Pretraining.** Three model sizes trained on
+  [TinyStories](https://arxiv.org/abs/2305.07759); the 33.6M model reaches 0.414
+  bits per byte on the full validation split and writes coherent stories. Scaling
+  curve and architecture ablations included.
+- **Instruction following, measured.** On 500 held-out prompts scored by rule-based
+  checks (required words, a given sentence, dialogue), the share of stories meeting
+  every instruction rises from 1.8% (pretrained) to 35.4% (SFT) to 56.1% (RL; 95%
+  interval 52.6-59.6%).
+- **Reward hacking, found and quantified.** Without the KL penalty, RL reaches 80.5%
+  by gaming the checks: it forces required words in ("he went to the park and *seat*
+  on a dirty bench") and repeats the given sentence until a copy matches; 30% of its
+  stories loop. The penalty keeps the policy honest at a small cost in fluency.
+- **Debugged on real hardware.** The laptop hibernated from overheating mid-run (so
+  training now pauses at 85 °C), Windows throttled background jobs 8x, and an
+  evaluation silently dropped most of its requests until reading the outputs
+  exposed it. Each is documented below with its fix.
+
+| Stage | Result | Details |
 |---|---|---|
-| 1. Tokenizer | **Done** | Byte-level BPE; 4,096-token vocabulary compresses TinyStories as well as GPT-2's 50,257 |
-| 2. Pretraining | **Done** | 33.6M model writes coherent stories (0.414 bits/byte); scaling curve over 3 sizes; RoPE and GQA ablations |
-| 3. Supervised fine-tuning | **Done** | Satisfies every checkable instruction in 35.4% of samples, up from 1.8% for the base model |
-| 4. RL with verifiable rewards | **Done** | GRPO raises that to 56.1% at a small fluency cost; without a KL penalty the model games the checks |
-| 5. Demo and write-up | Planned | |
+| 1. Tokenizer | Byte-level BPE; a 4,096-token vocabulary compresses TinyStories as well as GPT-2's 50,257 | [below](#tokenizer) |
+| 2. Pretraining | 33.6M model, 0.414 bits/byte; scaling curve over 3 sizes; RoPE and GQA ablations | [results](docs/phase2/RESULTS.md) |
+| 3. Supervised fine-tuning | 35.4% of held-out samples meet every instruction, up from 1.8% | [results](docs/sft/RESULTS.md) |
+| 4. RL with verifiable rewards | 56.1% with GRPO; a KL-penalty ablation exposes reward hacking | [results](docs/grpo/RESULTS.md) |
+| 5. Demo and write-up | In progress | |
 
 The phases follow Andrej Karpathy's *Neural Networks: Zero to Hero* series;
 phases 3 and 4 go beyond it. The full plan is in [PLAN.md](PLAN.md).
@@ -281,5 +300,6 @@ the laptop: [runs/LAPTOP.md](runs/LAPTOP.md).
   `roneneldan/TinyStories` and `roneneldan/TinyStoriesInstruct` at pinned revisions.
 - WikiText-103: CC BY-SA 3.0 and GFDL.
 
-Datasets and checkpoints are not stored in Git. The trained WikiText-103 weights
-are attached to the `wikitext103-14m` release.
+Datasets and checkpoints are not stored in Git. Trained weights are attached to
+releases: the pretrained 33.6M TinyStories model to `tinystories-L-33m`, the
+WikiText-103 model to `wikitext103-14m`.
