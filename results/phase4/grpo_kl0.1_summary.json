@@ -1,0 +1,56 @@
+{
+  "config": {
+    "vocab_size": 4096,
+    "dim": 512,
+    "layers": 10,
+    "heads": 8,
+    "kv_heads": 4,
+    "hidden": 1536,
+    "context": 512,
+    "seed": 17
+  },
+  "run_config": {
+    "init": {
+      "path": "C:\\Users\\mriga\\OneDrive\\Desktop\\5-1\\forge\\checkpoints\\sft_L\\model.npz",
+      "sha256": "7d593f032804c4df80ef236a74898a2fe64fb453a3196d9820338ab99f357b72"
+    },
+    "prompts": "C:\\Users\\mriga\\OneDrive\\Desktop\\5-1\\forge\\data\\instruct\\train.jsonl",
+    "tokenizer_sha256": "8587ac111c62a40dfab02e745f407a798a08517fb7b9f5c330c808cc04ef787d",
+    "exclude": "C:\\Users\\mriga\\OneDrive\\Desktop\\5-1\\forge\\data\\instruct\\eval_prompts.jsonl",
+    "steps": 200,
+    "prompts_per_step": 16,
+    "group": 8,
+    "lr": 3e-05,
+    "kl": 0.1,
+    "max_new_tokens": 384,
+    "warmup": 10,
+    "micro_batch": 16,
+    "pool_size": 20000,
+    "seed": 17,
+    "attention": "sdpa",
+    "precision": "bf16",
+    "sampling": {
+      "temperature": 1.0,
+      "top_p": 1.0
+    },
+    "optimizer": {
+      "name": "AdamW",
+      "betas": [
+        0.9,
+        0.95
+      ],
+      "weight_decay": 0.0,
+      "clip": 1.0
+    }
+  },
+  "parameters": 33565184,
+  "steps": 200,
+  "prompt_pool": 16303,
+  "prompt_pool_sha256": "f24f79ec5a2b9371417a68694c3141a1597a684638a8550887930e424d8b066f",
+  "seconds_this_session": 3347.35582060006,
+  "thermal_pauses": 104,
+  "thermal_paused_seconds": 386.10303920006845,
+  "torch": "2.8.0+cu128",
+  "device": "cuda",
+  "cuda_peak_allocated_bytes": 4050998784
+}

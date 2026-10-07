@@ -1,6 +1,6 @@
 # Progress (laptop, `main`)
 
-Last updated: 2026-10-07 15:55. Everything runs on the laptop; the Mac Pro is not
+Last updated: 2026-10-07 19:30. Everything runs on the laptop; the Mac Pro is not
 used for this project (the user's decision, 10-07).
 
 **New chat? Start here:** read `PLAN.md`, then this file's "Running now" and
@@ -15,28 +15,35 @@ supporting infrastructure.
 
 Check with `.\.venv\Scripts\python.exe scripts\detach.py --status`.
 
-- `phase4` (started 15:47 on 10-07, roughly 4-4.5 h, expected done ~20:00-20:30):
-  `scripts/run_grpo_plan.py runs/plans/phase4.json --code ..\forge-frozen` (frozen
-  worktree at 0be8895). Three GRPO runs from `checkpoints/sft_L`, 200 steps each
-  (16 prompts x 8 rollouts, LR 3e-5), KL coefficient 0.1 (`grpo_kl0.1`, snapshots
-  every 50 steps), 0 (`grpo_kl0`), 1 (`grpo_kl1`); each ~17 s/step plus thermal
-  pauses. After each run it evaluates the final policy (and the kl0.1 snapshots)
-  on the 500 eval prompts x 4 samples → `results/phase4/<label>_{samples.jsonl,
-  eval.json,fluency.json}`, and copies the training log, summary, and logged
-  rollout groups there. **If it stopped:** run the identical command again through
-  `scripts/detach.py --name phase4 -- ...`; finished steps are skipped and an
-  interrupted run resumes from its last checkpoint (every 25 steps).
-  Progress: `grpo_kl0.1` trained 15:48-16:44 (55.8 min, 104 thermal pauses).
-  Training rollouts (T 1), steps 1-25 → 176-200: reward 0.675 → 0.769, satisfied
-  39.6% → 54.0%, word recall 80% → 90%, sentence ~10-15% (no gain), finished 94% →
-  98.5%, KL 0.003 → 0.021 nats/token, entropy ~1.15, length ~210 tokens. Most of the
-  gain came in the first 50 steps. Held-out (500 x 4, T 0.8), SFT → steps 50/100/
-  150/200: all constraints 35.4% → 52.3/54.1/53.8/56.1%; all words 47.3% → 76.9%;
-  sentence 11.6% → 16.0% (most of it after step 150); dialogue 95.5% → 99.1%;
-  finished 93.8% → 98.9%; fluency under L 0.966 → 1.021 nats/token; repetition
-  unchanged (~2%). Expected: kl0 done ~18:20, kl1 and plan complete ~19:25.
-- `checkpoints/grpo_smoke/` is a 6-step smoke run (3.85 GB peak GPU memory); it can
-  be deleted.
+Nothing. (Last: `phase4`, 15:47-19:19 on 10-07, all three GRPO runs and their
+evaluations; `checkpoints/grpo_smoke/` is a leftover 6-step smoke run that can be
+deleted.)
+
+## Phase 4 results (GRPO) — runs complete, write-up pending
+
+Plan `runs/plans/phase4.json`, run by `scripts/run_grpo_plan.py --code
+../forge-frozen` (worktree at 0be8895); everything in `results/phase4/`. 200 steps
+from `checkpoints/sft_L` (16 prompts x 8 rollouts at T 1, LR 3e-5, ~56 min each).
+Held-out, 500 prompts x 4 samples at T 0.8:
+
+| | SFT | KL 1 | **KL 0.1 (main)** | KL 0 |
+|---|---:|---:|---:|---:|
+| All constraints met | 35.4% | 39.7% | **56.1%** | 80.6% |
+| All words | 47.3% | 54.1% | 76.9% | 97.9% |
+| Given sentence | 11.6% | 10.4% | 16.0% | 50.0% |
+| Dialogue | 95.5% | 96.8% | 99.1% | 99.6% |
+| Finished | 93.8% | 96.6% | 98.9% | 99.4% |
+| Fluency, nats/token under L | 0.966 | 0.979 | 1.021 | 1.331 |
+| Repeated word 4-grams | 2.0% | 2.0% | 2.3% | 10.2% |
+| Train KL/token, last 25 steps | 0 | 0.004 | 0.021 | 0.255 |
+
+Main run held-out at steps 50/100/150/200: 52.3/54.1/53.8/56.1% (most of the gain
+in the first 50 steps). **Reward hacking without the KL penalty (KL 0):** required
+words forced in ungrammatically ("went to the park and seat on a dirty bench", "I
+seat here too"), the given sentence brute-forced by repeating near-copies until one
+matches ("Lily was happy to have her treasure safe and sound ... safe and sound
+emptied ..."), and loops ("I love you too ... you love you even though you love
+you"). KL 0.1 keeps repetition and fluency close to SFT; KL 1 barely moves.
 
 ## Phase 3 results (SFT) — complete
 
@@ -164,7 +171,7 @@ static. `results/cuda_calibration_14m`; full sweep in `results/cuda_sweep_mixed`
 
 Laptop, following [PLAN.md](PLAN.md):
 
-1. When `phase4` finishes: write `scripts/phase4_report.py` → `docs/grpo/RESULTS.md`
+1. Write up phase 4: `scripts/phase4_report.py` → `docs/grpo/RESULTS.md`
    (base → SFT → GRPO table per constraint, fluency under L, repetition, the KL
    ablation, held-out satisfaction at steps 0/50/100/150/200 from the kl0.1
    snapshots, training curves of reward/KL/entropy from `*_training.jsonl`) and
