@@ -110,12 +110,14 @@ def main():
     grpo.add_argument("--steps", type=int, default=200)
     grpo.add_argument("--prompts-per-step", type=int, default=16)
     grpo.add_argument("--group", type=int, default=8, help="samples per prompt")
-    grpo.add_argument("--lr", type=float, default=2e-5)
-    grpo.add_argument("--kl", type=float, default=0.05, help="KL penalty coefficient")
+    grpo.add_argument("--lr", type=float, default=3e-5)
+    grpo.add_argument("--kl", type=float, default=0.1, help="KL penalty coefficient")
     grpo.add_argument("--max-new-tokens", type=int, default=384)
     grpo.add_argument("--warmup", type=int, default=10)
     grpo.add_argument("--micro-batch", type=int, default=16)
-    grpo.add_argument("--max-batch", type=int, default=64, help="concurrent rollouts")
+    grpo.add_argument(
+        "--max-batch", type=int, default=128, help="concurrent rollouts (128: 1.6x faster than 64)"
+    )
     grpo.add_argument("--pool-size", type=int, default=20_000)
     grpo.add_argument("--save-every", type=int, default=25)
     grpo.add_argument(

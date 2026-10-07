@@ -1,0 +1,28 @@
+{
+  "description": "Phase 4: GRPO with verifiable rewards from the SFT model (checkpoints/sft_L). 200 steps of 16 training prompts x 8 rollouts at temperature 1, LR 3e-5 after 10 warmup steps. KL coefficient ablation: 0.1 (main run, snapshots every 50 steps evaluated for a learning curve), 0 (no penalty), and 1 (strong penalty). Every policy is evaluated like phase 3: the 500 eval prompts x 4 samples at T 0.8 / top-p 0.95, constraint checks, and fluency under the pretrained L.",
+  "common": {
+    "init": "checkpoints/sft_L/model.npz",
+    "prompts": "data/instruct/train.jsonl",
+    "exclude": "data/instruct/eval_prompts.jsonl",
+    "tokenizer": "data/tinystories/tokenizer_4096.json",
+    "steps": 200,
+    "prompts_per_step": 16,
+    "group": 8,
+    "lr": 3e-05,
+    "warmup": 10,
+    "max_new_tokens": 384,
+    "max_batch": 128,
+    "micro_batch": 16,
+    "seed": 17
+  },
+  "evaluation": {
+    "prompts": "data/instruct/eval_prompts.jsonl",
+    "samples": 4,
+    "fluency_model": "checkpoints/L/model.npz"
+  },
+  "runs": [
+    {"name": "grpo_kl0.1", "evaluate_snapshots": true, "train": {"kl": 0.1, "snapshot_every": 50}},
+    {"name": "grpo_kl0", "train": {"kl": 0.0}},
+    {"name": "grpo_kl1", "train": {"kl": 1.0}}
+  ]
+}
