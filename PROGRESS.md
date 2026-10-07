@@ -1,7 +1,10 @@
 # Progress (laptop, `main`)
 
-Last updated: 2026-10-07 09:55. Everything runs on the laptop; the Mac Pro is not
+Last updated: 2026-10-07 10:15. Everything runs on the laptop; the Mac Pro is not
 used for this project (the user's decision, 10-07).
+
+**New chat? Start here:** read `PLAN.md`, then this file's "Running now" and
+"Next". Check jobs with `.\.venv\Scripts\python.exe scripts\detach.py --status`.
 
 **Direction changed on 2026-10-06** (see [PLAN.md](PLAN.md)): the project is now a
 language model built from scratch end to end on TinyStories (tokenizer →
@@ -12,8 +15,29 @@ supporting infrastructure.
 
 Check with `.\.venv\Scripts\python.exe scripts\detach.py --status`.
 
-Nothing. Phase 2 finished at 05:50 on 10-07 with no thermal shutdowns after the
-guard went in.
+- `phase3_sft` (started 10:09 on 10-07, roughly 2-2.5 h): one chained job running
+  code from the worktree `../forge-frozen` at commit 8b460b9 (PYTHONPATH set in
+  the chain), so edits here do not affect it. Steps, in order:
+  1. `prepare-sft` → `data/sft/` (300,000 training and 5,000 validation examples
+     from `data/instruct/`, eval prompts excluded; loss mask on story + end-of-text).
+  2. Base L on the 500 eval prompts, 4 samples each (T 0.8, top-p 0.95) →
+     `results/sft/base_L_samples.jsonl`, scored → `results/sft/base_L_eval.json`.
+     (Smoke test on 4 prompts: 0/8 satisfied; base L never saw the format.)
+  3. SFT from `checkpoints/L/model.npz` → `checkpoints/sft_L/`: 1,400 steps x
+     65,536 tokens (~1 epoch of the SFT data), LR 3e-4, warmup 50, cosine to 10%,
+     bf16, thermal guard on.
+  4. SFT L on the same prompts → `results/sft/sft_L_samples.jsonl`, scored →
+     `results/sft/sft_L_eval.json`.
+  The full command is recorded in `logs/phase3_sft.json`; output in
+  `logs/phase3_sft.log`. **If it stopped:** see which outputs exist and rerun only
+  the missing steps (training resumes with the same `train` command plus
+  `--resume`; generation and scoring just rerun).
+
+Phase 3 so far: `data/instruct/` holds the parsed Instruct data (2,476,334 train,
+25,026 valid records) and `eval_prompts.jsonl` (500 fixed held-out prompts, seed
+17). Gold check (`results/instruct/gold_check.json`): the dataset's own stories
+pass 99.0% of required words, 97.0% all-words, 100% sentences, 95.2% dialogue;
+shuffled base rate 3.8% fully satisfied.
 
 ## Phase 2 results (pretraining) — complete
 
@@ -114,16 +138,22 @@ static. `results/cuda_calibration_14m`; full sweep in `results/cuda_sweep_mixed`
 
 Laptop, following [PLAN.md](PLAN.md):
 
-1. Phase 3 (SFT) on L. Download of TinyStoriesInstruct (pinned revision in
-   PLAN.md) to `data/raw/` is running as `download_instruct`. Build
-   `forge/instruct.py`: parse records (fields `Summary:`, `Words:`, `Features:`,
-   `Random sentence:`, `Story:`, varying order, `<|endoftext|>` separators),
-   canonical prompt format, a fixed 500-prompt held-out eval set drawn from the
-   validation file (seed 17), rule-based verifiers (required words with
-   inflections, the random sentence, dialogue when requested) checked to pass on
-   ≥97% of gold stories, and an eval harness. Then fine-tune with the loss on story
-   tokens only and measure constraint satisfaction for base L and SFT L.
-2. Phase 4 (GRPO) after that.
+1. When `phase3_sft` finishes: compare `results/sft/base_L_eval.json` with
+   `sft_L_eval.json` (satisfied rate, mean reward, per-constraint rates, finished
+   rate), read some SFT samples, write `docs/sft/RESULTS.md` (generated from the
+   result files, like `scripts/phase2_report.py`), and add a phase 3 section to the
+   README. Commit `results/sft/*_eval.json` (the sample files too if small).
+2. Phase 4, GRPO with verifiable rewards, starting from `checkpoints/sft_L`:
+   - prompts: training records with a verifiable constraint (never the eval set);
+   - rollouts: `forge.sft.generate`-style batched sampling through the engine,
+     G = 8 samples per prompt, stop at end-of-text;
+   - reward: `forge.instruct.check(record, story)["reward"]`; advantage =
+     (reward − group mean) / (group std + eps);
+   - loss: policy gradient on the sampled story tokens with a KL penalty to the
+     frozen SFT model (both 34M models fit in 6 GB); small LR (1e-5 to 5e-5);
+   - measure on the 500 eval prompts: satisfaction before/after, per constraint;
+     fluency as held-out loss under the pretrained L; look for reward hacking
+     (word lists, repeated sentences) and ablate the KL coefficient.
 
 ## Notes
 
