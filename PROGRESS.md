@@ -1,6 +1,6 @@
 # Progress (laptop, `main`)
 
-Last updated: 2026-10-07 15:25. Everything runs on the laptop; the Mac Pro is not
+Last updated: 2026-10-07 15:55. Everything runs on the laptop; the Mac Pro is not
 used for this project (the user's decision, 10-07).
 
 **New chat? Start here:** read `PLAN.md`, then this file's "Running now" and
@@ -15,7 +15,19 @@ supporting infrastructure.
 
 Check with `.\.venv\Scripts\python.exe scripts\detach.py --status`.
 
-Nothing. (Last: `phase3_eval`, 15:03-15:15, the corrected phase 3 evaluation.)
+- `phase4` (started 15:47 on 10-07, roughly 4-4.5 h, expected done ~20:00-20:30):
+  `scripts/run_grpo_plan.py runs/plans/phase4.json --code ..\forge-frozen` (frozen
+  worktree at 0be8895). Three GRPO runs from `checkpoints/sft_L`, 200 steps each
+  (16 prompts x 8 rollouts, LR 3e-5), KL coefficient 0.1 (`grpo_kl0.1`, snapshots
+  every 50 steps), 0 (`grpo_kl0`), 1 (`grpo_kl1`); each ~17 s/step plus thermal
+  pauses. After each run it evaluates the final policy (and the kl0.1 snapshots)
+  on the 500 eval prompts x 4 samples → `results/phase4/<label>_{samples.jsonl,
+  eval.json,fluency.json}`, and copies the training log, summary, and logged
+  rollout groups there. **If it stopped:** run the identical command again through
+  `scripts/detach.py --name phase4 -- ...`; finished steps are skipped and an
+  interrupted run resumes from its last checkpoint (every 25 steps).
+- `checkpoints/grpo_smoke/` is a 6-step smoke run (3.85 GB peak GPU memory); it can
+  be deleted.
 
 ## Phase 3 results (SFT) — complete
 
@@ -143,14 +155,15 @@ static. `results/cuda_calibration_14m`; full sweep in `results/cuda_sweep_mixed`
 
 Laptop, following [PLAN.md](PLAN.md):
 
-1. Phase 4, GRPO: the trainer is written and tested (`forge/grpo.py`,
-   `python -m forge grpo`; design in its docstring). Rollouts at temperature 1
-   through the engine, G = 8 per prompt, 16 prompts per step, reward
-   `instruct.check` (0 if the story never ends within 384 tokens), group-normalized
-   advantages, exact-vocabulary KL to the frozen SFT model, LR 2e-5 constant after
-   10 warmup steps. Next: a short GPU smoke run to measure step time and memory,
-   then the main run and a KL-coefficient ablation (e.g. 0, 0.05, 0.2), each
-   evaluated like phase 3 (eval prompts, fluency under L, reward-hacking checks).
+1. When `phase4` finishes: write `scripts/phase4_report.py` → `docs/grpo/RESULTS.md`
+   (base → SFT → GRPO table per constraint, fluency under L, repetition, the KL
+   ablation, held-out satisfaction at steps 0/50/100/150/200 from the kl0.1
+   snapshots, training curves of reward/KL/entropy from `*_training.jsonl`) and
+   read samples for reward hacking (word lists, the given sentence pasted in or
+   repeated, very short stories). Add a phase 4 section to the README; commit
+   `results/phase4/`. Trainer design: `forge/grpo.py` docstring.
+2. Phase 5 (demo and write-up, see PLAN.md): live demo, README rewritten around
+   the results with plots, model weights on a GitHub release, resume bullets.
 
 ## Notes
 
