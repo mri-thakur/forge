@@ -49,12 +49,10 @@ The serving/scheduling work already in the repo (paged KV cache, batching polici
 profiling) becomes supporting infrastructure: it makes RL rollouts and the demo
 fast, and is summarized in an appendix rather than the headline.
 
-## Who does what
+## Where it runs
 
-- **Laptop (Windows, RTX 4050, `main`)**: phases 1, 2, then 3-4 (GPU work).
-- **Mac Pro (CPU, 96 GB, `mac` branch)**: the instruction data pipeline, constraint
-  verifiers, and evaluation harness needed by phases 3-4 (see `runs/MAC.md`); later
-  the demo.
+Everything runs on one laptop (Windows, RTX 4050 6 GB, `main` branch). A Mac Pro
+was considered for the CPU-side instruction data work but is not used.
 
 ## Rules
 

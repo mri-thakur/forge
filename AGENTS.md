@@ -34,12 +34,9 @@ for what has finished, what is running, and the exact next step.
 - Results that matter go in `results/` (tracked by Git); `checkpoints/`, `data/`, and
   `logs/` are ignored.
 
-## Machines
+## Machine
 
-- **Laptop (Windows, `main` branch)**: `.venv` has Python 3.12 and PyTorch
-  2.8.0+cu128 on an RTX 4050 Laptop GPU (6 GB). Training and CUDA benchmarks run here.
-  Tests: `.\.venv\Scripts\python.exe -m pytest`; lint: `.\.venv\Scripts\python.exe -m ruff check .`
-- **Mac Pro (macOS, `mac` branch)**: instruction data, constraint verifiers, and the
-  evaluation harness; no CUDA. Follow [runs/MAC.md](runs/MAC.md) and keep
-  `runs/MAC_PROGRESS.md` instead of `PROGRESS.md`.
-  Use `.venv/bin/python` in place of `.\.venv\Scripts\python.exe` in the commands above.
+All work runs on the laptop (Windows, `main` branch): `.venv` has Python 3.12 and
+PyTorch 2.8.0+cu128 on an RTX 4050 Laptop GPU (6 GB). Do not plan work for the
+user's Mac Pro; it is reserved for other work.
+Tests: `.\.venv\Scripts\python.exe -m pytest`; lint: `.\.venv\Scripts\python.exe -m ruff check .`

@@ -1,9 +1,7 @@
 # Laptop: fastest route to the first measured release
 
 Known hardware: Intel i5-13420H; NVIDIA RTX 4050 Laptop GPU, 6,141 MiB VRAM.
-Use this machine for development, CPU correctness, CUDA model training, serving
-experiments, and later Triton kernels. Keep the first release here; transferring
-every small job to the Mac adds coordination without an established speed gain.
+All development, data preparation, training, and evaluation run on this machine.
 
 ## Environment
 

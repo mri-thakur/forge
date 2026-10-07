@@ -193,8 +193,8 @@ python scripts/run_plan.py runs/plans/phase2.json
 Long jobs go through `python scripts/detach.py --name <job> -- <command>`, which
 keeps them running after the terminal or editor that started them closes
 (`--status`, `--stop <job>`). A plan restarted with the same command skips
-finished runs and resumes an interrupted one from its last checkpoint. Machine
-specific notes: [laptop](runs/LAPTOP.md), [Mac](runs/MAC.md).
+finished runs and resumes an interrupted one from its last checkpoint. Notes for
+the laptop: [runs/LAPTOP.md](runs/LAPTOP.md).
 
 ## Data and licenses
 

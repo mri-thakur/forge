@@ -1,7 +1,7 @@
 # Progress (laptop, `main`)
 
-Last updated: 2026-10-07 09:40. The Mac Pro keeps its own log in
-`runs/MAC_PROGRESS.md` on the `mac` branch (Mac offline so far).
+Last updated: 2026-10-07 09:55. Everything runs on the laptop; the Mac Pro is not
+used for this project (the user's decision, 10-07).
 
 **Direction changed on 2026-10-06** (see [PLAN.md](PLAN.md)): the project is now a
 language model built from scratch end to end on TinyStories (tokenizer →
@@ -107,17 +107,22 @@ static. `results/cuda_calibration_14m`; full sweep in `results/cuda_sweep_mixed`
   EcoQoS (efficiency cores, low clocks, coarse timers), and the exemption is not
   inherited, so the launcher now exempts every descendant. After the fix: 29 ms.
   The first CUDA calibration ran throttled and was deleted.
-- GitHub: private repo `mri-thakur/forge`; Mac handoff in `runs/MAC.md`.
+- GitHub: private repo `mri-thakur/forge`; model weights on releases
+  `wikitext103-14m` and `tinystories-L-33m`.
 
 ## Next
 
 Laptop, following [PLAN.md](PLAN.md):
 
-1. Phase 3 (SFT) on L: instruction data, constraint verifiers, and evaluation
-   harness per `runs/MAC.md` (Mac task; build `forge/instruct.py` here if the Mac
-   stays offline), then fine-tuning with the loss on story tokens only. Measure
-   constraint satisfaction on the 500 fixed held-out prompts for base L (prompted)
-   and SFT L.
+1. Phase 3 (SFT) on L. Download of TinyStoriesInstruct (pinned revision in
+   PLAN.md) to `data/raw/` is running as `download_instruct`. Build
+   `forge/instruct.py`: parse records (fields `Summary:`, `Words:`, `Features:`,
+   `Random sentence:`, `Story:`, varying order, `<|endoftext|>` separators),
+   canonical prompt format, a fixed 500-prompt held-out eval set drawn from the
+   validation file (seed 17), rule-based verifiers (required words with
+   inflections, the random sentence, dialogue when requested) checked to pass on
+   ≥97% of gold stories, and an eval harness. Then fine-tune with the loss on story
+   tokens only and measure constraint satisfaction for base L and SFT L.
 2. Phase 4 (GRPO) after that.
 
 ## Notes
