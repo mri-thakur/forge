@@ -174,8 +174,9 @@ def test_training_logs_every_step_and_never_uses_excluded_prompts(setup, monkeyp
         return original(model, tokenizer, records, *args, **kwargs)
 
     monkeypatch.setattr(grpo, "rollouts", spy)
-    summary = run(tmp_path, "run")
+    summary = run(tmp_path, "run", snapshot_every=2)
     assert summary["steps"] == 3 and summary["prompt_pool"] == 11
+    assert [p.name for p in (tmp_path / "run").glob("model_step*.npz")] == ["model_step0002.npz"]
     assert len(used) == 6 and "train-0000000" not in used
     rows = [json.loads(line) for line in open(tmp_path / "run" / "grpo.jsonl")]
     assert [row["step"] for row in rows] == [1, 2, 3]

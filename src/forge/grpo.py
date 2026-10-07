@@ -213,11 +213,14 @@ def train_grpo(
     attention="sdpa",
     precision="bf16",
     resume=False,
+    snapshot_every=0,
 ):
     """GRPO from the policy in `init` (a model.npz), which also stays frozen as the KL
     reference. `prompts` is a JSONL of instruction records (the training split);
     records whose id is in the `exclude` JSONL are never used. With `resume`, an
     existing checkpoint in `out` is continued (a fresh run starts if there is none).
+    `snapshot_every` > 0 also saves the policy as model_step<N>.npz every that many
+    steps, for evaluating how the policy changes during training.
     """
     if precision == "bf16" and device != "cuda":
         raise ValueError("bf16 is supported only on CUDA")
@@ -300,6 +303,10 @@ def train_grpo(
             return torch.autocast(device_type="cuda", dtype=torch.bfloat16)
         return nullcontext()
 
+    def export(path):
+        weights = {k: v.detach().cpu().numpy().copy() for k, v in policy.weights.items()}
+        NumpyModel(config, weights).save(path)
+
     def save():
         temporary = out / "resume.pending.pt"
         torch.save(
@@ -377,6 +384,8 @@ def train_grpo(
                         )
                     sample_log.flush()
                     print(json.dumps(row), flush=True)
+                if snapshot_every and step % snapshot_every == 0:
+                    export(out / f"model_step{step:04d}.npz")
                 if guard and guard.wait_if_hot():
                     row["thermal_paused_seconds_total"] = guard.paused_seconds
                 log.write(json.dumps(row) + "\n")
@@ -384,9 +393,7 @@ def train_grpo(
     except KeyboardInterrupt:
         save()
         raise
-    NumpyModel(
-        config, {k: v.detach().cpu().numpy().copy() for k, v in policy.weights.items()}
-    ).save(out / "model.npz")
+    export(out / "model.npz")
     summary = {
         "config": asdict(config),
         "run_config": run_config,

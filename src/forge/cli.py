@@ -118,6 +118,9 @@ def main():
     grpo.add_argument("--max-batch", type=int, default=64, help="concurrent rollouts")
     grpo.add_argument("--pool-size", type=int, default=20_000)
     grpo.add_argument("--save-every", type=int, default=25)
+    grpo.add_argument(
+        "--snapshot-every", type=int, default=0, help="also save model_step<N>.npz this often"
+    )
     grpo.add_argument("--seed", type=int, default=17)
     grpo.add_argument("--device", default="cuda")
     grpo.add_argument("--attention", choices=["manual", "sdpa"], default="sdpa")
@@ -323,6 +326,7 @@ def main():
             attention=args.attention,
             precision=args.precision,
             resume=args.resume,
+            snapshot_every=args.snapshot_every,
         )
         print(json.dumps(summary, indent=2))
     elif args.command == "train":
