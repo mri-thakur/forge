@@ -2,7 +2,16 @@ import json
 
 import pytest
 
-from forge.instruct import check, evaluate, forms, iter_records, parse_record, prepare, prompt
+from forge.instruct import (
+    check,
+    evaluate,
+    forms,
+    iter_records,
+    parse_record,
+    prepare,
+    prompt,
+    repetition,
+)
 
 SOURCE = """Features: Dialogue, BadEnding
 Summary: Ben and Mia get lost.
@@ -82,6 +91,13 @@ def test_sentence_matching_ignores_case_quotes_and_spacing():
     record = {"words": [], "sentence": "She said “Hi” to Ben.", "features": []}
     assert check(record, 'Then  she SAID "hi" to ben!')["satisfied"]
     assert not check(record, "She waved at Ben.")["satisfied"]
+
+
+def test_repetition_counts_repeated_word_four_grams():
+    assert repetition("Tom ran to the park and then went home.") == 0.0
+    # 5 four-grams (abcd bcda cdab dabc abcd), one a repeat.
+    assert repetition("A b c d. A b c d!") == pytest.approx(0.2)
+    assert repetition("Too short.") == 0.0
 
 
 def test_prepare_and_evaluate(tmp_path):

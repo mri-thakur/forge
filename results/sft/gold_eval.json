@@ -1,0 +1,30 @@
+{
+  "satisfied": {
+    "rate": 0.952,
+    "n": 500
+  },
+  "mean_reward": 0.9823333333333334,
+  "per_constraint": {
+    "word_recall": {
+      "rate": 0.9900249376558603,
+      "n": 1203
+    },
+    "all_words": {
+      "rate": 0.970074812967581,
+      "n": 401
+    },
+    "sentence": {
+      "rate": 1.0,
+      "n": 186
+    },
+    "dialogue": {
+      "rate": 0.9467213114754098,
+      "n": 244
+    }
+  },
+  "scored": 500,
+  "missing_ids": [],
+  "prompts": 500,
+  "samples_per_prompt": 1.0,
+  "finished_rate": 1.0
+}

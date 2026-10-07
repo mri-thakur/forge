@@ -252,6 +252,14 @@ def has_word(word, text, tokens):
     return re.search(pattern, text) is not None
 
 
+def repetition(story, n=4):
+    """Share of the story's word n-grams that repeat an earlier one: 0 without
+    repetition, approaching 1 for a story stuck in a loop."""
+    words = WORD.findall(normalize(story))
+    grams = [tuple(words[i : i + n]) for i in range(len(words) - n + 1)]
+    return 1 - len(set(grams)) / len(grams) if grams else 0.0
+
+
 def check(record, story):
     """Score `story` against `record`'s verifiable constraints.
 

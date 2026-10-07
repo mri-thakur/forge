@@ -15,8 +15,8 @@ few tens of millions of parameters can learn to write coherent stories.
 |---|---|---|
 | 1. Tokenizer | **Done** | Byte-level BPE; 4,096-token vocabulary compresses TinyStories as well as GPT-2's 50,257 |
 | 2. Pretraining | **Done** | 33.6M model writes coherent stories (0.414 bits/byte); scaling curve over 3 sizes; RoPE and GQA ablations |
-| 3. Supervised fine-tuning | Planned | Follow story instructions (required words, a given sentence, dialogue) |
-| 4. RL with verifiable rewards | Planned | GRPO with rule-checked rewards and a KL penalty |
+| 3. Supervised fine-tuning | **Done** | Satisfies every checkable instruction in 35.4% of samples, up from 1.8% for the base model |
+| 4. RL with verifiable rewards | In progress | GRPO with rule-checked rewards and a KL penalty; trainer written and tested |
 | 5. Demo and write-up | Planned | |
 
 The phases follow Andrej Karpathy's *Neural Networks: Zero to Hero* series;
@@ -109,6 +109,28 @@ Ablations on the S model (60.3M tokens each, validation loss in nats/token, seed
 The laptop overheated during the first run (Windows hibernated it after a critical
 thermal event), so training now pauses whenever the GPU reaches 85 °C
 ([`forge/thermal.py`](src/forge/thermal.py)); the 34M run paused 2,836 times.
+
+### Supervised fine-tuning
+
+L fine-tuned on 300,000 TinyStories-Instruct examples (an instruction, then the
+story), with the loss on story tokens only: 1,400 steps, 75 minutes. Scored on 500
+fixed held-out prompts, 4 samples each, by rule-based checks that later serve as the
+RL reward ([full results](docs/sft/RESULTS.md)):
+
+| | Base L | SFT L | Gold stories |
+|---|---:|---:|---:|
+| **All constraints met** | **1.8%** | **35.4%** | **95.2%** |
+| Required words found (per word) | 17.9% | 77.7% | 99.0% |
+| All required words found | 1.0% | 47.3% | 97.0% |
+| Given sentence included | 0.1% | 11.6% | 100.0% |
+| Dialogue when requested | 20.9% | 95.5% | 94.7% |
+| Story ended | 99.7% | 93.8% | 100.0% |
+
+SFT learned the format, dialogue, and most required words, but rarely copies the
+given sentence verbatim. That gap is what reinforcement learning targets next.
+The first evaluation under-reported SFT at 5.1%: the generation command queued
+2,000 requests at once and the serving engine's admission limits silently dropped
+most of them. Generation now runs without those limits and fails loudly instead.
 
 ## How it is built
 
