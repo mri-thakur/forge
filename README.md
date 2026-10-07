@@ -14,7 +14,7 @@ few tens of millions of parameters can learn to write coherent stories.
 | Stage | Status | Result so far |
 |---|---|---|
 | 1. Tokenizer | **Done** | Byte-level BPE; 4,096-token vocabulary compresses TinyStories as well as GPT-2's 50,257 |
-| 2. Pretraining | **In progress** | 5.8M model writes coherent stories (0.552 bits/byte); ablations done; 16M and 34M training now |
+| 2. Pretraining | **Done** | 33.6M model writes coherent stories (0.414 bits/byte); scaling curve over 3 sizes; RoPE and GQA ablations |
 | 3. Supervised fine-tuning | Planned | Follow story instructions (required words, a given sentence, dialogue) |
 | 4. RL with verifiable rewards | Planned | GRPO with rule-checked rewards and a KL penalty |
 | 5. Demo and write-up | Planned | |
@@ -49,10 +49,35 @@ A tokenizer fit to its domain matches GPT-2's compression with a vocabulary 12
 times smaller. The model uses the 4,096 vocabulary: 542.9M training tokens.
 [Raw comparison](results/tokenizer/compare.json).
 
-### Pretraining (in progress)
+### Pretraining
 
-Learning-rate sweep for the smallest model (5.8M parameters, 24.9M tokens each,
-65,536 tokens per step), scored on the full validation split:
+Three model sizes trained from scratch, 65,536 tokens per step, each scored on all
+5.48M tokens of the validation split ([full results](docs/phase2/RESULTS.md)):
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/phase2/scaling-dark.png">
+  <img alt="Validation loss against training compute for the three model sizes, and final loss against parameter count" src="docs/phase2/scaling.png">
+</picture>
+
+| Model | Parameters | Training tokens | Loss (nats/token) | Bits per byte |
+|---|---:|---:|---:|---:|
+| S | 5.8M | 115.3M | 1.5420 | 0.5523 |
+| M | 15.7M | 315.2M | 1.2773 | 0.4575 |
+| **L** | **33.6M** | **542.6M** | **1.1566** | **0.4142** |
+
+The token bigram baseline is 3.595 nats/token. Loss falls roughly as N^-0.165 over
+these three points. The curves show the compute frontier: at M's full budget, M was
+ahead of L at equal compute, and L needed 1.7x as much compute to match it before
+going past it. L writes coherent stories with dialogue and a plot (temperature 0.8,
+not cherry-picked):
+
+> One day, a girl named Mia found a magic wand. The wand had a big smile and it
+> made Mia shrink! She was very surprised. Mia thought, "I need to use the wand to
+> help others." Mia saw a boy named Tim who was sad. She walked up to him and
+> asked, "Why are you sad?" Tim said, "I lost my toy car."
+
+Learning-rate sweep for the smallest model (5.8M parameters, 24.9M tokens each),
+scored on the full validation split:
 
 | Peak learning rate | Validation loss (nats/token) | Bits per byte |
 |---:|---:|---:|
@@ -64,15 +89,6 @@ Learning-rate sweep for the smallest model (5.8M parameters, 24.9M tokens each,
 At 4e-3 training did not diverge; it stalled on an early plateau (validation 4.08 at
 step 100 against 3.38 at 2e-3) and never recovered within the budget.
 [Raw results](results/lr_sweep/).
-
-**S model (5.8M parameters, 115.3M tokens): 1.5420 nats/token, 0.5523 bits per
-byte** on the full validation split (token bigram baseline 3.595, unigram 5.936).
-It already writes coherent stories; prompted with "Lily and Ben went to the park.":
-
-> They saw a big pond with many ducks. There were many ducks and frogs. Lily and
-> Ben liked the ducks. They wanted to feed them some bread.
-
-([fixed samples and loss curve](docs/phase2/S/RESULTS.md))
 
 Ablations on the S model (60.3M tokens each, validation loss in nats/token, seeds
 17 and 29):
@@ -90,8 +106,9 @@ Ablations on the S model (60.3M tokens each, validation loss in nats/token, seed
   multi-head attention (0.0035 apart against a 0.016 seed-to-seed spread), while
   halving the KV cache.
 
-Still training ([plan](runs/plans/phase2.json)): the M (15.7M) and L (33.6M)
-models, for the scaling curve.
+The laptop overheated during the first run (Windows hibernated it after a critical
+thermal event), so training now pauses whenever the GPU reaches 85 °C
+([`forge/thermal.py`](src/forge/thermal.py)); the 34M run paused 2,836 times.
 
 ## How it is built
 
