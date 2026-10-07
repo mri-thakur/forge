@@ -51,6 +51,7 @@ class Request:
     temperature: float = 0
     top_k: int = 0
     top_p: float = 1
+    stop: int | None = None
     generated: list[int] = field(default_factory=list)
     emissions: list[float] = field(default_factory=list)
     prefill_cursor: int = 0
@@ -96,7 +97,19 @@ class Engine:
     def busy(self):
         return bool(self.active or self.waiting)
 
-    def submit(self, request_id, prompt, max_tokens, arrival=None, temperature=0, top_k=0, top_p=1):
+    def submit(
+        self,
+        request_id,
+        prompt,
+        max_tokens,
+        arrival=None,
+        temperature=0,
+        top_k=0,
+        top_p=1,
+        stop=None,
+    ):
+        """Queue a request. It finishes after `max_tokens`, or as soon as it emits
+        the `stop` token (kept as its last generated token)."""
         prompt = list(prompt)
         if request_id in self.requests:
             raise ValueError("duplicate request id")
@@ -120,6 +133,7 @@ class Engine:
             temperature,
             top_k,
             top_p,
+            stop,
             rng=np.random.default_rng(self.seed ^ digest),
         )
         self.requests[request_id] = request
@@ -237,7 +251,7 @@ class Engine:
             request.generated.append(token)
             request.emissions.append(timestamp)
             events.append((request.id, token))
-            if len(request.generated) == request.max_tokens:
+            if len(request.generated) == request.max_tokens or token == request.stop:
                 request.finished, request.status = timestamp, "completed"
                 self.active.remove(request.id)
                 self.pool.release(request.id)

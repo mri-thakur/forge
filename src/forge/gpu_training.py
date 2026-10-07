@@ -45,6 +45,7 @@ def train_torch(
     eval_batches=8,
     eval_batch=2,
     rope_dtype="float32",
+    init=None,
 ):
     """Train on byte or token shards described by the dataset's manifest.
 
@@ -52,6 +53,10 @@ def train_torch(
     a step sees batch * accumulate * context tokens. The learning rate warms up
     linearly, then follows a cosine down to `min_lr_ratio * lr`. Validation uses a
     fixed sample of `eval_batches * eval_batch` windows.
+
+    `init` starts from a saved model.npz (fine-tuning) instead of random weights;
+    the model shape then comes from that file. Datasets with a loss mask (SFT)
+    score only masked-in tokens, and their windows start at example boundaries.
     """
     if precision == "bf16" and device != "cuda":
         raise ValueError("bf16 training is currently supported only on CUDA")
@@ -68,8 +73,15 @@ def train_torch(
     data_hash = hashlib.sha256((data_dir / "manifest.json").read_bytes()).hexdigest()
     dtype = np.dtype(manifest.get("dtype", "uint8"))
     vocab_size = manifest.get("vocab_size", 256)
-    data = np.memmap(data_dir / "train.bin", dtype=dtype, mode="r")
-    val = np.memmap(data_dir / "val.bin", dtype=dtype, mode="r")
+    if manifest.get("loss_mask"):
+        from forge.sft import load_sft_arrays
+
+        splits = {name: load_sft_arrays(data_dir, name) for name in ("train", "val")}
+    else:
+        splits = {
+            name: (np.memmap(data_dir / f"{name}.bin", dtype=dtype, mode="r"), None, None)
+            for name in ("train", "val")
+        }
     rng = np.random.default_rng(seed)
     warmup = min(20, steps // 10) if warmup is None else warmup
     run_config = {
@@ -87,6 +99,8 @@ def train_torch(
         "eval_batch": eval_batch,
         "rope_dtype": rope_dtype,
     }
+    if init:
+        run_config["init"] = {"path": str(init), "sha256": sha256(init)}
     checkpoint = out / "resume.pt"
     if checkpoint.exists() and not resume:
         raise ValueError("run exists; choose another --out or --resume")
@@ -95,25 +109,31 @@ def train_torch(
         raise ValueError("resume dataset/schedule mismatch")
     if state and state["run_config"] != run_config:
         raise ValueError("resume must preserve every training setting in run_config")
-    config = (
-        ModelConfig(**state["config"])
-        if state
-        else ModelConfig(
-            vocab_size=vocab_size,
-            dim=dim,
-            layers=layers,
-            heads=heads,
-            kv_heads=kv_heads,
-            hidden=hidden or dim * 3,
-            context=max(512, context),
-            seed=seed,
+    if state:
+        reference = NumpyModel(ModelConfig(**state["config"]))
+    elif init:
+        reference = NumpyModel.load(init)
+    else:
+        reference = NumpyModel(
+            ModelConfig(
+                vocab_size=vocab_size,
+                dim=dim,
+                layers=layers,
+                heads=heads,
+                kv_heads=kv_heads,
+                hidden=hidden or dim * 3,
+                context=max(512, context),
+                seed=seed,
+            )
         )
-    )
+    config = reference.config
     if config.vocab_size != vocab_size:
         raise ValueError("checkpoint vocabulary does not match the dataset")
+    if context > config.context:
+        raise ValueError("training context exceeds the model's context")
     if rope_dtype not in ("float32", "bfloat16"):
         raise ValueError("rope_dtype must be float32 or bfloat16")
-    model = TorchModel(NumpyModel(config), device, attention, getattr(torch, rope_dtype))
+    model = TorchModel(reference, device, attention, getattr(torch, rope_dtype))
     if device == "cuda":
         torch.backends.cuda.matmul.allow_tf32 = True
         torch.cuda.reset_peak_memory_stats()
@@ -139,17 +159,43 @@ def train_torch(
         rng.bit_generator.state = state["rng"]
         step = state["step"]
 
-    def batch_loss(x, y):
+    usable_starts = {
+        name: None if starts is None else starts[starts < len(tokens) - context]
+        for name, (tokens, _, starts) in splits.items()
+    }
+
+    def sample(name, generator, rows):
+        tokens, mask, _ = splits[name]
+        starts = usable_starts[name]
+        if starts is None:
+            return (*sample_batch(tokens, generator, rows, context), None)
+        begin = starts[generator.integers(0, len(starts), size=rows)]
+        indices = begin[:, None] + np.arange(context)
+        return (
+            tokens[indices].astype(np.int64),
+            tokens[indices + 1].astype(np.int64),
+            mask[indices + 1],
+        )
+
+    def batch_loss(x, y, m=None):
         with autocast():
             logits = model.forward_tensor(x)
             targets = torch.tensor(y, device=device).reshape(-1)
-            return torch.nn.functional.cross_entropy(logits.reshape(-1, config.vocab_size), targets)
+            if m is None:
+                return torch.nn.functional.cross_entropy(
+                    logits.reshape(-1, config.vocab_size), targets
+                )
+            losses = torch.nn.functional.cross_entropy(
+                logits.reshape(-1, config.vocab_size), targets, reduction="none"
+            )
+            weights = torch.tensor(m, device=device, dtype=losses.dtype).reshape(-1)
+            return (losses * weights).sum() / weights.sum().clamp(min=1)
 
     def validate():
         losses, validation_rng = [], np.random.default_rng(123)
         with torch.no_grad():
             for _ in range(eval_batches):
-                losses.append(batch_loss(*sample_batch(val, validation_rng, eval_batch, context)))
+                losses.append(batch_loss(*sample("val", validation_rng, eval_batch)))
         return float(torch.stack(losses).mean())
 
     def save():
@@ -178,8 +224,8 @@ def train_torch(
                 optimizer.zero_grad(set_to_none=True)
                 total = 0.0
                 for _ in range(accumulate):
-                    x, y = sample_batch(data, rng, batch, context)
-                    loss = batch_loss(x, y) / accumulate
+                    x, y, m = sample("train", rng, batch)
+                    loss = batch_loss(x, y, m) / accumulate
                     loss.backward()
                     total += loss.detach()
                     tokens += x.size
@@ -238,10 +284,11 @@ def train_torch(
         "initial_val_loss_this_session": initial,
         "final_val_loss": final,
         "val_bits_per_token": final / math.log(2),
-        # Byte shards: one token per byte. Token shards: scale by the split's ratio.
+        # Byte shards: one token per byte. Token shards: scale by the split's ratio
+        # (for masked SFT data, of scored tokens to story bytes).
         "val_bits_per_byte": final
         / math.log(2)
-        * manifest.get("val_tokens", 1)
+        * manifest.get("val_loss_tokens", manifest.get("val_tokens", 1))
         / manifest.get("val_text_bytes", manifest.get("val_tokens", 1)),
         "dataset": manifest,
     }

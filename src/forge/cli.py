@@ -61,6 +61,36 @@ def main():
     tiny.add_argument("--compare", type=int, nargs="+", default=[2048, 4096, 8192])
     tiny.add_argument("--workers", type=int)
     tiny.add_argument("--results", help="folder for the tokenizer comparison JSON")
+    instruct = sub.add_parser(
+        "prepare-instruct", help="parse TinyStories-Instruct and score its gold stories"
+    )
+    instruct.add_argument("--train", required=True)
+    instruct.add_argument("--valid", required=True)
+    instruct.add_argument("--out", required=True)
+    instruct.add_argument("--results", help="folder for gold_check.json")
+    instruct_eval = sub.add_parser(
+        "instruct-eval", help="constraint satisfaction of generated stories"
+    )
+    instruct_eval.add_argument("--samples", required=True, help='JSONL of {"id", "story"}')
+    instruct_eval.add_argument("--prompts", required=True)
+    instruct_eval.add_argument("--out", required=True)
+    sft = sub.add_parser("prepare-sft", help="tokenize instruction examples with a loss mask")
+    sft.add_argument("--instruct", required=True, help="folder written by prepare-instruct")
+    sft.add_argument("--tokenizer", required=True)
+    sft.add_argument("--out", required=True)
+    sft.add_argument("--train-examples", type=int, default=300_000)
+    sft.add_argument("--val-examples", type=int, default=5_000)
+    generate_instruct = sub.add_parser(
+        "generate-instruct", help="sample stories for instruction prompts"
+    )
+    model_options(generate_instruct)
+    generate_instruct.add_argument("--tokenizer", required=True)
+    generate_instruct.add_argument("--prompts", required=True)
+    generate_instruct.add_argument("--out", required=True, help="JSONL of generated stories")
+    generate_instruct.add_argument("--samples", type=int, default=1, help="per prompt")
+    generate_instruct.add_argument("--temperature", type=float, default=0.8)
+    generate_instruct.add_argument("--top-p", type=float, default=0.95)
+    generate_instruct.add_argument("--max-batch", type=int, default=32)
     train_parser = sub.add_parser("train", help="train using Forge's NumPy reverse-mode engine")
     train_parser.add_argument("--data", required=True)
     train_parser.add_argument("--out", required=True)
@@ -85,6 +115,7 @@ def main():
     torch_only.add_argument("--min-lr-ratio", type=float, default=0.1)
     torch_only.add_argument("--eval-batches", type=int, default=8)
     torch_only.add_argument("--eval-batch", type=int, default=2)
+    torch_only.add_argument("--init", help="model.npz to fine-tune instead of random weights")
     torch_only.add_argument(
         "--rope-dtype",
         choices=["float32", "bfloat16"],
@@ -158,6 +189,64 @@ def main():
                 json.dumps(payload, indent=2) + "\n", encoding="utf-8"
             )
         print(json.dumps(comparison, indent=2))
+    elif args.command == "prepare-instruct":
+        from forge.instruct import gold_check, load_jsonl, prepare
+
+        manifest = prepare(args.train, args.valid, args.out)
+        if args.results:
+            report = gold_check(load_jsonl(Path(args.out) / "valid.jsonl"))
+            report["failures"] = report["failures"][:200]  # examples, not all
+            results = Path(args.results)
+            results.mkdir(parents=True, exist_ok=True)
+            (results / "gold_check.json").write_text(
+                json.dumps({"manifest": manifest, **report}, indent=2) + "\n", encoding="utf-8"
+            )
+        print(json.dumps(manifest["splits"], indent=2))
+    elif args.command == "instruct-eval":
+        from forge.instruct import evaluate, load_jsonl
+
+        # Each (prompt, sample) pair is scored on its own; rates average over all.
+        prompts = {record["id"]: record for record in load_jsonl(args.prompts)}
+        rows = load_jsonl(args.samples)
+        keys = [f"{row['id']}#{row.get('sample', 0)}" for row in rows]
+        records = [{**prompts[row["id"]], "id": key} for row, key in zip(rows, keys)]
+        report = evaluate(records, {key: row["story"] for row, key in zip(rows, keys)})
+        report["prompts"] = len({row["id"] for row in rows})
+        report["samples_per_prompt"] = len(rows) / max(1, report["prompts"])
+        report["finished_rate"] = sum(row.get("finished", True) for row in rows) / len(rows)
+        missing = set(prompts) - {row["id"] for row in rows}
+        report["missing_ids"] = sorted(missing)
+        Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.out).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+        print(json.dumps({key: report[key] for key in ("satisfied", "mean_reward")}))
+    elif args.command == "prepare-sft":
+        from forge.sft import prepare_sft
+
+        manifest = prepare_sft(
+            args.instruct, args.tokenizer, args.out, args.train_examples, args.val_examples
+        )
+        print(json.dumps({k: v for k, v in manifest.items() if k.startswith(("train", "val"))}))
+    elif args.command == "generate-instruct":
+        from forge.bpe import Tokenizer
+        from forge.instruct import load_jsonl
+        from forge.sft import generate
+
+        rows = generate(
+            load_model(args),
+            Tokenizer.load(args.tokenizer),
+            load_jsonl(args.prompts),
+            args.samples,
+            args.temperature,
+            args.top_p,
+            args.seed,
+            args.max_batch,
+        )
+        Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+        with Path(args.out).open("w", encoding="utf-8") as stream:
+            for row in rows:
+                stream.write(json.dumps(row) + "\n")
+        finished = sum(row["finished"] for row in rows)
+        print(json.dumps({"stories": len(rows), "finished": finished}))
     elif args.command == "train":
         if args.backend == "torch":
             from forge.gpu_training import train_torch
@@ -185,6 +274,7 @@ def main():
                 eval_batches=args.eval_batches,
                 eval_batch=args.eval_batch,
                 rope_dtype=args.rope_dtype,
+                init=args.init,
             )
         else:
             if args.device != "cpu":

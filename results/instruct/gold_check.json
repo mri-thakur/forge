@@ -1,0 +1,4993 @@
+{
+  "manifest": {
+    "dataset": "roneneldan/TinyStoriesInstruct",
+    "revision": "ee050ed1f8720795be342921335e821856a2b42e",
+    "licenses": [
+      "CDLA-Sharing-1.0"
+    ],
+    "source_files": [
+      {
+        "name": "TinyStories-Instruct-train.txt",
+        "sha256": "c2c667bc6b608509c0f02f1d5da1414a4b8810b99487fc525086ca664b6e8aa4",
+        "bytes": 2663428109
+      },
+      {
+        "name": "TinyStories-Instruct-valid.txt",
+        "sha256": "5c54f64a9134334601336050c3f2250099d0a1a796b5ca46e14c61d2b4aee449",
+        "bytes": 26900027
+      }
+    ],
+    "splits": {
+      "train": {
+        "records": 2476334,
+        "skipped_no_story": 199,
+        "verifiable": 2022998,
+        "field_presence": {
+          "summary": 2476331,
+          "words": 1638475,
+          "features": 1342624,
+          "sentence": 741939
+        }
+      },
+      "valid": {
+        "records": 25026,
+        "skipped_no_story": 1,
+        "verifiable": 20597,
+        "field_presence": {
+          "summary": 25026,
+          "words": 16675,
+          "features": 13576,
+          "sentence": 7567
+        }
+      }
+    },
+    "eval_prompts": {
+      "count": 500,
+      "seed": 17,
+      "drawn_from": "valid"
+    }
+  },
+  "own_story": {
+    "satisfied": {
+      "rate": 0.9546050395688692,
+      "n": 20597
+    },
+    "mean_reward": 0.9833174194731704,
+    "per_constraint": {
+      "word_recall": {
+        "rate": 0.9899850074962518,
+        "n": 50025
+      },
+      "all_words": {
+        "rate": 0.9704947526236881,
+        "n": 16675
+      },
+      "sentence": {
+        "rate": 1.0,
+        "n": 7567
+      },
+      "dialogue": {
+        "rate": 0.952253550113192,
+        "n": 9718
+      }
+    },
+    "scored": 20597,
+    "missing_ids": []
+  },
+  "shuffled_story": {
+    "satisfied": {
+      "rate": 0.03772394037966694,
+      "n": 20597
+    },
+    "mean_reward": 0.15576432382277894,
+    "per_constraint": {
+      "word_recall": {
+        "rate": 0.0336831584207896,
+        "n": 50025
+      },
+      "all_words": {
+        "rate": 0.0001199400299850075,
+        "n": 16675
+      },
+      "sentence": {
+        "rate": 0.0006607638430025109,
+        "n": 7567
+      },
+      "dialogue": {
+        "rate": 0.548260959045071,
+        "n": 9718
+      }
+    },
+    "scored": 20597,
+    "missing_ids": []
+  },
+  "failures": [
+    {
+      "id": "valid-0000025",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "disagree",
+        "value",
+        "fat"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0000034",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "decide",
+        "violin",
+        "hot"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0000037",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "punish",
+        "mill",
+        "cool"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000040",
+      "result": {
+        "dialogue": false,
+        "reward": 0.0,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0000063",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "suggest",
+        "beach",
+        "hurt"
+      ],
+      "sentence": "It hurt a lot and Lily started to cry.",
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000078",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "steal",
+        "open",
+        "different"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0000094",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "want",
+        "heat",
+        "dry"
+      ],
+      "sentence": "Timmy wanted to go outside and play with his ball.",
+      "features": [
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0000107",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "seat",
+        "wallet",
+        "dirty"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0000122",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "stop",
+        "nap",
+        "hot"
+      ],
+      "sentence": "He was ready to play again!",
+      "features": [
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0000210",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "buy",
+        "match",
+        "little"
+      ],
+      "sentence": "Then, they went back to the store to buy a new toy.",
+      "features": [
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0000235",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "wonder",
+        "garage",
+        "ugly"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0000266",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "talk",
+        "pasta",
+        "disgusting"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000269",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "suggest",
+        "street",
+        "hidden"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0000303",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "reveal",
+        "pencil",
+        "clumsy"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000331",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "bathe",
+        "job",
+        "fine"
+      ],
+      "sentence": "His mom said, \"Yes, of course!",
+      "features": []
+    },
+    {
+      "id": "valid-0000336",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "sign",
+        "circle",
+        "smelly"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000356",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "warn",
+        "jam",
+        "fake"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000372",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "help",
+        "grape",
+        "regular"
+      ],
+      "sentence": "Finally, at the end of the day, her brother smiled and thanked her for all the help!",
+      "features": [
+        "Dialogue",
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0000390",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "explain",
+        "purse",
+        "regular"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0000404",
+      "result": {
+        "dialogue": false,
+        "reward": 0.0,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000410",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "increase",
+        "nightmare",
+        "crazy"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000443",
+      "result": {
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": "'Today was so much fun, we have to celebrate often!",
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000472",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "test",
+        "mule",
+        "deep"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000490",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "admire",
+        "creek",
+        "compassionate"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000510",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "dream",
+        "side",
+        "impressive"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0000512",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "invite",
+        "color",
+        "smooth"
+      ],
+      "sentence": "Tom's mom said no.",
+      "features": [
+        "BadEnding",
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0000523",
+      "result": {
+        "dialogue": false,
+        "reward": 0.0,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000525",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "recognize",
+        "uncle",
+        "fearful"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0000560",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "dialogue": true,
+        "reward": 0.8888888888888888,
+        "satisfied": false
+      },
+      "words": [
+        "dance",
+        "exit",
+        "impressive"
+      ],
+      "sentence": "One day, she went to a big party with her mommy and daddy.",
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0000573",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "frown",
+        "spring",
+        "busy"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000603",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "understand",
+        "head",
+        "funny"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000614",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "sharp",
+        "brick",
+        "nice"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0000623",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "polish",
+        "paper",
+        "competitive"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000635",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "restore",
+        "shoe",
+        "thoughtful"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0000640",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "listen",
+        "knife",
+        "miserable"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0000651",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "urge",
+        "lecture",
+        "calm"
+      ],
+      "sentence": "Lily wanted to help the dog and felt an urge to bring him home.",
+      "features": [
+        "Dialogue",
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0000664",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "glow",
+        "tooth",
+        "thick"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0000726",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "part",
+        "bookcase",
+        "playful"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0000752",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "unite",
+        "threat",
+        "warm"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0000788",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "resist",
+        "chair",
+        "healthy"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0000794",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "reverse",
+        "price",
+        "nosy"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0000832",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "design",
+        "style",
+        "dead"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0000845",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "choose",
+        "promise",
+        "harsh"
+      ],
+      "sentence": "She really wanted it, but her mom said they couldn't buy it right now.",
+      "features": [
+        "Dialogue",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0000865",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "visit",
+        "trumpet",
+        "independent"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0000933",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "demand",
+        "shark",
+        "naughty"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0000950",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "soar",
+        "promise",
+        "slow"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0000990",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "ring",
+        "hand",
+        "strong"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0000998",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "release",
+        "ambulance",
+        "dangerous"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0001000",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "increase",
+        "yesterday",
+        "silly"
+      ],
+      "sentence": null,
+      "features": [
+        "Conflict",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0001005",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "need",
+        "stomach",
+        "old"
+      ],
+      "sentence": null,
+      "features": [
+        "BadEnding",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0001009",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "belong",
+        "ash",
+        "silly"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0001077",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "dialogue": true,
+        "reward": 0.8888888888888888,
+        "satisfied": false
+      },
+      "words": [
+        "attach",
+        "fashion",
+        "brilliant"
+      ],
+      "sentence": "She felt so happy and proud wearing her new accessory all day long.",
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0001090",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "rot",
+        "goose",
+        "funny"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0001113",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "refuse",
+        "black",
+        "elderly"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0001118",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "destroy",
+        "sister",
+        "dead"
+      ],
+      "sentence": "One day, they were playing with blocks and accidentally destroyed Lily's tower.",
+      "features": []
+    },
+    {
+      "id": "valid-0001439",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "suggest",
+        "cube",
+        "careful"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0001479",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "polish",
+        "butter",
+        "fragile"
+      ],
+      "sentence": null,
+      "features": [
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0001487",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "attach",
+        "wood",
+        "rude"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0001503",
+      "result": {
+        "dialogue": false,
+        "reward": 0.0,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0001521",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "invite",
+        "crack",
+        "fragile"
+      ],
+      "sentence": null,
+      "features": [
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0001540",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "use",
+        "mother",
+        "bright"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0001560",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "promise",
+        "silver",
+        "intelligent"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0001613",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "wipe",
+        "tip",
+        "organized"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0001626",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "wave",
+        "spring",
+        "harmless"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0001648",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "look",
+        "thermometer",
+        "perfect"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0001656",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "dive",
+        "cereal",
+        "thick"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0001658",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "return",
+        "foot",
+        "ancient"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0001689",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "set",
+        "birthday",
+        "boring"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0001746",
+      "result": {
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": "The two argued back and forth until Daddy seemed cheerful.",
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0001811",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "see",
+        "oak",
+        "creative"
+      ],
+      "sentence": "He was very curious and liked exploring.",
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0001832",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "suggest",
+        "mechanic",
+        "hairy"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0001885",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "have",
+        "stranger",
+        "sleepy"
+      ],
+      "sentence": "Bobby and Lucy nodded to each other and made a promise to never talk to strangers again.",
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0001889",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "rot",
+        "box",
+        "smelly"
+      ],
+      "sentence": null,
+      "features": [
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0001907",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "help",
+        "spear",
+        "brave"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0001917",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "hear",
+        "memory",
+        "difficult"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0001946",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "step",
+        "surprise",
+        "obedient"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0001958",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "fix",
+        "blackboard",
+        "cheerful"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0001972",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "bake",
+        "olive",
+        "rude"
+      ],
+      "sentence": "The moral of this story is that it's important to treat others with kindness and respect even if we don't agree with them.",
+      "features": [
+        "Dialogue",
+        "Conflict",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0001979",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "forgive",
+        "ice",
+        "fearful"
+      ],
+      "sentence": "Suddenly she fell over, and she was scared.",
+      "features": []
+    },
+    {
+      "id": "valid-0001982",
+      "result": {
+        "dialogue": false,
+        "reward": 0.0,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0002014",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "lie",
+        "pine",
+        "lively"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0002052",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "drive",
+        "pepper",
+        "stubborn"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0002093",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "yield",
+        "painter",
+        "tall"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0002128",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "value",
+        "chair",
+        "ancient"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0002185",
+      "result": {
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": "One day, while Timmy was riding his bike without his helmet, he fell and hurt his head.",
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0002190",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "park",
+        "glue",
+        "deaf"
+      ],
+      "sentence": "Tim felt very sad and wished he had listened to his mom.",
+      "features": [
+        "Dialogue",
+        "BadEnding",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0002211",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "pretend",
+        "beach",
+        "original"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0002215",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "lend",
+        "drum",
+        "regular"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0002223",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "value",
+        "port",
+        "brilliant"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0002336",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "realize",
+        "world",
+        "unique"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0002353",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "regret",
+        "rice",
+        "fearful"
+      ],
+      "sentence": "She did not see her mom's angry face.",
+      "features": []
+    },
+    {
+      "id": "valid-0002364",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            false
+          ],
+          "fraction": 0.3333333333333333
+        },
+        "reward": 0.3333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "yell",
+        "church",
+        "loyal"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0002380",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "visit",
+        "baseball",
+        "nice"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0002382",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "dialogue": true,
+        "reward": 0.8888888888888888,
+        "satisfied": false
+      },
+      "words": [
+        "rest",
+        "symbol",
+        "serious"
+      ],
+      "sentence": "They had been playing for a long time.",
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0002391",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "dialogue": true,
+        "reward": 0.8888888888888888,
+        "satisfied": false
+      },
+      "words": [
+        "teach",
+        "turn",
+        "disgusting"
+      ],
+      "sentence": "Max trusted his sister and nodded.",
+      "features": [
+        "Dialogue",
+        "MoralValue",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0002397",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "balance",
+        "sunglasses",
+        "expensive"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0002401",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "allow",
+        "story",
+        "cold"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0002437",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "warn",
+        "shirt",
+        "enthusiastic"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0002439",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "scream",
+        "fireplace",
+        "gentle"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0002490",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "sing",
+        "jungle",
+        "filthy"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0003179",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "hurry",
+        "shade",
+        "safe"
+      ],
+      "sentence": "His friends, who hadn't found shade fast enough, were getting soaked.",
+      "features": [
+        "Dialogue",
+        "MoralValue",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0003206",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "mail",
+        "flower",
+        "curious"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0003279",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "steal",
+        "shirt",
+        "lucky"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0003282",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "leave",
+        "driver",
+        "flexible"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0003336",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "wear",
+        "reef",
+        "terrible"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0003373",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "name",
+        "daughter",
+        "peaceful"
+      ],
+      "sentence": "The daughter had a hard life but she managed to survive.",
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0003415",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "supply",
+        "girl",
+        "boring"
+      ],
+      "sentence": null,
+      "features": [
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0003574",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "stand",
+        "dust",
+        "little"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0003575",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": false,
+        "reward": 0.3333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "support",
+        "star",
+        "persistent"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0003577",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "pretend",
+        "band",
+        "bossy"
+      ],
+      "sentence": "Ben smiles and forgives Anna.",
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0003607",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "strike",
+        "dolphin",
+        "busy"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0003614",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "surrender",
+        "ice",
+        "obedient"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0003639",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            false
+          ],
+          "fraction": 0.3333333333333333
+        },
+        "sentence": true,
+        "dialogue": true,
+        "reward": 0.7777777777777778,
+        "satisfied": false
+      },
+      "words": [
+        "strike",
+        "heat",
+        "brown"
+      ],
+      "sentence": "She will help you.\"",
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0003642",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "load",
+        "poison",
+        "distant"
+      ],
+      "sentence": null,
+      "features": [
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0003676",
+      "result": {
+        "dialogue": false,
+        "reward": 0.0,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0003704",
+      "result": {
+        "dialogue": false,
+        "reward": 0.0,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0003717",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.5555555555555555,
+        "satisfied": false
+      },
+      "words": [
+        "spend",
+        "strip",
+        "alert"
+      ],
+      "sentence": "When they got back to Timmy's house, they sat on the front porch and ate their candy.",
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0003771",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "perform",
+        "rabbit",
+        "normal"
+      ],
+      "sentence": "Fluffy performed a trick by hopping on one leg.",
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0003932",
+      "result": {
+        "dialogue": false,
+        "reward": 0.0,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0003934",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "burn",
+        "drawer",
+        "careless"
+      ],
+      "sentence": null,
+      "features": [
+        "BadEnding",
+        "Foreshadowing",
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0003935",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "introduce",
+        "bone",
+        "excited"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0003940",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "want",
+        "cave",
+        "stubborn"
+      ],
+      "sentence": "He wanted to go back but he couldn't find his way out.",
+      "features": [
+        "Dialogue",
+        "BadEnding",
+        "Foreshadowing",
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0003950",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "spring",
+        "ink",
+        "embarrassed"
+      ],
+      "sentence": null,
+      "features": [
+        "Conflict",
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0003952",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "forgive",
+        "mouth",
+        "polite"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0003954",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "dialogue": true,
+        "reward": 0.8888888888888888,
+        "satisfied": false
+      },
+      "words": [
+        "kneel",
+        "candle",
+        "easy"
+      ],
+      "sentence": "One day, she found a candle in her attic.",
+      "features": [
+        "Dialogue",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0003961",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "spring",
+        "photo",
+        "funny"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0003967",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "number",
+        "door",
+        "busy"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0003989",
+      "result": {
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": "From that day on, Lily never forgot to pay attention and always stayed close to her parents.",
+      "features": [
+        "Dialogue",
+        "Foreshadowing",
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0004000",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "spend",
+        "motor",
+        "shy"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding",
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0004007",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "soak",
+        "math",
+        "careful"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0004332",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "design",
+        "operation",
+        "guilty"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0004385",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "hope",
+        "veterinarian",
+        "silly"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0004400",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "call",
+        "purse",
+        "serious"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0004413",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "refuse",
+        "meal",
+        "ashamed"
+      ],
+      "sentence": "He realized he had made a mistake and wished he had eaten his dinner.",
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0004494",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "worry",
+        "scooter",
+        "difficult"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0004495",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "disappear",
+        "Sunday",
+        "guilty"
+      ],
+      "sentence": "Lily looked everywhere but she couldn't find him.",
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0004500",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "pinch",
+        "paint",
+        "tall"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0004506",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "let",
+        "universe",
+        "famous"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0004513",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "suggest",
+        "fridge",
+        "playful"
+      ],
+      "sentence": "One day, Mittens' owner suggested they play a game of hide-and-seek.",
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0004515",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "insist",
+        "grocery",
+        "sad"
+      ],
+      "sentence": "Lily was sad because she wanted to play with her toys, but her mom insisted that she come along.",
+      "features": [
+        "Dialogue",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0004624",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "reach",
+        "saw",
+        "fierce"
+      ],
+      "sentence": "It was a scary bear!",
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0004631",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "struggle",
+        "fight",
+        "generous"
+      ],
+      "sentence": "One day, while they were playing, Tweet saw a big, juicy worm on the ground.",
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0004649",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "accept",
+        "group",
+        "orange"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0004658",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "guess",
+        "butter",
+        "mighty"
+      ],
+      "sentence": null,
+      "features": [
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0004721",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "insist",
+        "fence",
+        "mild"
+      ],
+      "sentence": null,
+      "features": [
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0004739",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "slip",
+        "gear",
+        "upset"
+      ],
+      "sentence": "He told her that it's okay to fall down sometimes, but it's important to get back up and try again.",
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0004745",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "recognize",
+        "wrap",
+        "clean"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0004747",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "reveal",
+        "shark",
+        "little"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0004827",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "examine",
+        "promise",
+        "sour"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0004830",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.5555555555555555,
+        "satisfied": false
+      },
+      "words": [
+        "become",
+        "task",
+        "purple"
+      ],
+      "sentence": "In the end, Lily learned that accidents happen and it's okay to make mistakes.",
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0004854",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "speed",
+        "grocery",
+        "different"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0004869",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "dress",
+        "musician",
+        "stubborn"
+      ],
+      "sentence": "Her mom said yes and they walked over to where the musician was playing.",
+      "features": [
+        "Dialogue",
+        "Conflict",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0004871",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "excite",
+        "shark",
+        "busy"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0004957",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "recommend",
+        "thief",
+        "nervous"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0004972",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "show",
+        "cord",
+        "harsh"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0004973",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "look",
+        "oat",
+        "dizzy"
+      ],
+      "sentence": "She was so excited that she jumped up and down, but then she got dizzy and fell over.",
+      "features": []
+    },
+    {
+      "id": "valid-0004992",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "gaze",
+        "carpet",
+        "boring"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0004994",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "lift",
+        "village",
+        "uncomfortable"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0005009",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "melt",
+        "peach",
+        "bald"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0005054",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "remember",
+        "plane",
+        "wide"
+      ],
+      "sentence": "One day, her parents surprised her with a trip on a big, wide plane to visit her grandma.",
+      "features": [
+        "Dialogue",
+        "BadEnding",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0005057",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "repeat",
+        "will",
+        "green"
+      ],
+      "sentence": null,
+      "features": [
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0005065",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "drive",
+        "violin",
+        "impatient"
+      ],
+      "sentence": "She thanked her parents for taking her and promised to be patient for other things she wanted in the future.",
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0005081",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "dialogue": true,
+        "reward": 0.8888888888888888,
+        "satisfied": false
+      },
+      "words": [
+        "weigh",
+        "raft",
+        "selfish"
+      ],
+      "sentence": "Sam yelled.",
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0005116",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "sit",
+        "shell",
+        "wide"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0005120",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "seat",
+        "lotion",
+        "large"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0005143",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "start",
+        "store",
+        "selfish"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0005155",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "march",
+        "hoop",
+        "tight"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0005169",
+      "result": {
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": "She felt happy and proud when they ate the yummy food together.",
+      "features": [
+        "Dialogue",
+        "BadEnding",
+        "Conflict",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0005183",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "dialogue": true,
+        "reward": 0.8888888888888888,
+        "satisfied": false
+      },
+      "words": [
+        "stretch",
+        "buckle",
+        "envious"
+      ],
+      "sentence": "Lily's mom came to the rescue and helped buckle her shoes.",
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0005218",
+      "result": {
+        "dialogue": false,
+        "reward": 0.0,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0005254",
+      "result": {
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": "While they were walking, Lily got tired and sat down on a bench.",
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0005265",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "have",
+        "fight",
+        "fake"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Conflict",
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0005318",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            false
+          ],
+          "fraction": 0.3333333333333333
+        },
+        "reward": 0.3333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "kneel",
+        "pine",
+        "filthy"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0005340",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "yell",
+        "earthquake",
+        "fast"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0005405",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "become",
+        "mug",
+        "different"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0005410",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "speed",
+        "kid",
+        "embarrassed"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0005464",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "lay",
+        "plane",
+        "loud"
+      ],
+      "sentence": null,
+      "features": []
+    },
+    {
+      "id": "valid-0005478",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "meet",
+        "gas",
+        "nervous"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0005482",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "go",
+        "fountain",
+        "healthy"
+      ],
+      "sentence": "She asked him why he was sad.",
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0005501",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "search",
+        "play",
+        "dizzy"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0005503",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "dialogue": true,
+        "reward": 0.8888888888888888,
+        "satisfied": false
+      },
+      "words": [
+        "speak",
+        "microphone",
+        "nosy"
+      ],
+      "sentence": "One day, she went to a talent show with her friends.",
+      "features": [
+        "Dialogue",
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0005598",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "trust",
+        "buckle",
+        "helpless"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0005606",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "store",
+        "potato",
+        "expensive"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0005623",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "rush",
+        "lightning",
+        "rich"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "MoralValue",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0005668",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "forgive",
+        "taste",
+        "rough"
+      ],
+      "sentence": null,
+      "features": [
+        "Twist"
+      ]
+    },
+    {
+      "id": "valid-0005690",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "dialogue": true,
+        "reward": 0.8888888888888888,
+        "satisfied": false
+      },
+      "words": [
+        "release",
+        "yet",
+        "fit"
+      ],
+      "sentence": "He opened the cage and said, \"Blue, you can go now.",
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0005711",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "ride",
+        "memory",
+        "obedient"
+      ],
+      "sentence": null,
+      "features": [
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0005828",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "dare",
+        "reward",
+        "yummy"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0005837",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "succeed",
+        "peace",
+        "excited"
+      ],
+      "sentence": "Timmy learned that sometimes, helping others and sharing can bring more happiness than having everything for yourself.",
+      "features": [
+        "Dialogue",
+        "MoralValue"
+      ]
+    },
+    {
+      "id": "valid-0005864",
+      "result": {
+        "dialogue": false,
+        "reward": 0.0,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0005867",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": false,
+        "reward": 0.3333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "feel",
+        "rat",
+        "lucky"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding",
+        "Foreshadowing"
+      ]
+    },
+    {
+      "id": "valid-0005947",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            true
+          ],
+          "fraction": 1.0
+        },
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [
+        "bounce",
+        "TV",
+        "wild"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "BadEnding"
+      ]
+    },
+    {
+      "id": "valid-0006047",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "dialogue": true,
+        "reward": 0.8888888888888888,
+        "satisfied": false
+      },
+      "words": [
+        "dive",
+        "tent",
+        "gloomy"
+      ],
+      "sentence": "He played with his toys and didn't even notice when the rain stopped.",
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0006195",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "burn",
+        "loop",
+        "cold"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue",
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0006201",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "suggest",
+        "yoga",
+        "dizzy"
+      ],
+      "sentence": "He did not like it.",
+      "features": []
+    },
+    {
+      "id": "valid-0006288",
+      "result": {
+        "words": {
+          "hits": [
+            false,
+            true,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "reward": 0.6666666666666666,
+        "satisfied": false
+      },
+      "words": [
+        "seat",
+        "bowl",
+        "modern"
+      ],
+      "sentence": null,
+      "features": [
+        "Conflict"
+      ]
+    },
+    {
+      "id": "valid-0006345",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "sentence": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "add",
+        "score",
+        "boring"
+      ],
+      "sentence": "Timmy didn't know what \"add\" meant, but he was excited to play.",
+      "features": []
+    },
+    {
+      "id": "valid-0006352",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            true,
+            false
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "hug",
+        "mechanic",
+        "careless"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0006353",
+      "result": {
+        "sentence": true,
+        "dialogue": false,
+        "reward": 0.5,
+        "satisfied": false
+      },
+      "words": [],
+      "sentence": "He loved to play with his toys and run around outside.",
+      "features": [
+        "Dialogue"
+      ]
+    },
+    {
+      "id": "valid-0006380",
+      "result": {
+        "words": {
+          "hits": [
+            true,
+            false,
+            true
+          ],
+          "fraction": 0.6666666666666666
+        },
+        "dialogue": true,
+        "reward": 0.8333333333333333,
+        "satisfied": false
+      },
+      "words": [
+        "kneel",
+        "weight",
+        "yummy"
+      ],
+      "sentence": null,
+      "features": [
+        "Dialogue"
+      ]
+    }
+  ]
+}

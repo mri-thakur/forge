@@ -47,6 +47,20 @@ def test_heterogeneous_batches_equal_independent_reference(model, policy, budget
     assert engine.pool.used_blocks == 0
 
 
+def test_requests_stop_at_their_stop_token_and_free_their_blocks(model):
+    expected = reference_generate(model, [1, 2, 3], 12)
+    stop = expected[4]
+    cut = expected[: expected.index(stop) + 1]
+    engine = Engine(model, max_batch=2, blocks=16, block_size=4)
+    stopping = engine.submit("stops", [1, 2, 3], 12, stop=stop)
+    running = engine.submit("runs", [1, 2, 3], 12)
+    while engine.busy:
+        engine.step()
+    assert stopping.generated == cut and stopping.status == "completed"
+    assert running.generated == expected
+    assert engine.pool.used_blocks == 0
+
+
 def test_prefix_sharing_reuses_only_full_prompt_blocks(model):
     engine = Engine(model, blocks=48, block_size=4, prefix_entries=3)
     prompt = [1, 2, 3, 4] * 3 + [5]
