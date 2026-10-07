@@ -30,8 +30,11 @@ Check with `.\.venv\Scripts\python.exe scripts\detach.py --status`.
   Training rollouts (T 1), steps 1-25 → 176-200: reward 0.675 → 0.769, satisfied
   39.6% → 54.0%, word recall 80% → 90%, sentence ~10-15% (no gain), finished 94% →
   98.5%, KL 0.003 → 0.021 nats/token, entropy ~1.15, length ~210 tokens. Most of the
-  gain came in the first 50 steps. Expected: kl0.1 evals ~17:20, kl0 ~18:25, kl1
-  and plan complete ~19:30.
+  gain came in the first 50 steps. Held-out (500 x 4, T 0.8), SFT → steps 50/100/
+  150/200: all constraints 35.4% → 52.3/54.1/53.8/56.1%; all words 47.3% → 76.9%;
+  sentence 11.6% → 16.0% (most of it after step 150); dialogue 95.5% → 99.1%;
+  finished 93.8% → 98.9%; fluency under L 0.966 → 1.021 nats/token; repetition
+  unchanged (~2%). Expected: kl0 done ~18:20, kl1 and plan complete ~19:25.
 - `checkpoints/grpo_smoke/` is a 6-step smoke run (3.85 GB peak GPU memory); it can
   be deleted.
 
