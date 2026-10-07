@@ -1,6 +1,6 @@
 # Progress (laptop, `main`)
 
-Last updated: 2026-10-07 20:40. Everything runs on the laptop; the Mac Pro is not
+Last updated: 2026-10-07 22:00. Everything runs on the laptop; the Mac Pro is not
 used for this project (the user's decision, 10-07).
 
 **New chat? Start here:** read `PLAN.md`, then this file's "Running now" and
@@ -15,14 +15,9 @@ supporting infrastructure.
 
 Check with `.\.venv\Scripts\python.exe scripts\detach.py --status`.
 
-- `phase4_seeds` (started ~19:45 on 10-07, ~2.3 h, expected done ~22:05): the same
-  `scripts/run_grpo_plan.py runs/plans/phase4.json --code ..\forge-frozen` (worktree
-  at bbf2726), which skips the finished runs and trains + evaluates the main setting
-  again with seeds 29 and 43 (`grpo_kl0.1_s29`, `grpo_kl0.1_s43`). **If it stopped:**
-  rerun the same command through `scripts/detach.py`. When done: rerun
-  `scripts/phase4_report.py` (it adds a run-to-run section automatically), put the
-  three-seed mean ± sd in the README's RL section, commit `results/phase4/`.
-- `checkpoints/grpo_smoke/` is a leftover 6-step smoke run that can be deleted.
+Nothing. (Last: `phase4_seeds`, ~19:45-21:56 on 10-07, the main GRPO setting with
+seeds 29 and 43; `checkpoints/grpo_smoke/` is a leftover smoke run that can be
+deleted.)
 
 ## Phase 4 results (GRPO) — complete
 
@@ -46,7 +41,8 @@ Held-out, 500 prompts x 4 samples at T 0.8:
 | Train KL/token, last 25 steps | 0 | 0.004 | 0.021 | 0.255 |
 
 Main run held-out at steps 50/100/150/200: 52.3/54.1/53.8/56.1% (most of the gain
-in the first 50 steps). **Reward hacking without the KL penalty (KL 0):** required
+in the first 50 steps). **Three training seeds (17/29/43): 56.1/56.2/55.5%, mean
+55.9 ± 0.4%**; all words 77.8 ± 1.1%, sentence 15.3 ± 1.2%, fluency 1.031 ± 0.009. **Reward hacking without the KL penalty (KL 0):** required
 words forced in ungrammatically ("went to the park and seat on a dirty bench", "I
 seat here too"), the given sentence brute-forced by repeating near-copies until one
 matches ("Lily was happy to have her treasure safe and sound ... safe and sound
@@ -181,7 +177,7 @@ static. `results/cuda_calibration_14m`; full sweep in `results/cuda_sweep_mixed`
 
 Laptop, following [PLAN.md](PLAN.md):
 
-1. Finish phase 4 with the seed runs (see "Running now").
+1. Phase 4 is complete (three seeds included).
 2. Phase 5, done so far: README leads with the pipeline result and a headline figure
    (`scripts/readme_figure.py` → `docs/headline*.png`); web demo `demo/app.py`
    (Gradio; logic in `forge/demo.py`, tested) showing the three stages side by side

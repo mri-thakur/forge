@@ -29,6 +29,7 @@ POLICIES = {  # label: (results prefix, training log or None)
     "KL 0": (RESULTS / "grpo_kl0", "grpo_kl0"),
 }
 SNAPSHOTS = (50, 100, 150)
+SEEDS = {17: MAIN, 29: f"{MAIN}_s29", 43: f"{MAIN}_s43"}  # the main setting, repeated
 THEMES = {
     # The validated categorical slots 1-3 (blue, orange, aqua) of phase2_report.py.
     "light": {
@@ -282,6 +283,53 @@ def plot(curve, policies, gold, theme_name, path):
     plt.close(fig)
 
 
+def seed_section(seeds, sft):
+    """Run-to-run variation of the main setting across training seeds."""
+    if len(seeds) < 2:
+        return []
+    keys = (
+        ("satisfied", "All constraints met", pct),
+        ("all_words", "All required words", pct),
+        ("sentence", "Given sentence", pct),
+        ("fluency", "Fluency (nats/token)", lambda v: f"{v:.3f}"),
+    )
+
+    def spread(key, fmt):
+        values = [p[key] for p in seeds.values()]
+        mean, sd = statistics.mean(values), statistics.stdev(values)
+        if fmt is pct:
+            return f"**{100 * mean:.1f} ± {100 * sd:.1f}%**"
+        return f"**{mean:.3f} ± {sd:.3f}**"
+
+    satisfied = [p["satisfied"] for p in seeds.values()]
+    lines = [
+        "## Run-to-run variation",
+        "",
+        f"The main setting trained with {len(seeds)} seeds, which change the order of the "
+        "training prompts and the sampled rollouts; the evaluation is identical:",
+        "",
+        "| Seed | " + " | ".join(label for _, label, _ in keys) + " |",
+        "|---|" + "---:|" * len(keys),
+    ]
+    for seed, p in seeds.items():
+        lines.append(f"| {seed} | " + " | ".join(fmt(p[key]) for key, _, fmt in keys) + " |")
+    lines += [
+        "| Mean ± sd | " + " | ".join(spread(key, fmt) for key, _, fmt in keys) + " |",
+        "",
+        f"{improved(satisfied, sft['satisfied'])} ({pct(sft['satisfied'])}): the lowest "
+        f"reached {pct(min(satisfied))} and the highest {pct(max(satisfied))}.",
+        "",
+    ]
+    return lines
+
+
+def improved(values, baseline):
+    better = sum(value > baseline for value in values)
+    if better == len(values):
+        return "Every seed improved on SFT"
+    return f"{better} of {len(values)} seeds improved on SFT"
+
+
 def story_block(record, row, max_lines=None):
     lines = []
     for paragraph in row["story"].split("\n"):
@@ -320,6 +368,11 @@ def main():
     curve += [(s, load_policy(RESULTS / f"{MAIN}_step{s:04d}", records)) for s in SNAPSHOTS]
     curve.append((200, policies["KL 0.1"]))
     runs = {label: training(name) for label, (_, name) in POLICIES.items() if name}
+    seeds = {
+        seed: load_policy(RESULTS / name, records)
+        for seed, name in SEEDS.items()
+        if (RESULTS / f"{name}_eval.json").exists()
+    }
     plot(curve, policies, gold, "light", OUT / "grpo.png")
     plot(curve, policies, gold, "dark", OUT / "grpo-dark.png")
 
@@ -410,6 +463,7 @@ def main():
         f"Most of the gain came in the first {SNAPSHOTS[0]} steps "
         f"({pct(curve[0][1]['satisfied'])} → {pct(curve[1][1]['satisfied'])}).",
         "",
+        *seed_section(seeds, sft),
         "## Reward hacking without the KL penalty",
         "",
         f"Without the penalty the reward climbed furthest ({pct(none['satisfied'])} of "
@@ -473,8 +527,8 @@ def main():
         "",
         "## Limitations",
         "",
-        "- One seed per setting. The 95% intervals above cover sampling noise over "
-        "prompts, not run-to-run variation of RL itself.",
+        f"- {len(seeds)} training seeds for the main setting, one for each ablation setting. "
+        "The 95% intervals cover sampling noise over prompts, not run-to-run variation.",
         "- The checks reward a word's presence, not its use, and the sentence check rewards "
         "a verbatim copy wherever it lands. The KL penalty is what keeps the policy "
         "honest here; a stricter reward (grammatical use, a single copy of the sentence) "

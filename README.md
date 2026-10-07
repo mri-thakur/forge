@@ -19,8 +19,8 @@ supervised fine-tuning → reinforcement learning with verifiable rewards.**
   curve and architecture ablations included.
 - **Instruction following, measured.** On 500 held-out prompts scored by rule-based
   checks (required words, a given sentence, dialogue), the share of stories meeting
-  every instruction rises from 1.8% (pretrained) to 35.4% (SFT) to 56.1% (RL; 95%
-  interval 52.6-59.6%).
+  every instruction rises from 1.8% (pretrained) to 35.4% (SFT) to 56.1% (RL;
+  55.9 ± 0.4% across three training seeds).
 - **Reward hacking, found and quantified.** Without the KL penalty, RL reaches 80.5%
   by gaming the checks: it forces required words in ("he went to the park and *seat*
   on a dirty bench") and repeats the given sentence until a copy matches; 30% of its
@@ -173,8 +173,8 @@ per run on the laptop ([full results](docs/grpo/RESULTS.md)):
 | Stories looping (≥10% repeated 4-grams) | 1.6% | 1.5% | **2.1%** | 29.8% |
 
 With the KL coefficient at 0.1, RL lifted full instruction satisfaction from 35.4%
-to 56.1% (95% bootstrap interval over prompts 52.6-59.6%) while staying close to
-the SFT model in fluency and repetition. Without the penalty the reward climbed
+to 56.1% (95% bootstrap interval over prompts 52.6-59.6%; three training seeds gave
+55.9 ± 0.4%) while staying close to the SFT model in fluency and repetition. Without the penalty the reward climbed
 higher by gaming the checks, which only test that a word or sentence appears:
 required words forced in ("he went to the park and *seat* on a dirty bench"), and
 the given sentence repeated until a copy matched ("The bird kept running. The bird

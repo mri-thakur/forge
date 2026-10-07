@@ -39,6 +39,19 @@ Held-out results of the main run every 50 steps:
 
 Most of the gain came in the first 50 steps (35.4% → 52.3%).
 
+## Run-to-run variation
+
+The main setting trained with 3 seeds, which change the order of the training prompts and the sampled rollouts; the evaluation is identical:
+
+| Seed | All constraints met | All required words | Given sentence | Fluency (nats/token) |
+|---|---:|---:|---:|---:|
+| 17 | 56.1% | 76.9% | 16.0% | 1.021 |
+| 29 | 56.2% | 79.1% | 16.0% | 1.038 |
+| 43 | 55.5% | 77.6% | 14.0% | 1.034 |
+| Mean ± sd | **55.9 ± 0.4%** | **77.8 ± 1.1%** | **15.3 ± 1.2%** | **1.031 ± 0.009** |
+
+Every seed improved on SFT (35.4%): the lowest reached 55.5% and the highest 56.2%.
+
 ## Reward hacking without the KL penalty
 
 Without the penalty the reward climbed furthest (80.5% of samples satisfied), but by gaming the checks, which only test that a word or sentence appears. Measured on the same samples:
@@ -142,6 +155,6 @@ Training rewards are on different prompts each step and at temperature 1, so the
 
 ## Limitations
 
-- One seed per setting. The 95% intervals above cover sampling noise over prompts, not run-to-run variation of RL itself.
+- 3 training seeds for the main setting, one for each ablation setting. The 95% intervals cover sampling noise over prompts, not run-to-run variation.
 - The checks reward a word's presence, not its use, and the sentence check rewards a verbatim copy wherever it lands. The KL penalty is what keeps the policy honest here; a stricter reward (grammatical use, a single copy of the sentence) would be the next step.
 - The given sentence remains the weak point: the main run's stories start it 0.44 times on average against 1.06 in the gold stories, so the policy mostly does not try. The only policy that includes it often does so by brute force.
