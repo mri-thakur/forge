@@ -91,6 +91,38 @@ def main():
     generate_instruct.add_argument("--temperature", type=float, default=0.8)
     generate_instruct.add_argument("--top-p", type=float, default=0.95)
     generate_instruct.add_argument("--max-batch", type=int, default=32)
+    story_loss = sub.add_parser(
+        "story-loss", help="fluency: nats/token of generated stories under a model"
+    )
+    model_options(story_loss)
+    story_loss.add_argument("--tokenizer", required=True)
+    story_loss.add_argument(
+        "--samples", nargs="+", required=True, help='JSONL files of {"story"}, scored separately'
+    )
+    story_loss.add_argument("--out", required=True)
+    story_loss.add_argument("--batch", type=int, default=32)
+    grpo = sub.add_parser("grpo", help="GRPO with verifiable rewards from an SFT model")
+    grpo.add_argument("--init", required=True, help="SFT model.npz: the policy and KL reference")
+    grpo.add_argument("--prompts", required=True, help="instruction records (training split)")
+    grpo.add_argument("--exclude", help="JSONL of records never to train on (eval prompts)")
+    grpo.add_argument("--tokenizer", required=True)
+    grpo.add_argument("--out", required=True)
+    grpo.add_argument("--steps", type=int, default=200)
+    grpo.add_argument("--prompts-per-step", type=int, default=16)
+    grpo.add_argument("--group", type=int, default=8, help="samples per prompt")
+    grpo.add_argument("--lr", type=float, default=2e-5)
+    grpo.add_argument("--kl", type=float, default=0.05, help="KL penalty coefficient")
+    grpo.add_argument("--max-new-tokens", type=int, default=384)
+    grpo.add_argument("--warmup", type=int, default=10)
+    grpo.add_argument("--micro-batch", type=int, default=16)
+    grpo.add_argument("--max-batch", type=int, default=64, help="concurrent rollouts")
+    grpo.add_argument("--pool-size", type=int, default=20_000)
+    grpo.add_argument("--save-every", type=int, default=25)
+    grpo.add_argument("--seed", type=int, default=17)
+    grpo.add_argument("--device", default="cuda")
+    grpo.add_argument("--attention", choices=["manual", "sdpa"], default="sdpa")
+    grpo.add_argument("--precision", choices=["fp32", "bf16"], default="bf16")
+    grpo.add_argument("--resume", action="store_true")
     train_parser = sub.add_parser("train", help="train using Forge's NumPy reverse-mode engine")
     train_parser.add_argument("--data", required=True)
     train_parser.add_argument("--out", required=True)
@@ -247,6 +279,52 @@ def main():
                 stream.write(json.dumps(row) + "\n")
         finished = sum(row["finished"] for row in rows)
         print(json.dumps({"stories": len(rows), "finished": finished}))
+    elif args.command == "story-loss":
+        from forge.bpe import Tokenizer
+        from forge.instruct import load_jsonl
+        from forge.sft import story_loss
+
+        if args.backend != "torch":
+            raise ValueError("story-loss requires --backend torch")
+        model, tokenizer = load_model(args), Tokenizer.load(args.tokenizer)
+        report = {"checkpoint": args.checkpoint, "files": {}}
+        for path in args.samples:
+            rows = load_jsonl(path)
+            result = story_loss(model, tokenizer, [row["story"] for row in rows], args.batch)
+            report["files"][Path(path).name] = {
+                **result,
+                "ids": [f"{row['id']}#{row.get('sample', 0)}" for row in rows],
+            }
+        Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.out).write_text(json.dumps(report) + "\n", encoding="utf-8")
+        print(json.dumps({name: r["nats_per_token"] for name, r in report["files"].items()}))
+    elif args.command == "grpo":
+        from forge.grpo import train_grpo
+
+        summary = train_grpo(
+            args.init,
+            args.prompts,
+            args.tokenizer,
+            args.out,
+            steps=args.steps,
+            prompts_per_step=args.prompts_per_step,
+            group=args.group,
+            lr=args.lr,
+            kl=args.kl,
+            max_new_tokens=args.max_new_tokens,
+            warmup=args.warmup,
+            micro_batch=args.micro_batch,
+            max_batch=args.max_batch,
+            pool_size=args.pool_size,
+            exclude=args.exclude,
+            save_every=args.save_every,
+            seed=args.seed,
+            device=args.device,
+            attention=args.attention,
+            precision=args.precision,
+            resume=args.resume,
+        )
+        print(json.dumps(summary, indent=2))
     elif args.command == "train":
         if args.backend == "torch":
             from forge.gpu_training import train_torch

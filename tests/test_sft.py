@@ -109,3 +109,32 @@ def test_generate_returns_every_sample_and_stops_at_end_of_text(instruct_dir, tm
     budget = 128 - len(tokenizer.encode_ordinary(prompt(records[0])))
     for row in rows:
         assert row["finished"] or len(tokenizer.encode_ordinary(row["story"])) >= budget - 8
+
+
+def test_generate_completes_every_request_however_long_it_queues(
+    instruct_dir, tmp_path, monkeypatch
+):
+    # The first full evaluation queued 2,000 requests at once; the engine's serving
+    # limits (1,024 queued, 60 s in the queue) silently dropped most of them.
+    import itertools
+    import types
+
+    import forge.engine
+    from forge.torch_backend import TorchModel
+
+    clock = itertools.count(step=100.0)  # every engine step "takes" 100 s
+    monkeypatch.setattr(
+        forge.engine, "time", types.SimpleNamespace(perf_counter=lambda: next(clock))
+    )
+    tokenizer = Tokenizer.load(tmp_path / "tokenizer.json")
+    model = TorchModel(
+        NumpyModel(
+            ModelConfig(
+                vocab_size=300, dim=16, heads=2, kv_heads=1, layers=1, hidden=32, context=64
+            )
+        )
+    )
+    records = [json.loads(line) for line in open(instruct_dir / "eval_prompts.jsonl")]
+    rows = generate(model, tokenizer, records, samples=3, max_batch=1)
+    assert len(rows) == 6
+    assert all(row["story"] or row["finished"] for row in rows)

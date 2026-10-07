@@ -1,0 +1,25 @@
+{
+  "what": "First phase 3 evaluation (commit 8b460b9). sft.generate queued all 2,000 requests before the first engine step; the serving engine's limits (max_queue 1,024, queue_timeout 60 s) rejected the rest, which came back as empty, unfinished stories and were scored as failures. Fixed by an offline engine without those limits that raises if any request does not complete.",
+  "base_L": {
+    "rows": 2000,
+    "empty_rows": 1303,
+    "empty_rows_at_index_1024_or_later": 976,
+    "first_empty_row": 697,
+    "reported_satisfied_rate": 0.0055,
+    "reported_finished_rate": 0.347,
+    "generated_rows": 697,
+    "satisfied_rate_on_generated_rows": 0.015781922525107604,
+    "prompts_covered_by_generated_rows": 175
+  },
+  "sft_L": {
+    "rows": 2000,
+    "empty_rows": 1695,
+    "empty_rows_at_index_1024_or_later": 976,
+    "first_empty_row": 305,
+    "reported_satisfied_rate": 0.0505,
+    "reported_finished_rate": 0.145,
+    "generated_rows": 305,
+    "satisfied_rate_on_generated_rows": 0.33114754098360655,
+    "prompts_covered_by_generated_rows": 77
+  }
+}
