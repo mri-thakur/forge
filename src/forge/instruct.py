@@ -336,8 +336,9 @@ def _sha256(path):
 
 
 def load_jsonl(path):
-    with Path(path).open(encoding="utf-8") as stream:
-        return [json.loads(line) for line in stream]
+    # utf-8-sig also accepts files that Windows tools saved with a byte-order mark.
+    with Path(path).open(encoding="utf-8-sig") as stream:
+        return [json.loads(line) for line in stream if line.strip()]
 
 
 def evaluate(records, stories):
