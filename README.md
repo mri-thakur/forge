@@ -16,7 +16,7 @@ few tens of millions of parameters can learn to write coherent stories.
 | 1. Tokenizer | **Done** | Byte-level BPE; 4,096-token vocabulary compresses TinyStories as well as GPT-2's 50,257 |
 | 2. Pretraining | **Done** | 33.6M model writes coherent stories (0.414 bits/byte); scaling curve over 3 sizes; RoPE and GQA ablations |
 | 3. Supervised fine-tuning | **Done** | Satisfies every checkable instruction in 35.4% of samples, up from 1.8% for the base model |
-| 4. RL with verifiable rewards | In progress | GRPO with rule-checked rewards and a KL penalty; trainer written and tested |
+| 4. RL with verifiable rewards | **Done** | GRPO raises that to 56.1% at a small fluency cost; without a KL penalty the model games the checks |
 | 5. Demo and write-up | Planned | |
 
 The phases follow Andrej Karpathy's *Neural Networks: Zero to Hero* series;
@@ -127,10 +127,40 @@ RL reward ([full results](docs/sft/RESULTS.md)):
 | Story ended | 99.7% | 93.8% | 100.0% |
 
 SFT learned the format, dialogue, and most required words, but rarely copies the
-given sentence verbatim. That gap is what reinforcement learning targets next.
-The first evaluation under-reported SFT at 5.1%: the generation command queued
-2,000 requests at once and the serving engine's admission limits silently dropped
-most of them. Generation now runs without those limits and fails loudly instead.
+given sentence verbatim. The first evaluation under-reported SFT at 5.1%: the
+generation command queued 2,000 requests at once and the serving engine's admission
+limits silently dropped most of them. Generation now runs without those limits and
+fails loudly instead.
+
+### Reinforcement learning with verifiable rewards
+
+GRPO from the SFT model, with the same rule-based checks as the reward: 200 steps,
+each sampling 8 stories for each of 16 training prompts through the batched
+KV-cache engine, with group-relative advantages and a penalty on the KL divergence
+from the SFT model (computed exactly over the 4,096-token vocabulary). About an hour
+per run on the laptop ([full results](docs/grpo/RESULTS.md)):
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/grpo/grpo-dark.png">
+  <img alt="Held-out constraint satisfaction during GRPO, and constraint satisfaction against fluency for three KL penalty settings" src="docs/grpo/grpo.png">
+</picture>
+
+| Same 500 held-out prompts | SFT | KL 1 | **KL 0.1** | KL 0 |
+|---|---:|---:|---:|---:|
+| **All constraints met** | 35.4% | 39.6% | **56.1%** | 80.5% |
+| All required words found | 47.3% | 54.1% | **76.9%** | 97.9% |
+| Given sentence included | 11.6% | 10.3% | **16.0%** | 50.0% |
+| Fluency: nats/token under the pretrained model | 0.966 | 0.979 | **1.021** | 1.331 |
+| Stories looping (≥10% repeated 4-grams) | 1.6% | 1.5% | **2.1%** | 29.8% |
+
+With the KL coefficient at 0.1, RL lifted full instruction satisfaction from 35.4%
+to 56.1% (95% bootstrap interval over prompts 52.6-59.6%) while staying close to
+the SFT model in fluency and repetition. Without the penalty the reward climbed
+higher by gaming the checks, which only test that a word or sentence appears:
+required words forced in ("he went to the park and *seat* on a dirty bench"), and
+the given sentence repeated until a copy matched ("The bird kept running. The bird
+kept running after the bird. The bird kept running..."); 30% of its stories loop.
+The given sentence stays the weak point of the honest policy.
 
 ## How it is built
 
@@ -163,8 +193,15 @@ flowchart LR
   validation split scored once, bits per byte (comparable across tokenizers),
   n-gram baselines fit on the same training data, loss curves, fixed-seed samples.
 - **Inference** ([`engine.py`](src/forge/engine.py), [`cache.py`](src/forge/cache.py)):
-  paged KV cache with copy-on-write prefix sharing and continuous batching; it will
-  generate the RL rollouts and serve the demo.
+  paged KV cache with copy-on-write prefix sharing and continuous batching; it
+  generates the RL rollouts and evaluation samples.
+- **Instruction tuning** ([`instruct.py`](src/forge/instruct.py), [`sft.py`](src/forge/sft.py)):
+  TinyStories-Instruct parsing, rule-based constraint checks (inflections allowed,
+  validated on the dataset's own stories), loss-masked SFT data, and fluency scoring
+  under another model.
+- **RL** ([`grpo.py`](src/forge/grpo.py)): GRPO with group-relative advantages and an
+  exact KL penalty, resumable. Tests check that the KL and its gradient vanish at the
+  reference model and that an interrupted run resumes to the same weights.
 
 ## Engineering findings
 
@@ -210,6 +247,26 @@ python -m forge prepare-tinystories --train data/raw/TinyStoriesV2-GPT4-train.tx
 # Training plans: each run is trained, then evaluated on the full validation split
 python scripts/run_plan.py runs/plans/lr_sweep.json
 python scripts/run_plan.py runs/plans/phase2.json
+
+# Instruction data (TinyStoriesInstruct files in data/raw/) and SFT from the L model
+python -m forge prepare-instruct --train data/raw/TinyStories-Instruct-train.txt \
+  --valid data/raw/TinyStories-Instruct-valid.txt --out data/instruct --results results/instruct
+python -m forge prepare-sft --instruct data/instruct \
+  --tokenizer data/tinystories/tokenizer_4096.json --out data/sft
+python -m forge train --backend torch --device cuda --attention sdpa --precision bf16 \
+  --data data/sft --out checkpoints/sft_L --init checkpoints/L/model.npz --steps 1400 \
+  --context 512 --batch 16 --accumulate 8 --lr 0.0003 --warmup 50 --min-lr-ratio 0.1 \
+  --eval-batches 20 --eval-batch 16 --seed 17
+# Evaluate a model on the held-out prompts (likewise for checkpoints/L, the base model)
+python -m forge generate-instruct --backend torch --device cuda --attention sdpa \
+  --checkpoint checkpoints/sft_L/model.npz --tokenizer data/tinystories/tokenizer_4096.json \
+  --prompts data/instruct/eval_prompts.jsonl --samples 4 --out results/sft/sft_L_samples.jsonl
+python -m forge instruct-eval --samples results/sft/sft_L_samples.jsonl \
+  --prompts data/instruct/eval_prompts.jsonl --out results/sft/sft_L_eval.json
+
+# GRPO runs and their evaluation; then the result pages
+python scripts/run_grpo_plan.py runs/plans/phase4.json
+python scripts/phase3_report.py && python scripts/phase4_report.py
 ```
 
 Long jobs go through `python scripts/detach.py --name <job> -- <command>`, which
