@@ -1,6 +1,6 @@
 # Progress (laptop, `main`)
 
-Last updated: 2026-10-07 20:15. Everything runs on the laptop; the Mac Pro is not
+Last updated: 2026-10-07 20:40. Everything runs on the laptop; the Mac Pro is not
 used for this project (the user's decision, 10-07).
 
 **New chat? Start here:** read `PLAN.md`, then this file's "Running now" and
@@ -15,9 +15,14 @@ supporting infrastructure.
 
 Check with `.\.venv\Scripts\python.exe scripts\detach.py --status`.
 
-Nothing. (Last: `phase4`, 15:47-19:19 on 10-07, all three GRPO runs and their
-evaluations; `checkpoints/grpo_smoke/` is a leftover 6-step smoke run that can be
-deleted.)
+- `phase4_seeds` (started ~19:45 on 10-07, ~2.3 h, expected done ~22:05): the same
+  `scripts/run_grpo_plan.py runs/plans/phase4.json --code ..\forge-frozen` (worktree
+  at bbf2726), which skips the finished runs and trains + evaluates the main setting
+  again with seeds 29 and 43 (`grpo_kl0.1_s29`, `grpo_kl0.1_s43`). **If it stopped:**
+  rerun the same command through `scripts/detach.py`. When done: rerun
+  `scripts/phase4_report.py` (it adds a run-to-run section automatically), put the
+  three-seed mean ± sd in the README's RL section, commit `results/phase4/`.
+- `checkpoints/grpo_smoke/` is a leftover 6-step smoke run that can be deleted.
 
 ## Phase 4 results (GRPO) — complete
 
@@ -176,14 +181,18 @@ static. `results/cuda_calibration_14m`; full sweep in `results/cuda_sweep_mixed`
 
 Laptop, following [PLAN.md](PLAN.md):
 
-1. Phase 5 (demo and write-up, see PLAN.md): live demo (the user picks: a Hugging
-   Face Space needs their account; an in-browser demo needs nothing), README
-   rewritten around the results as one story (tokenizer → pretraining → SFT → RL)
-   with a headline figure, SFT and GRPO weights on a GitHub release (like
-   `tinystories-L-33m`), resume bullets.
-2. Optional, would strengthen phase 4: two more seeds of the KL 0.1 run (~2 h) for
-   run-to-run variation; a stricter reward (a required word used in its own part of
-   speech, the given sentence exactly once) to see if the sentence gap closes.
+1. Finish phase 4 with the seed runs (see "Running now").
+2. Phase 5, done so far: README leads with the pipeline result and a headline figure
+   (`scripts/readme_figure.py` → `docs/headline*.png`); web demo `demo/app.py`
+   (Gradio; logic in `forge/demo.py`, tested) showing the three stages side by side
+   with live checks, verified end to end on CPU (~15 s for three stories).
+   **Needs the user:** (a) make the GitHub repo public (it is private; a recruiter
+   gets a 404); (b) `hf auth login` with a Hugging Face write token, then
+   `python scripts/publish_hf.py --space USER/forge-stories --models
+   USER/forge-tinystories` to host the demo and publish the weights; then add both
+   links to the README's top. The user writes their own resume bullets.
+3. Optional: a stricter reward (a required word used in its own part of speech, the
+   given sentence exactly once) to see whether the sentence gap closes.
 
 ## Notes
 
