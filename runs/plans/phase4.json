@@ -1,5 +1,5 @@
 {
-  "description": "Phase 4: GRPO with verifiable rewards from the SFT model (checkpoints/sft_L). 200 steps of 16 training prompts x 8 rollouts at temperature 1, LR 3e-5 after 10 warmup steps. KL coefficient ablation: 0.1 (main run, snapshots every 50 steps evaluated for a learning curve), 0 (no penalty), and 1 (strong penalty). Every policy is evaluated like phase 3: the 500 eval prompts x 4 samples at T 0.8 / top-p 0.95, constraint checks, and fluency under the pretrained L.",
+  "description": "Phase 4: GRPO with verifiable rewards from the SFT model (checkpoints/sft_L). 200 steps of 16 training prompts x 8 rollouts at temperature 1, LR 3e-5 after 10 warmup steps. KL coefficient ablation: 0.1 (main run, snapshots every 50 steps evaluated for a learning curve), 0 (no penalty), and 1 (strong penalty). The main setting is repeated with seeds 29 and 43 (prompt order and rollout sampling) to measure run-to-run variation. Every policy is evaluated like phase 3: the 500 eval prompts x 4 samples at T 0.8 / top-p 0.95, constraint checks, and fluency under the pretrained L.",
   "common": {
     "init": "checkpoints/sft_L/model.npz",
     "prompts": "data/instruct/train.jsonl",
@@ -23,6 +23,8 @@
   "runs": [
     {"name": "grpo_kl0.1", "evaluate_snapshots": true, "train": {"kl": 0.1, "snapshot_every": 50}},
     {"name": "grpo_kl0", "train": {"kl": 0.0}},
-    {"name": "grpo_kl1", "train": {"kl": 1.0}}
+    {"name": "grpo_kl1", "train": {"kl": 1.0}},
+    {"name": "grpo_kl0.1_s29", "train": {"kl": 0.1, "seed": 29}},
+    {"name": "grpo_kl0.1_s43", "train": {"kl": 0.1, "seed": 43}}
   ]
 }
