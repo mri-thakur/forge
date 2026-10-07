@@ -26,6 +26,12 @@ Check with `.\.venv\Scripts\python.exe scripts\detach.py --status`.
   rollout groups there. **If it stopped:** run the identical command again through
   `scripts/detach.py --name phase4 -- ...`; finished steps are skipped and an
   interrupted run resumes from its last checkpoint (every 25 steps).
+  Progress: `grpo_kl0.1` trained 15:48-16:44 (55.8 min, 104 thermal pauses).
+  Training rollouts (T 1), steps 1-25 → 176-200: reward 0.675 → 0.769, satisfied
+  39.6% → 54.0%, word recall 80% → 90%, sentence ~10-15% (no gain), finished 94% →
+  98.5%, KL 0.003 → 0.021 nats/token, entropy ~1.15, length ~210 tokens. Most of the
+  gain came in the first 50 steps. Expected: kl0.1 evals ~17:20, kl0 ~18:25, kl1
+  and plan complete ~19:30.
 - `checkpoints/grpo_smoke/` is a 6-step smoke run (3.85 GB peak GPU memory); it can
   be deleted.
 
