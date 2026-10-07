@@ -36,7 +36,7 @@ supervised fine-tuning → reinforcement learning with verifiable rewards.**
 | 2. Pretraining | 33.6M model, 0.414 bits/byte; scaling curve over 3 sizes; RoPE and GQA ablations | [results](docs/phase2/RESULTS.md) |
 | 3. Supervised fine-tuning | 35.4% of held-out samples meet every instruction, up from 1.8% | [results](docs/sft/RESULTS.md) |
 | 4. RL with verifiable rewards | 56.1% with GRPO; a KL-penalty ablation exposes reward hacking | [results](docs/grpo/RESULTS.md) |
-| 5. Demo and write-up | In progress | |
+| 5. Demo | The three stages write a story for the same instruction side by side, scored live | [below](#demo) |
 
 The phases follow Andrej Karpathy's *Neural Networks: Zero to Hero* series;
 phases 3 and 4 go beyond it. The full plan is in [PLAN.md](PLAN.md).
@@ -180,6 +180,22 @@ required words forced in ("he went to the park and *seat* on a dirty bench"), an
 the given sentence repeated until a copy matched ("The bird kept running. The bird
 kept running after the bird. The bird kept running..."); 30% of its stories loop.
 The given sentence stays the weak point of the honest policy.
+
+### Demo
+
+[`demo/app.py`](demo/app.py) is a web page where you give an instruction (required
+words, a sentence, features, a summary) and the pretrained, fine-tuned, and RL-trained
+models each write a story, streamed token by token through the KV-cache engine, with
+every constraint checked as it was during RL. It runs on a CPU (three stories in about
+15 seconds on the laptop):
+
+```bash
+python -m pip install -e ".[demo]"
+python demo/app.py    # needs checkpoints/L, sft_L, and grpo_kl0.1
+```
+
+`scripts/publish_hf.py` packages it as a Hugging Face Space and the three checkpoints
+as a model repository.
 
 ## How it is built
 
