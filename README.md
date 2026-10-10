@@ -259,10 +259,12 @@ Before the move to TinyStories, the same code trained a 14.26M-parameter
 byte-level model on WikiText-103: 1.272 nats/byte (1.836 bits/byte) on the full
 validation split, against 2.440 for a byte bigram, in 30.6 minutes on the RTX 4050
 ([results](docs/wikitext103_14m/RESULTS.md)). It also served as a test bed for
-batching policies: in a 1,000-request open-loop benchmark at 35 requests/s,
-continuous batching kept 95.1% of requests within the latency target against 3.3%
-for static batching ([results](docs/cuda_sweep_mixed/RESULTS.md),
-[method](docs/EXPERIMENTS.md)).
+batching policies: in 1,000-request open-loop benchmarks at 30 requests/s,
+continuous batching kept 98.9-100% of requests within the latency target on each of
+three seeds, against 1.4-18.7% for static batching. At 35 requests/s the median
+seed still favored continuous batching (95.1% against 3.3%), but one seed fell to
+25.9%, so that rate is past where the comparison is stable
+([results](docs/cuda_sweep_mixed/RESULTS.md), [method](docs/EXPERIMENTS.md)).
 
 ## Reproduce
 
