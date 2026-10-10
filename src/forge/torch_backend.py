@@ -86,7 +86,8 @@ class TorchModel:
             if self.attention == "sdpa":
                 # Copy shared KV heads rather than pass enable_gqa: without
                 # FlashAttention (absent from Windows builds) enable_gqa falls back to
-                # the math kernel, measured 8x slower than this on the RTX 4050.
+                # the math kernel, 10x slower than this on the RTX 4050
+                # (scripts/bench_attention.py, results/attention_kernels/).
                 k = k.repeat_interleave(repeats, dim=2).permute(0, 2, 1, 3)
                 v = v.repeat_interleave(repeats, dim=2).permute(0, 2, 1, 3)
                 attended = torch.nn.functional.scaled_dot_product_attention(

@@ -1,0 +1,52 @@
+{
+  "what": "one attention layer, forward + backward, bf16, CUDA events",
+  "shape": {
+    "batch": 16,
+    "time": 512,
+    "heads": 8,
+    "kv_heads": 4,
+    "head_dim": 64
+  },
+  "environment": {
+    "torch": "2.8.0+cu128",
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "os": "Windows-11-10.0.26200-SP0",
+    "flash_attention_built": false
+  },
+  "timing": {
+    "gqa_flag": {
+      "median_ms": 20.73292827606201,
+      "min_ms": 19.956735610961914,
+      "repeats": 50
+    },
+    "gqa_flag_cudnn": {
+      "median_ms": 1.9305920004844666,
+      "min_ms": 1.8063360452651978,
+      "repeats": 50
+    },
+    "copied_heads": {
+      "median_ms": 2.0705599784851074,
+      "min_ms": 1.960960030555725,
+      "repeats": 50
+    },
+    "manual": {
+      "median_ms": 11.246592044830322,
+      "min_ms": 11.082688331604004,
+      "repeats": 50
+    }
+  },
+  "kernels": {
+    "gqa_flag": {
+      "flash": "unavailable: No available kernel. Aborting execution.",
+      "memory_efficient": "unavailable: No available kernel. Aborting execution.",
+      "cudnn": "ok",
+      "math": "ok"
+    },
+    "copied_heads": {
+      "flash": "unavailable: No available kernel. Aborting execution.",
+      "memory_efficient": "ok",
+      "cudnn": "ok",
+      "math": "ok"
+    }
+  }
+}

@@ -242,9 +242,14 @@ flowchart LR
 
 Measured along the way, each with the evidence in this repository:
 
-- **No FlashAttention in the Windows PyTorch build.** There, `enable_gqa` silently
-  falls back to the math kernel: 24.9 ms per layer forward+backward against 3.2 ms
-  for causal SDPA with copied KV heads, so Forge copies the heads.
+- **No FlashAttention in the Windows PyTorch build.** There, grouped-query attention
+  through `enable_gqa` silently falls back to the unfused math kernel, because the
+  memory-efficient kernel needs equal query and KV head counts: one L-model attention
+  layer (16 x 512 tokens, bf16) takes 20.7 ms forward + backward, against 2.07 ms
+  when the KV heads are copied first and the memory-efficient kernel runs, so Forge
+  copies the heads. Forcing the cuDNN kernel, which PyTorch leaves disabled by default
+  here, handles grouped-query attention natively in 1.93 ms.
+  [Benchmark](scripts/bench_attention.py), [results](results/attention_kernels/attention.json).
 - **Host overhead dominated KV-cache decoding.** The paged cache rebuilt its indices
   in every layer with per-request host-to-device copies. Building them once per
   forward cut paged decode from 15.98 to 8.79 ms/token with identical output; at
