@@ -41,7 +41,10 @@ def model_options(parser):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Forge: train, verify, and measure serving")
+    parser = argparse.ArgumentParser(
+        description="Forge: tokenize, pretrain, fine-tune, run RL on, evaluate, and serve "
+        "a language model built from scratch"
+    )
     sub = parser.add_subparsers(dest="command", required=True)
     prepare = sub.add_parser("prepare", help="create checksummed byte-token train/val shards")
     prepare.add_argument("--text")
